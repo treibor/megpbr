@@ -30,7 +30,7 @@ public class MainLayout extends AppLayout {
     private H2 viewTitle;
 
     public MainLayout() {
-        setPrimarySection(Section.DRAWER);
+        setPrimarySection(Section.NAVBAR);
         addDrawerContent();
         addHeaderContent();
     }
@@ -39,7 +39,7 @@ public class MainLayout extends AppLayout {
         DrawerToggle toggle = new DrawerToggle();
         toggle.setAriaLabel("Menu toggle");
 
-        viewTitle = new H2();
+        viewTitle = new H2("MEG-PBR");
         viewTitle.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
 
         addToNavbar(true, toggle, viewTitle);
@@ -57,10 +57,21 @@ public class MainLayout extends AppLayout {
 
     private SideNav createNavigation() {
         SideNav nav = new SideNav();
-
-        nav.addItem(new SideNavItem("Dashboard", DashboardView.class, LineAwesomeIcon.FILE.create()));
+        SideNavItem agro=new SideNavItem("AgroBiodiversity");
+        agro.setPrefixComponent(LineAwesomeIcon.COLUMNS_SOLID.create());
+        SideNavItem subagro1=new SideNavItem("Crop Plants", CropPlantsView.class,
+                LineAwesomeIcon.ACCESSIBLE_ICON.create());
+		
+		  SideNavItem subagro2=new SideNavItem("Fruit Trees", FruitTreesView.class,
+		  LineAwesomeIcon.ACCESSIBLE_ICON.create());
+		 
+        
+        agro.addItem(subagro1, subagro2);
+        nav.addItem(agro);
+        /*nav.addItem(new SideNavItem("Dashboard", DashboardView.class, LineAwesomeIcon.FILE.create()));
         nav.addItem(new SideNavItem("Agro Biodiversity", AgroBiodiversityView.class,
                 LineAwesomeIcon.COLUMNS_SOLID.create()));
+        
         nav.addItem(new SideNavItem("Domesticated Diversity", DomesticatedDiversityView.class,
                 LineAwesomeIcon.COLUMNS_SOLID.create()));
         nav.addItem(new SideNavItem("Wild Diversity", WildDiversityView.class, LineAwesomeIcon.COLUMNS_SOLID.create()));
@@ -71,7 +82,7 @@ public class MainLayout extends AppLayout {
         nav.addItem(new SideNavItem("Card List2", CardList2View.class, LineAwesomeIcon.LIST_SOLID.create()));
         nav.addItem(new SideNavItem("Collaborative Master-Detail2", CollaborativeMasterDetail2View.class,
                 LineAwesomeIcon.COLUMNS_SOLID.create()));
-
+		*/
         return nav;
     }
 
@@ -84,7 +95,7 @@ public class MainLayout extends AppLayout {
     @Override
     protected void afterNavigation() {
         super.afterNavigation();
-        viewTitle.setText(getCurrentPageTitle());
+        //viewTitle.setText(getCurrentPageTitle());
     }
 
     private String getCurrentPageTitle() {

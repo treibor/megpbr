@@ -1,4 +1,5 @@
 @import url('./main-layout.css');
+@import url('./views/cropplants-view.css');
 @import url('./views/agro-biodiversity-view.css');
 @import url('./views/domesticated-diversity-view.css');
 @import url('./views/wild-diversity-view.css');
