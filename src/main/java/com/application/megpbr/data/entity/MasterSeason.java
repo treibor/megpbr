@@ -6,7 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 @Entity
-public class MasterFruitSeason {
+public class MasterSeason {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "season_generator")

@@ -18,7 +18,10 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -49,7 +52,7 @@ public class CropPlantsView extends VerticalLayout{
 	public CropPlantsView(Dbservice service, CropService cservice) {
 		this.dbservice=service;
 		this.cservice=cservice;
-		format=dbservice.getFormat("1");
+		format=dbservice.getFormat(1);
 		setSizeFull();
 		ConfigureGrid();
 		ConfigureForm();
@@ -77,9 +80,13 @@ public class CropPlantsView extends VerticalLayout{
 		filterText.addValueChangeListener(e -> updateList(e.getValue(), masterData.getValue(), villageData.getValue()));
 		filterText.setWidth("20%");
 		Button addButton=new Button("New");
+		var label=new H3("Format-"+format.getFormat());
 		addButton.addClickListener(e->addCrops(new Crops()));
-		HorizontalLayout topvl=new HorizontalLayout(filterText,masterData,villageData,addButton);
+		HorizontalLayout topvl=new HorizontalLayout(filterText,masterData,villageData,addButton, label);
 		topvl.setAlignItems(FlexComponent.Alignment.BASELINE);
+		label.getStyle().set("margin-left", "auto");
+		label.getStyle().set("font-weight", "bold");
+		//label.getStyle().set("font-color", "hsla(120, 62%, 39%, 0.5)");
 		topvl.setWidthFull();
 		return topvl; 
 	}
@@ -92,6 +99,7 @@ public class CropPlantsView extends VerticalLayout{
 	
 	public void editCrops(Crops crop) {
 		//form.format=format;
+		//form.approved.setValue(true);
 		form.initFields(format);
 		form.scientificCheck.setEnabled(false);
 		form.masterCheck.setEnabled(false);
@@ -145,11 +153,43 @@ public class CropPlantsView extends VerticalLayout{
 	}
 	
 	public Component ConfigureGrid() {
-		grid.setSizeFull();
-		grid.setColumns("id","scientificName","type", "localName", "variety","habitat","pastStatus", "presentStatus","source", "fruitSeason","uses","associatedTdk","otherDetails","localLanguage","village");
-		grid.addColumn(crop-> crop.getFormat().getFormatName()).setHeader("Format");
-		grid.asSingleSelect().addValueChangeListener(e -> editCrops(e.getValue()));
-		return grid;
+		try {
+			grid.setSizeFull();
+			//grid.setColumns("scientificName","type",  "variety","localName","habitat","source", "uses","associatedTdk","otherDetails","localLanguage");
+			grid.setColumns("scientificName");
+			grid.addColumn("localName").setAutoWidth(true).setHeader("Local Name");
+			grid.addColumn("localLanguage");
+			grid.addColumn("habitat").setHeader("Habitat").setAutoWidth(true);
+			grid.addColumn("type").setAutoWidth(true).setHeader("Plant Type");
+			grid.addColumn("variety").setAutoWidth(true);
+			grid.addColumn("fruitSeason").setHeader("Cropping Season");
+			grid.addColumn("source").setHeader("Plant/Seed Source").setAutoWidth(true);
+			grid.addColumn("uses").setHeader("Uses").setAutoWidth(true);
+			grid.addColumn("associatedTk").setHeader("Associated TK");
+			//grid.addColumn("partsUsed");
+			grid.addColumn("otherDetails");
+			grid.addColumn("specialFeatures");
+			grid.addColumn("latitude");
+			grid.addColumn("longitude");
+			//grid.addColumn(Crops::getPastStatus);
+			grid.addColumn(crop-> crop.getPresentStatus()==null ? "":crop.getPresentStatus().getStatus()).setHeader("Past Status").setSortable(true);
+			grid.addColumn(crop-> crop.getPastStatus()==null ? "":crop.getPastStatus().getStatus()).setHeader("Present Status").setSortable(true);
+			grid.addColumn(crop-> crop.getVillage()==null ? "":crop.getVillage().getVillageName()).setHeader("Village").setSortable(true);
+			grid.addColumn(crop-> crop.getVillage()==null ? "":crop.getVillage().getBlock().getBlockName()).setHeader("Block").setSortable(true);
+			grid.addColumn(crop-> crop.getVillage()==null ? "":crop.getVillage().getBlock().getDistrict().getDistrictName()).setHeader("District").setSortable(true);
+			grid.addColumn("enteredBy");
+			grid.addColumn("enteredOn");
+			grid.addColumn(crop -> crop.isApproved() ? "Yes" : "No")
+	        .setHeader("Verified").setFlexGrow(0);
+			grid.addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT);
+			grid.asSingleSelect().addValueChangeListener(e -> editCrops(e.getValue()));
+			return grid;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			
+			//e.printStackTrace();
+			return null;
+		}
 	}
 
 	public void updateGrid() {

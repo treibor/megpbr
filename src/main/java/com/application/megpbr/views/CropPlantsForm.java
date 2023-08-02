@@ -16,9 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.application.megpbr.data.entity.Block;
 import com.application.megpbr.data.entity.District;
 import com.application.megpbr.data.entity.LocalLanguage;
+import com.application.megpbr.data.entity.MasterCommercial;
 import com.application.megpbr.data.entity.MasterFormat;
-import com.application.megpbr.data.entity.MasterFruitSeason;
+import com.application.megpbr.data.entity.MasterSeason;
 import com.application.megpbr.data.entity.MasterStatus;
+import com.application.megpbr.data.entity.MasterWildhome;
 import com.application.megpbr.data.entity.State;
 import com.application.megpbr.data.entity.Village;
 import com.application.megpbr.data.entity.pbr.Crops;
@@ -44,6 +46,7 @@ import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.Scroller.ScrollDirection;
@@ -72,37 +75,41 @@ public class CropPlantsForm extends Div {
 	ComboBox<District> district = new ComboBox("");
 	ComboBox<Block> block = new ComboBox("");
 	ComboBox<Village> village = new ComboBox();
-	ComboBox<String> type = new ComboBox("Type");
-	MultiSelectComboBox<LocalLanguage> localLanguages = new MultiSelectComboBox("");
-	TextField localLanguage = new TextField();
-	ComboBox<String> scientificName = new ComboBox("Scientific Name");
-	TextField localName = new TextField("Local Name");
-	TextField variety = new TextField("Variety");
-	TextField specialFeatures = new TextField("Special Features");
-	TextField area = new TextField("Approx Area Sown");
-	TextField source = new TextField("Plant/Seed Source");
 	ComboBox<MasterStatus> pastStatus = new ComboBox("Past Status");
 	ComboBox<MasterStatus> presentStatus = new ComboBox("Present Status");
-	TextField associatedTdk = new TextField("Associated TK");
-	TextField commercial = new TextField("Commercial");
-	TextField otherDetails = new TextField("Other Details");
-	MultiSelectComboBox<MasterFruitSeason> fruitSeasons = new MultiSelectComboBox("");
-	TextField fruitSeason = new TextField();
-	// ComboBox<String> fruitSeason = new ComboBox("Fruit Season");
+	ComboBox<MasterCommercial> commercial= new ComboBox("Commercial/Non Commercial");
+	ComboBox<MasterWildhome> wildhome= new ComboBox("Wild/Home");
 	ComboBox<String> habitat = new ComboBox("Landscape/Habitat");
-	Button save = new Button("Save");
-	Button cancel = new Button("Cancel");
-	Button delete = new Button("Delete");
-	TextField uses = new TextField("Uses");
-	TextField knowledgeHolder = new TextField("Knowledge Holder");
+	ComboBox<String> type = new ComboBox("Plant Type");
+	ComboBox<String> scientificName = new ComboBox("Scientific Name");
+	ComboBox<String> localName = new ComboBox("Local Name");
+	ComboBox<String> source = new ComboBox("Plant/Seed Source");
+	ComboBox<String> variety = new ComboBox("Variety");
+	ComboBox<String> associatedTk = new ComboBox("Associated TK");
+	ComboBox<String> knowledgeHolder = new ComboBox("Knowledge Holder");
+	ComboBox<String> uses = new ComboBox("Uses");
+	ComboBox<String> partsUsed = new ComboBox("Parts Used");
+	TextField otherDetails = new TextField("Other Details");
+	TextField specialFeatures = new TextField("Special Features");
+	TextField area = new TextField("Approx Area Sown");
+	MultiSelectComboBox<LocalLanguage> localLanguages = new MultiSelectComboBox("");
+	MultiSelectComboBox<MasterSeason> fruitSeasons = new MultiSelectComboBox("");
+	TextField fruitSeason = new TextField();
+	TextField localLanguage = new TextField();
 	FormLayout formbasic = new FormLayout();
 	FormLayout frommaster = new FormLayout();
 	MultiFileMemoryBuffer buffer = new MultiFileMemoryBuffer();
-	//Upload upload = new Upload(buffer);
 	Upload photo = new Upload(buffer);
 	TextField latitude = new TextField("Latitude");
 	TextField longitude = new TextField("Longitude");
+	TextField management = new TextField("Management Options");
+	TextField xfield1 = new TextField("");
+	TextField xfield2 = new TextField("");
+	Button save = new Button("Save");
+	Button cancel = new Button("Close");
+	Button delete = new Button("Delete");
 	boolean isSuperAdmin;
+	Checkbox approved = new Checkbox("Approved", true);
 	MasterFormat format;
 	public CropPlantsForm(Dbservice dbservice, CropService cservice) {
 		super();
@@ -131,7 +138,9 @@ public class CropPlantsForm extends Div {
 		Scroller scroller = new Scroller(vl);
 		scroller.setScrollDirection(ScrollDirection.VERTICAL);
 		scroller.setSizeFull();
+		
 		return scroller;
+		
 	}
 
 	private Component createCheckPanel() {
@@ -146,13 +155,15 @@ public class CropPlantsForm extends Div {
 	}
 
 	private Component createButtons() {
-		HorizontalLayout hl = new HorizontalLayout();
+		var hl = new HorizontalLayout();
 		save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 		save.addClickShortcut(Key.ENTER);
 		cancel.addClickShortcut(Key.ESCAPE);
 		cancel.addClickListener(e -> closeForm());
 		save.addClickListener(e -> validateandsaveCrop());
+		delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
 		delete.addClickListener(e -> deleteCrop(crops));
+		hl.setJustifyContentMode(JustifyContentMode.CENTER);
 		hl.add(save, cancel, delete);
 		hl.setSizeFull();
 		return hl;
@@ -195,10 +206,11 @@ public class CropPlantsForm extends Div {
 	
 	public void deleteCrop(Crops crop) {
 		ConfirmDialog dialog = new ConfirmDialog();
-		if (crop == null) {
-			dialog.open();
+		if (crop == null || crop.equals(null) || crop.getScientificName()==null) {
+			//dialog.open();
 		} else {
-			dialog.setHeader("Delete?");
+			
+			dialog.setHeader("Delete??");
 			dialog.setText("Are You sure you want to delete this item.");
 			dialog.setCancelable(true);
 			dialog.addCancelListener(event -> dialog.close());
@@ -210,6 +222,7 @@ public class CropPlantsForm extends Div {
 			dialog.open();
 		}
 	}
+	
 	public void setCrop(Crops crop) {
 		this.crops = crop;
 		binder.readBean(crop);
@@ -232,13 +245,14 @@ public class CropPlantsForm extends Div {
 	private void removeFields() {
 		habitat.setValue("");
 		area.setValue("");
-		associatedTdk.setValue("");
+		associatedTk.setValue("");
 		knowledgeHolder.setValue("");
 		otherDetails.setValue("");
 		localName.setValue("");
 		pastStatus.setValue(null);
 		presentStatus.setValue(null);
-		commercial.setValue("");
+		commercial.setValue(null);
+		wildhome.setValue(null);
 		type.setValue("");
 		variety.setValue("");
 		uses.setValue("");
@@ -246,12 +260,14 @@ public class CropPlantsForm extends Div {
 		specialFeatures.setValue("");
 		localLanguage.setValue("");
 		fruitSeason.setValue("");
+		partsUsed.setValue("");
 		localLanguages.setValue();
 		fruitSeasons.setValue();
 	}
 
 	private void populateForm() {
 		// TODO Auto-generated method stub
+		
 		if (scientificName.getValue() != null ) {
 			if (scientificCheck.getValue()) {
 				Crops crops = cservice.findCropBySientificName(scientificName.getValue());
@@ -270,10 +286,11 @@ public class CropPlantsForm extends Div {
 
 	private void populateFields(Crops crops) {
 		try {
+			
 			habitat.setValue(crops.getHabitat());
 			type.setValue(crops.getType());
 			area.setValue(crops.getArea());
-			associatedTdk.setValue(crops.getAssociatedTdk());
+			associatedTk.setValue(crops.getAssociatedTk());
 			otherDetails.setValue(crops.getOtherDetails());
 			knowledgeHolder.setValue(crops.getKnowledgeHolder());
 			localName.setValue(crops.getLocalName());
@@ -286,6 +303,11 @@ public class CropPlantsForm extends Div {
 			specialFeatures.setValue(crops.getSpecialFeatures());
 			fruitSeason.setValue(crops.getFruitSeason());
 			uses.setValue(crops.getUses());
+			partsUsed.setValue(crops.getPartsUsed());
+			management.setValue(crops.getManagement());
+			xfield1.setValue(crops.getXfield1());
+			xfield2.setValue(crops.getXfield2());
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 
@@ -339,13 +361,19 @@ public class CropPlantsForm extends Div {
 		formbasic.add(fruitSeason, 3);
 		formbasic.add(pastStatus, 3);
 		formbasic.add(presentStatus, 3);
+		formbasic.add(variety, 3);
 		formbasic.add(source, 3);
 		formbasic.add(specialFeatures, 3);
 		formbasic.add(otherDetails, 3);
-		
 		formbasic.add(commercial, 3);
-		formbasic.add(variety, 3);
+		formbasic.add(uses, 3);
 		formbasic.add(area, 3);
+		formbasic.add(partsUsed, 3);
+		formbasic.add(management, 3);
+		formbasic.add(commercial, 3);
+		formbasic.add(wildhome, 3);
+		formbasic.add(xfield1, 3);
+		formbasic.add(xfield2, 3);
 		//formbasic.add(otherDetails, 3);
 		//formbasic.add(associatedTdk, 3);
 		formbasic.setResponsiveSteps(new ResponsiveStep("0", 6),
@@ -357,16 +385,13 @@ public class CropPlantsForm extends Div {
 	}
 
 	public Component createCommonForm() {
-		//photo.setT
-		
-		
 		FormLayout formcommon = new FormLayout();
-		formcommon.add(uses, 1);
-		formcommon.add(associatedTdk, 1);
-		formcommon.add(otherDetails, 1);
+		formcommon.add(associatedTk, 1);
 		formcommon.add(knowledgeHolder, 1);
+		formcommon.add(otherDetails, 1);
 		formcommon.add(latitude, 1);
 		formcommon.add(longitude, 1);
+		formcommon.add(approved, 1);
 		formcommon.add(photo, 2);
 		formcommon.setResponsiveSteps(new ResponsiveStep("0", 2),
 				// Use two columns, if layout's width exceeds 500px
@@ -383,6 +408,14 @@ public class CropPlantsForm extends Div {
 	}
 
 	public void initFields(MasterFormat format) {
+		commercial.setVisible(false);
+		wildhome.setVisible(false);
+		partsUsed.setVisible(false);
+		area.setVisible(false);
+		specialFeatures.setVisible(false);
+		management.setVisible(false);
+		xfield1.setVisible(false);
+		xfield2.setVisible(false);
 		state.setItems(dbservice.getStates());
 		State selectedState = dbservice.getState();
 		state.setValue(selectedState);
@@ -395,6 +428,8 @@ public class CropPlantsForm extends Div {
 		block.addValueChangeListener(e -> village.setItems(dbservice.getVillages(e.getValue(), true)));
 		village.setItemLabelGenerator(Village::getVillageName);
 		//villagedetails.
+		commercial.setItems(dbservice.getMasterCommercial());
+		wildhome.setItems(dbservice.getMasterWildhome());
 		pastStatus.setItems(dbservice.getStatus());
 		presentStatus.setItems(dbservice.getStatus());
 		pastStatus.setItemLabelGenerator(status -> status.getStatus());
@@ -403,7 +438,7 @@ public class CropPlantsForm extends Div {
 		fruitSeasons.setItemLabelGenerator(fruitSeason -> fruitSeason.getFruitseason());
 		fruitSeason.setReadOnly(true);
 		fruitSeasons.addValueChangeListener(e -> {
-			String selectedSeason = e.getValue().stream().map(MasterFruitSeason::getFruitseason)
+			String selectedSeason = e.getValue().stream().map(MasterSeason::getFruitseason)
 					.collect(Collectors.joining(", "));
 			fruitSeason.setValue(selectedSeason);
 		});
@@ -416,9 +451,7 @@ public class CropPlantsForm extends Div {
 					.collect(Collectors.joining(", "));
 			localLanguage.setValue(selectedLanguage);
 		});
-		//localLanguage.setVisible(false);
-		commercial.setVisible(false);
-
+		
 		scientificName.setAllowCustomValue(true);
 		scientificName.addCustomValueSetListener(e -> {
 			String customValue = e.getDetail();
@@ -435,14 +468,66 @@ public class CropPlantsForm extends Div {
 			habitat.setItems(customHabitat);
 			habitat.setValue(customHabitat);
 		});
+		localName.setAllowCustomValue(true);
+		localName.addCustomValueSetListener(e -> {
+			String customLocal = e.getDetail();
+			localName.setItems(customLocal);
+			localName.setValue(customLocal);
+		});
+		variety.setAllowCustomValue(true);
+		variety.addCustomValueSetListener(e -> {
+			String customVariety = e.getDetail();
+			variety.setItems(customVariety);
+			variety.setValue(customVariety);
+		});
+		source.setAllowCustomValue(true);
+		source.addCustomValueSetListener(e -> {
+			String customsource = e.getDetail();
+			source.setItems(customsource);
+			source.setValue(customsource);
+		});
+		associatedTk.setAllowCustomValue(true);
+		associatedTk.addCustomValueSetListener(e -> {
+			String customassociatedTk = e.getDetail();
+			associatedTk.setItems(customassociatedTk);
+			associatedTk.setValue(customassociatedTk);
+		});
+		knowledgeHolder.setAllowCustomValue(true);
+		knowledgeHolder.addCustomValueSetListener(e -> {
+			String customknowledgeHolder = e.getDetail();
+			knowledgeHolder.setItems(customknowledgeHolder);
+			knowledgeHolder.setValue(customknowledgeHolder);
+		});
+		uses.setAllowCustomValue(true);
+		uses.addCustomValueSetListener(e -> {
+			String customuses = e.getDetail();
+			uses.setItems(customuses);
+			uses.setValue(customuses);
+		});
+		partsUsed.setAllowCustomValue(true);
+		partsUsed.addCustomValueSetListener(e -> {
+			String custompartsUsed = e.getDetail();
+			partsUsed.setItems(custompartsUsed);
+			partsUsed.setValue(custompartsUsed);
+		});
 		initMasterFields(format);
+		initFormatFields(format);
 	}
-
+	
+	
+	
 	public void initMasterFields(MasterFormat format) {
 		//System.out.println(format);
 		List<String> snames=cservice.findScientificNamesAsString(format);
+		List<String> lnames=cservice.findLocalNamesAsString(format);
 		List<String> types=cservice.findtypesAsString(format);
 		List<String> habitats=cservice.findHabitatAsString(format);
+		List<String> varietys=cservice.findVarietyAsString(format);
+		List<String> sources=cservice.findSourcesAsString(format);
+		List<String> assoctk=cservice.findAssociatedtkAsString(format);
+		List<String> knowledge=cservice.findKnowledgeHolderAsString(format);
+		List<String> usess=cservice.findUsesAsString(format);
+		List<String> usedparts=cservice.findPartsUsedAsString(format);
 		/*
 		 * List<Crops> scrops = cservice.findCropsByFormat(format); List<String> snames
 		 * = scrops.stream().map(crops -> crops.getScientificName()).toList();
@@ -453,8 +538,15 @@ public class CropPlantsForm extends Div {
 		 * null).toList();
 		 */
 		scientificName.setItems(snames);
+		localName.setItems(lnames);
 		type.setItems(types);
 		habitat.setItems(habitats);
+		variety.setItems(varietys);
+		source.setItems(sources);
+		associatedTk.setItems(assoctk);
+		knowledgeHolder.setItems(knowledge);
+		uses.setItems(usess);
+		partsUsed.setItems(usedparts);
 	}
 
 	public static abstract class CropPlantsFormEvent extends ComponentEvent<CropPlantsForm> {
@@ -493,5 +585,184 @@ public class CropPlantsForm extends Div {
 			ComponentEventListener<T> listener) {
 		return getEventBus().addListener(eventType, listener);
 	}
-
+	
+	
+	
+	public void initFormatFields(MasterFormat format) {
+		int formatNo=format.getFormat();
+		switch (formatNo) {
+		case 1:
+			area.setVisible(true);
+			break;
+		case 2:
+			fruitSeasons.setPlaceholder("Season of Fruiting");
+			break;
+		case 3:
+			variety.setVisible(false);
+			specialFeatures.setVisible(true);
+			partsUsed.setVisible(true);
+			fruitSeasons.setVisible(false);
+			fruitSeason.setVisible(false);
+			uses.setVisible(false);
+			break;
+			//System.out.println(formatNo);
+		case 4:
+			fruitSeasons.setVisible(false);
+			fruitSeason.setVisible(false);
+			variety.setVisible(false);
+			source.setVisible(false);
+			management.setVisible(true);
+			xfield1.setVisible(true);
+			xfield2.setVisible(true);
+			xfield1.setLabel("Affected Crops");
+			xfield2.setLabel("Impact");
+			break;
+		case 5:
+			variety.setVisible(false);
+			pastStatus.setVisible(false);
+			presentStatus.setVisible(false);
+			fruitSeasons.setPlaceholder("Season of Attack");
+			source.setVisible(false);
+			uses.setVisible(false);
+			management.setVisible(true);
+			management.setLabel("Management Mechanism");
+			xfield1.setVisible(true);
+			xfield2.setVisible(true);
+			xfield1.setLabel("Hosts");
+			xfield2.setLabel("Insect/Animal");
+			break;
+		case 11:
+			fruitSeasons.setPlaceholder("Season of Fruiting");
+			break;
+		case 12:
+			fruitSeasons.setPlaceholder("Season of Fruiting");
+			break;
+		case 13:
+			pastStatus.setVisible(false);
+			presentStatus.setVisible(false);
+			fruitSeasons.setVisible(false);
+			fruitSeason.setVisible(false);
+			commercial.setVisible(true);
+			break;
+		case 14:
+			variety.setVisible(false);
+			fruitSeasons.setVisible(false);
+			fruitSeason.setVisible(false);
+			source.setVisible(false);	
+			area.setVisible(true);
+			wildhome.setVisible(true);
+			break;
+		case 15:
+			variety.setVisible(false);
+			habitat.setVisible(false);
+			specialFeatures.setVisible(true);
+			specialFeatures.setLabel("Features");
+			fruitSeasons.setVisible(false);
+			fruitSeason.setVisible(false);
+			source.setVisible(false);
+			xfield1.setVisible(true);
+			xfield2.setVisible(true);
+			xfield1.setLabel("Breed");
+			xfield2.setLabel("Method of Keeping");
+			type.setValue("Animal Type");
+			break;
+		case 16:
+			habitat.setLabel("Waterscape");
+			specialFeatures.setVisible(true);
+			specialFeatures.setLabel("Features");
+			fruitSeasons.setVisible(false);
+			fruitSeason.setVisible(false);
+			source.setVisible(false);
+			type.setValue("Fish Type");
+			break;
+		case 18:
+			variety.setVisible(false);
+			partsUsed.setVisible(true);
+			partsUsed.setLabel("Parts Collected");
+			fruitSeasons.setVisible(false);
+			fruitSeason.setVisible(false);
+			source.setVisible(false);
+			uses.setVisible(false);
+			commercial.setVisible(true);
+			break;
+		case 19:
+			habitat.setVisible(false);
+			type.setVisible(false);
+			pastStatus.setVisible(false);
+			presentStatus.setVisible(false);
+			fruitSeasons.setVisible(false);
+			fruitSeason.setVisible(false);
+			source.setVisible(false);
+			otherDetails.setVisible(false);
+			uses.setVisible(false);
+			break;
+		case 20:
+			type.setVisible(false);
+			fruitSeasons.setVisible(false);
+			fruitSeason.setVisible(false);
+			specialFeatures.setVisible(true);
+			specialFeatures.setLabel("Features");
+			source.setVisible(false);
+			break;
+		case 21:
+			type.setVisible(false);
+			pastStatus.setVisible(false);
+			presentStatus.setVisible(false);
+			fruitSeasons.setVisible(false);
+			fruitSeason.setVisible(false);
+			source.setVisible(false);
+			otherDetails.setVisible(false);
+			uses.setVisible(false);
+			break;
+		case 22:
+			type.setLabel("Plant");
+			fruitSeason.setVisible(false);
+			fruitSeasons.setVisible(false);
+			source.setVisible(false);
+			xfield1.setLabel("Habit");
+			xfield1.setVisible(true);
+			break;
+		case 23:
+			type.setLabel("Associated Crop");
+			variety.setVisible(false);
+			fruitSeason.setVisible(false);
+			fruitSeasons.setVisible(false);
+			otherDetails.setLabel("Other Details(Mode of Use)");
+			source.setVisible(false);
+			uses.setLabel("Uses(Usage)");
+			break;
+		case 24:
+			pastStatus.setVisible(false);
+			presentStatus.setVisible(false);
+			fruitSeasons.setVisible(false);
+			fruitSeason.setVisible(false);
+			source.setVisible(false);
+			uses.setVisible(false);
+			break;
+		case 25:
+			type.setLabel("Plant");
+			fruitSeasons.setVisible(false);
+			fruitSeason.setVisible(false);
+			source.setVisible(false);
+			uses.setVisible(false);
+			break;
+		case 26:
+			type.setLabel("Plant Type");
+			variety.setVisible(false);
+			fruitSeasons.setVisible(false);
+			fruitSeason.setVisible(false);
+			source.setVisible(false);
+			uses.setLabel("Other Uses(if any)");
+			break;
+		case 27:
+			type.setLabel("Animal Type");
+			variety.setVisible(false);
+			fruitSeasons.setPlaceholder("Season When Seen");
+			source.setVisible(false);
+			xfield1.setLabel("Mode of Hunting");
+			break;
+		
+		}
+		
+	}
 }

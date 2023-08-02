@@ -31,3 +31,6 @@
       --lumo-base-color: hsl(214, 23%, 82%);
 
     }
+vaadin-app-layout::part(drawer) {
+  width: 300px;
+}

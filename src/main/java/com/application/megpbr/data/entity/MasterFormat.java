@@ -21,7 +21,7 @@ public class MasterFormat {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "forid_generator")
 	@SequenceGenerator(name="forid_generator", sequenceName = "forid_seq", allocationSize=1)
 	private long id;
-	private String format;
+	private int format;
 	private String formatName;
 	@ManyToOne
 	@JoinColumn(name="category", referencedColumnName = "id")
@@ -40,16 +40,19 @@ public class MasterFormat {
 		this.id = id;
 	}
 
-	public String getFormat() {
-		return format;
-	}
+	
+	
 
-	public void setFormat(String format) {
-		this.format = format;
+	public int getFormat() {
+		return format;
 	}
 
 	public String getFormatName() {
 		return formatName;
+	}
+
+	public void setFormat(int format) {
+		this.format = format;
 	}
 
 	public void setFormatName(String formatName) {

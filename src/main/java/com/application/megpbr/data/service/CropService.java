@@ -59,13 +59,33 @@ public class CropService {
 	public List<String> findScientificNamesAsString(MasterFormat format){
 		return crepo.scientificNames(format);
 	}
+	public List<String> findLocalNamesAsString(MasterFormat format){
+		return crepo.localNames(format);
+	}
 	public List<String> findtypesAsString(MasterFormat format){
 		return crepo.type(format);
 	}
 	public List<String> findHabitatAsString(MasterFormat format){
 		return crepo.habitat(format);
 	}
-	
+	public List<String> findVarietyAsString(MasterFormat format){
+		return crepo.variety( format);
+	}
+	public List<String> findSourcesAsString(MasterFormat format){
+		return crepo.source( format);
+	}
+	public List<String> findAssociatedtkAsString(MasterFormat format){
+		return crepo.associatedtk( format);
+	}
+	public List<String> findKnowledgeHolderAsString(MasterFormat format){
+		return crepo.knowledgeHolder( format);
+	}
+	public List<String> findUsesAsString(MasterFormat format){
+		return crepo.uses( format);
+	}
+	public List<String> findPartsUsedAsString(MasterFormat format){
+		return crepo.partsUsed( format);
+	}
 	public List<Crops> findDistinctScientificName(MasterFormat format){
 		//System.out.println(crepo.findByFormatOrderByScientificName(format));
 		return crepo.findDistinctByFormat(format);
@@ -81,4 +101,7 @@ public class CropService {
 	public void deleteCrop(Crops crop) {
 		crepo.delete(crop);
 	}
+	
+	
+	
 }

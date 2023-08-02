@@ -36,10 +36,10 @@ import com.vaadin.flow.router.Route;
 import jakarta.annotation.PostConstruct;
 
 
-@PageTitle("Fruit Trees")
-@Route(value = "fruittrees", layout = MainLayout.class)
+@PageTitle("Fodder Crops")
+@Route(value = "foddercrops", layout = MainLayout.class)
 @Uses(Icon.class)
-public class FruitTreesView extends VerticalLayout{
+public class FodderCropsView extends VerticalLayout{
 	private Dbservice dbservice;
 	private CropService cservice;
 	Crops crop;
@@ -49,10 +49,10 @@ public class FruitTreesView extends VerticalLayout{
 	TextField filterText=new TextField("");
 	Checkbox masterData=new Checkbox("Master Data");
 	Checkbox villageData=new Checkbox("Village Data");
-	public FruitTreesView(Dbservice service, CropService cservice) {
+	public FodderCropsView(Dbservice service, CropService cservice) {
 		this.dbservice=service;
 		this.cservice=cservice;
-		format=dbservice.getFormat(2);
+		format=dbservice.getFormat(3);
 		setSizeFull();
 		ConfigureGrid();
 		ConfigureForm();

@@ -1,5 +1,6 @@
 package com.application.megpbr.views;
 
+import com.application.megpbr.data.service.Dbservice;
 import com.application.megpbr.views.agrobiodiversity.AgroBiodiversityView;
 import com.application.megpbr.views.cardlist2.CardList2View;
 import com.application.megpbr.views.checkoutform.CheckoutFormView;
@@ -28,8 +29,9 @@ import org.vaadin.lineawesome.LineAwesomeIcon;
 public class MainLayout extends AppLayout {
 
     private H2 viewTitle;
-
-    public MainLayout() {
+    Dbservice dbservice;
+    public MainLayout(Dbservice dbservice) {
+    	this.dbservice=dbservice;
         setPrimarySection(Section.NAVBAR);
         addDrawerContent();
         addHeaderContent();
@@ -57,17 +59,18 @@ public class MainLayout extends AppLayout {
 
     private SideNav createNavigation() {
         SideNav nav = new SideNav();
-        SideNavItem agro=new SideNavItem("AgroBiodiversity");
-        agro.setPrefixComponent(LineAwesomeIcon.COLUMNS_SOLID.create());
-        SideNavItem subagro1=new SideNavItem("Crop Plants", CropPlantsView.class,
-                LineAwesomeIcon.ACCESSIBLE_ICON.create());
-		
-		  SideNavItem subagro2=new SideNavItem("Fruit Trees", FruitTreesView.class,
-		  LineAwesomeIcon.ACCESSIBLE_ICON.create());
-		 
-        
-        agro.addItem(subagro1, subagro2);
-        nav.addItem(agro);
+        nav.addItem(new SideNavItem("Dashboard", DashboardView.class, LineAwesomeIcon.CREDIT_CARD.create()));
+        SideNavItem category1=new SideNavItem(dbservice.getCategory(1).getCategory());
+		category1.setPrefixComponent(LineAwesomeIcon.COLUMNS_SOLID.create());
+		SideNavItem format1 = new SideNavItem(dbservice.getFormat(1).getFormatName(), CropPlantsView.class,
+				LineAwesomeIcon.AFFILIATETHEME.create());
+		SideNavItem format2 = new SideNavItem(dbservice.getFormat(2).getFormatName(), FruitTreesView.class,
+				LineAwesomeIcon.MOTORCYCLE_SOLID.create());
+		SideNavItem format3 = new SideNavItem(dbservice.getFormat(3).getFormatName(), FodderCropsView.class,
+				LineAwesomeIcon.ACCESSIBLE_ICON.create());
+
+        category1.addItem(format1, format2, format3);
+        nav.addItem(category1);
         /*nav.addItem(new SideNavItem("Dashboard", DashboardView.class, LineAwesomeIcon.FILE.create()));
         nav.addItem(new SideNavItem("Agro Biodiversity", AgroBiodiversityView.class,
                 LineAwesomeIcon.COLUMNS_SOLID.create()));

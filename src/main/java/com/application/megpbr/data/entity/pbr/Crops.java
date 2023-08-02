@@ -2,8 +2,10 @@ package com.application.megpbr.data.entity.pbr;
 
 import java.time.LocalDateTime;
 
+import com.application.megpbr.data.entity.MasterCommercial;
 import com.application.megpbr.data.entity.MasterFormat;
 import com.application.megpbr.data.entity.MasterStatus;
+import com.application.megpbr.data.entity.MasterWildhome;
 import com.application.megpbr.data.entity.Village;
 
 import jakarta.persistence.Entity;
@@ -28,17 +30,17 @@ public class Crops {
 	private String localName;
 	private String variety;
 	private String habitat;
-	//private String pastStatus;
+	private String partsUsed;
 	//private String presentStatus;
 	private String otherDetails;
 	private String localLanguage;
 	private String area;
 	private String fruitSeason;
-	private String commercial;
+	//private String commercial;
 	private String uses;
 	private String specialFeatures;
 	//common fields
-	private String associatedTdk;
+	private String associatedTk;
 	private String knowledgeHolder;
 	private String source;
 	private String photo1;
@@ -55,7 +57,9 @@ public class Crops {
 	private LocalDateTime enteredOn;
 	private String latitude;
 	private String longitude;
-	
+	private String management;
+	private String xfield1;
+	private String xfield2;
 	@ManyToOne
 	@JoinColumn(name = "format", referencedColumnName = "id")
 	private MasterFormat format;
@@ -68,6 +72,17 @@ public class Crops {
 	@ManyToOne
 	@JoinColumn(name = "village", referencedColumnName = "id")
 	private Village village;
+	@ManyToOne
+	@JoinColumn(name = "commercial", referencedColumnName = "id")
+	private MasterCommercial commercial;
+	@ManyToOne
+	@JoinColumn(name = "wildhome", referencedColumnName = "id")
+	private MasterWildhome wildhome;
+	
+	private boolean approved=true;
+	
+	
+	
 	public long getId() {
 		return id;
 	}
@@ -128,24 +143,14 @@ public class Crops {
 	public void setFruitSeason(String fruitSeason) {
 		this.fruitSeason = fruitSeason;
 	}
-	public String getCommercial() {
-		return commercial;
-	}
-	public void setCommercial(String commercial) {
-		this.commercial = commercial;
-	}
+	
 	public String getUses() {
 		return uses;
 	}
 	public void setUses(String uses) {
 		this.uses = uses;
 	}
-	public String getAssociatedTdk() {
-		return associatedTdk;
-	}
-	public void setAssociatedTdk(String associatedTdk) {
-		this.associatedTdk = associatedTdk;
-	}
+	
 	public String getKnowledgeHolder() {
 		return knowledgeHolder;
 	}
@@ -251,6 +256,12 @@ public class Crops {
 	}
 	
 	
+	public String getPartsUsed() {
+		return partsUsed;
+	}
+	public void setPartsUsed(String partsUsed) {
+		this.partsUsed = partsUsed;
+	}
 	public Village getVillage() {
 		return village;
 	}
@@ -274,6 +285,48 @@ public class Crops {
 	}
 	public void setLongitude(String longitude) {
 		this.longitude = longitude;
+	}
+	public String getManagement() {
+		return management;
+	}
+	public void setManagement(String management) {
+		this.management = management;
+	}
+	public String getXfield1() {
+		return xfield1;
+	}
+	public void setXfield1(String xfield1) {
+		this.xfield1 = xfield1;
+	}
+	public String getXfield2() {
+		return xfield2;
+	}
+	public void setXfield2(String xfield2) {
+		this.xfield2 = xfield2;
+	}
+	public boolean isApproved() {
+		return approved;
+	}
+	public void setApproved(boolean approved) {
+		this.approved = approved;
+	}
+	public MasterCommercial getCommercial() {
+		return commercial;
+	}
+	public void setCommercial(MasterCommercial commercial) {
+		this.commercial = commercial;
+	}
+	public MasterWildhome getWildhome() {
+		return wildhome;
+	}
+	public void setWildhome(MasterWildhome wildhome) {
+		this.wildhome = wildhome;
+	}
+	public String getAssociatedTk() {
+		return associatedTk;
+	}
+	public void setAssociatedTk(String associatedTk) {
+		this.associatedTk = associatedTk;
 	}
 	
 	
