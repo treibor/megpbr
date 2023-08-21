@@ -1,26 +1,28 @@
 package com.application.megpbr.views;
 
 import com.application.megpbr.data.service.Dbservice;
-import com.application.megpbr.views.agrobiodiversity.AgroBiodiversityView;
-import com.application.megpbr.views.cardlist2.CardList2View;
-import com.application.megpbr.views.checkoutform.CheckoutFormView;
-import com.application.megpbr.views.collaborativemasterdetail2.CollaborativeMasterDetail2View;
+
 import com.application.megpbr.views.dashboard.DashboardView;
-import com.application.megpbr.views.domesticateddiversity.DomesticatedDiversityView;
-import com.application.megpbr.views.gridwithfilters.GridwithFiltersView;
-import com.application.megpbr.views.personform.PersonFormView;
-import com.application.megpbr.views.wilddiversity.WildDiversityView;
+import com.application.megpbr.views.master.VillageView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.H6;
 import com.vaadin.flow.component.html.Header;
+import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.theme.lumo.LumoUtility;
+import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
+
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
 /**
@@ -40,11 +42,20 @@ public class MainLayout extends AppLayout {
     private void addHeaderContent() {
         DrawerToggle toggle = new DrawerToggle();
         toggle.setAriaLabel("Menu toggle");
-
-        viewTitle = new H2("MEG-PBR");
+        Image img = new Image("images/emblem-dark.png", "placeholder plant");
+        img.setWidth("60px");
+        img.setHeight("100px");
+        var header=new HorizontalLayout();
+        var viewTitle1 = new H6("Government of Meghalaya");
+        viewTitle = new H2("MEGHALAYA BIODIVERSITY BOARD");
+        viewTitle.getStyle().set("font-size", "20px");
+        var viewTitle2 = new H6("People's Biodiversity Register");
+        header.add(img, new VerticalLayout(viewTitle1, viewTitle, viewTitle2));
+        header.setJustifyContentMode(JustifyContentMode.BETWEEN);
+        //header.setDefaultVerticalComponentAlignment(Alignment.CENTER);
         viewTitle.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
-
-        addToNavbar(true, toggle, viewTitle);
+        header.addClassNames(Margin.Top.SMALL, Margin.Bottom.SMALL);
+        addToNavbar(true, toggle,header);
     }
 
     private void addDrawerContent() {
@@ -59,18 +70,80 @@ public class MainLayout extends AppLayout {
 
     private SideNav createNavigation() {
         SideNav nav = new SideNav();
-        nav.addItem(new SideNavItem("Dashboard", DashboardView.class, LineAwesomeIcon.CREDIT_CARD.create()));
+        nav.addItem(new SideNavItem("Dashboard", DashboardView.class, LineAwesomeIcon.ACCUSOFT.create()));
+        //Agro Biodiversity -Category 1
         SideNavItem category1=new SideNavItem(dbservice.getCategory(1).getCategory());
-		category1.setPrefixComponent(LineAwesomeIcon.COLUMNS_SOLID.create());
+		category1.setPrefixComponent(LineAwesomeIcon.ACQUISITIONS_INCORPORATED.create());
 		SideNavItem format1 = new SideNavItem(dbservice.getFormat(1).getFormatName(), CropPlantsView.class,
 				LineAwesomeIcon.AFFILIATETHEME.create());
 		SideNavItem format2 = new SideNavItem(dbservice.getFormat(2).getFormatName(), FruitTreesView.class,
-				LineAwesomeIcon.MOTORCYCLE_SOLID.create());
+				LineAwesomeIcon.ALGOLIA.create());
 		SideNavItem format3 = new SideNavItem(dbservice.getFormat(3).getFormatName(), FodderCropsView.class,
-				LineAwesomeIcon.ACCESSIBLE_ICON.create());
-
-        category1.addItem(format1, format2, format3);
-        nav.addItem(category1);
+				LineAwesomeIcon.ALIPAY.create());
+		SideNavItem format4 = new SideNavItem(dbservice.getFormat(4).getFormatName(), WeedsView.class,
+				LineAwesomeIcon.AUDIBLE.create());
+		SideNavItem format5 = new SideNavItem(dbservice.getFormat(5).getFormatName(), PestsCropsView.class,
+				LineAwesomeIcon.ANGULAR.create());
+		
+		SideNavItem format6 = new SideNavItem(dbservice.getFormat(6).getFormatName(), MarketsView.class,
+				LineAwesomeIcon.MEGAPORT.create());
+		SideNavItem format7 = new SideNavItem(dbservice.getFormat(7).getFormatName(), PeopleScapeView.class,
+				LineAwesomeIcon.MANDALORIAN.create());
+		SideNavItem format8 = new SideNavItem(dbservice.getFormat(8).getFormatName(), ScapeView.class,
+				LineAwesomeIcon.LANDMARK_SOLID.create());
+		SideNavItem format9 = new SideNavItem(dbservice.getFormat(9).getFormatName(), WaterScapeView.class,
+				LineAwesomeIcon.MAGENTO.create());
+		SideNavItem format10 = new SideNavItem(dbservice.getFormat(10).getFormatName(), SoilTypeView.class,
+				LineAwesomeIcon.MARS_SOLID.create());
+		
+		category1.addItem(format1,format2, format3,format4,format5,format6, format7, format8, format9, format10);
+		//Domesticated Biodiversity -Category 2
+        SideNavItem category2=new SideNavItem(dbservice.getCategory(2).getCategory());
+        category2.setPrefixComponent(LineAwesomeIcon.AIRBNB.create());
+        SideNavItem format11 = new SideNavItem(dbservice.getFormat(11).getFormatName(), DomFruitTreesView.class,
+				LineAwesomeIcon.ZHIHU.create());
+        SideNavItem format12 = new SideNavItem(dbservice.getFormat(12).getFormatName(), MedicinalPlantsView.class,
+				LineAwesomeIcon.YOAST.create());
+        SideNavItem format13 = new SideNavItem(dbservice.getFormat(13).getFormatName(), OrnamentalPlantsView.class,
+				LineAwesomeIcon.YELP.create());
+        SideNavItem format14 = new SideNavItem(dbservice.getFormat(14).getFormatName(), TimberPlantsView.class,
+				LineAwesomeIcon.SKYATLAS.create());
+        SideNavItem format15 = new SideNavItem(dbservice.getFormat(15).getFormatName(), DomesticatedAnimalsView.class,
+				LineAwesomeIcon.THE_RED_YETI.create());
+        SideNavItem format16 = new SideNavItem(dbservice.getFormat(16).getFormatName(), CultureFisheriesView.class,
+				LineAwesomeIcon.FISH_SOLID.create());
+		SideNavItem format17 = new SideNavItem(dbservice.getFormat(17).getFormatName(), MarketsFairView.class,
+				LineAwesomeIcon.AMILIA.create());
+		category2.addItem(format11, format12,format13,format14,format15,format16,format17);
+		
+		//Wild Biodiversity -Category 3
+		SideNavItem category3=new SideNavItem(dbservice.getCategory(3).getCategory());
+		category3.setPrefixComponent(LineAwesomeIcon.AIR_FRESHENER_SOLID.create());
+		SideNavItem format18 = new SideNavItem(dbservice.getFormat(18).getFormatName(), WildTreeShrubView.class,
+				LineAwesomeIcon.ALGOLIA.create());
+		SideNavItem format19 = new SideNavItem(dbservice.getFormat(19).getFormatName(), WildPlantSpeciesView.class,
+				LineAwesomeIcon.ARCHWAY_SOLID.create());
+		SideNavItem format20 = new SideNavItem(dbservice.getFormat(20).getFormatName(), WildAquaticBiodiversityView.class,
+				LineAwesomeIcon.BATH_SOLID.create());
+		SideNavItem format21 = new SideNavItem(dbservice.getFormat(21).getFormatName(), WildAquaticPlantsView.class,
+				LineAwesomeIcon.BANDCAMP.create());
+		SideNavItem format22 = new SideNavItem(dbservice.getFormat(22).getFormatName(), WildPlantsMedicinalView.class,
+				LineAwesomeIcon.BELL.create());
+		SideNavItem format23 = new SideNavItem(dbservice.getFormat(23).getFormatName(), WildRelativesView.class,
+				LineAwesomeIcon.BEZIER_CURVE_SOLID.create());
+		SideNavItem format24 = new SideNavItem(dbservice.getFormat(24).getFormatName(), WildOrnamentalPlantsView.class,
+				LineAwesomeIcon.BLACKBERRY.create());
+		SideNavItem format25 = new SideNavItem(dbservice.getFormat(25).getFormatName(), WildFumigateView.class,
+				LineAwesomeIcon.FEATHER_ALT_SOLID.create());
+		SideNavItem format26 = new SideNavItem(dbservice.getFormat(26).getFormatName(), WildTimberPlantsView.class,
+				LineAwesomeIcon.CAMPGROUND_SOLID.create());
+		SideNavItem format27 = new SideNavItem(dbservice.getFormat(27).getFormatName(), WildAnimalsView.class,
+				LineAwesomeIcon.WOLF_PACK_BATTALION.create());
+        category3.addItem(format18,format19,format20,format21,format22,format23,format24,format25,format26,format27);
+        nav.addItem(category1, category2, category3);
+        nav.addItem(new SideNavItem("Villages Details", VillageView.class, LineAwesomeIcon.AVIANEX.create()));
+        
+        
         /*nav.addItem(new SideNavItem("Dashboard", DashboardView.class, LineAwesomeIcon.FILE.create()));
         nav.addItem(new SideNavItem("Agro Biodiversity", AgroBiodiversityView.class,
                 LineAwesomeIcon.COLUMNS_SOLID.create()));

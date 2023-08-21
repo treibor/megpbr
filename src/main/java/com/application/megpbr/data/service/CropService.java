@@ -41,16 +41,13 @@ public class CropService {
 	public List<Crops> findCropsByFormat(MasterFormat format){
 		return crepo.findByFormat(format);
 	}
-	public List<Crops> searchCropsByFormat(String search, MasterFormat format, boolean master, boolean village){
-		if (master && village) {
-			return crepo.search(search, format);
-		}else if (master){
-			return crepo.searchMasterData(search, format);
-		}else if (village){
-			return crepo.searchVillageData(search, format);
-		}else {
-			return Collections.emptyList();
-		}
+	
+	public List<Crops> searchCropsFilter(Village villages, String search, MasterFormat format, boolean master){
+		return crepo.searchFilterByMaster(villages, search, format, master);
+	}
+	
+	public List<Crops> searchCropsFilter(Village village, String search, MasterFormat format){
+		return crepo.searchFilterCropsData(village,search, format);
 	}
 	public List<Crops> findCropsOrderByScientificName(MasterFormat format){
 		//System.out.println(crepo.findByFormatOrderByScientificName(format));

@@ -11,8 +11,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name="MasterWildhome", schema = "megpbr")
 public class MasterWildhome {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "wildid_generator")

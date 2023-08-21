@@ -4,6 +4,15 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.application.megpbr.data.entity.pbr.Crops;
+import com.application.megpbr.data.entity.pbr.Markets;
+import com.application.megpbr.data.entity.pbr.Scapes;
+import com.application.megpbr.data.entity.villages.VillageAnnexure1;
+import com.application.megpbr.data.entity.villages.VillageAnnexure2;
+import com.application.megpbr.data.entity.villages.VillageAnnexure3;
+import com.application.megpbr.data.entity.villages.VillageAnnexure4;
+import com.application.megpbr.data.entity.villages.VillageAnnexure5;
+import com.application.megpbr.data.entity.villages.VillageDetails;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -16,56 +25,48 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 
 @Entity
+@Table(name="Village", schema = "megpbr")
 public class Village {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "village_generator")
 	@SequenceGenerator(name="village_generator", sequenceName = "village_seq", allocationSize=1)
 	private long id;
+	@Column(unique=true)
 	private long villageCode;
-	@NotBlank
 	private String villageName;
 	@ManyToOne
-	@JoinColumn(name="block", referencedColumnName = "id")
+	@JoinColumn(name="block", referencedColumnName = "blockCode")
 	private Block block;
-	//@Column(columnDefinition="Decimal(10,2) default '0.00'")
-    @Digits(integer=10, fraction=2)
-	private BigDecimal geographicArea;
-    private Integer malePopn;
-    private Integer femalePopn;
-    private String habitat;
-    private String rainfall;
-    private String temperature;
-    private String weatherPatterns;
-    @Digits(integer=10, fraction=2)
-	private BigDecimal  forestArea;
-    @Digits(integer=10, fraction=2)
-	private BigDecimal nonagriArea;
-    @Digits(integer=10, fraction=2)
-	private BigDecimal barrenArea;
-    @Digits(integer=10, fraction=2)
-	private BigDecimal pastureArea;
-    @Digits(integer=10, fraction=2)
-	private BigDecimal miscArea;
-    @Digits(integer=10, fraction=2)
-	private BigDecimal wasteArea;
-    @Digits(integer=10, fraction=2)
-	private BigDecimal fallowArea;
-    @Digits(integer=10, fraction=2)
-	private BigDecimal currentFallowArea;
-    @Digits(integer=10, fraction=2)
-	private BigDecimal sownArea;
-    @Digits(integer=10, fraction=2)
-	private BigDecimal landUse;
-    private String geoUnits;
-    private String manageregime;
-    private String enteredBy;
-	private LocalDateTime enteredOn;
 	private boolean inUse;
+	@OneToMany(mappedBy = "village")
+	private List<VillageDetails> villagedetails;
+	@OneToMany(mappedBy = "village")
+	private List<VillageAnnexure1> annexure1;
+	@OneToMany(mappedBy = "village")
+	private List<VillageAnnexure2> annexure2;
+	@OneToMany(mappedBy = "village")
+	private List<VillageAnnexure3> annexure3;
+	@OneToMany(mappedBy = "village")
+	private List<VillageAnnexure4> annexure4;
+	@OneToMany(mappedBy = "village")
+	private List<VillageAnnexure5> annexure5;
+	@OneToMany(mappedBy = "village")
+	private List<Crops> crops;
+	@OneToMany(mappedBy = "village")
+	private List<Scapes> scapes;
+	@OneToMany(mappedBy = "village")
+	private List<Markets> markets;
+	
+	
+	
+	
+	
 	public long getId() {
 		return id;
 	}
@@ -90,141 +91,66 @@ public class Village {
 	public void setBlock(Block block) {
 		this.block = block;
 	}
-	public BigDecimal getGeographicArea() {
-		return geographicArea;
-	}
-	public void setGeographicArea(BigDecimal geographicArea) {
-		this.geographicArea = geographicArea;
-	}
-	public Integer getMalePopn() {
-		return malePopn;
-	}
-	public void setMalePopn(Integer malePopn) {
-		this.malePopn = malePopn;
-	}
-	public Integer getFemalePopn() {
-		return femalePopn;
-	}
-	public void setFemalePopn(Integer femalePopn) {
-		this.femalePopn = femalePopn;
-	}
-	public String getHabitat() {
-		return habitat;
-	}
-	public void setHabitat(String habitat) {
-		this.habitat = habitat;
-	}
-	public String getRainfall() {
-		return rainfall;
-	}
-	public void setRainfall(String rainfall) {
-		this.rainfall = rainfall;
-	}
-	public String getTemperature() {
-		return temperature;
-	}
-	public void setTemperature(String temperature) {
-		this.temperature = temperature;
-	}
-	public String getWeatherPatterns() {
-		return weatherPatterns;
-	}
-	public void setWeatherPatterns(String weatherPatterns) {
-		this.weatherPatterns = weatherPatterns;
-	}
-	public BigDecimal getForestArea() {
-		return forestArea;
-	}
-	public void setForestArea(BigDecimal forestArea) {
-		this.forestArea = forestArea;
-	}
-	public BigDecimal getNonagriArea() {
-		return nonagriArea;
-	}
-	public void setNonagriArea(BigDecimal nonagriArea) {
-		this.nonagriArea = nonagriArea;
-	}
-	public BigDecimal getBarrenArea() {
-		return barrenArea;
-	}
-	public void setBarrenArea(BigDecimal barrenArea) {
-		this.barrenArea = barrenArea;
-	}
-	public BigDecimal getPastureArea() {
-		return pastureArea;
-	}
-	public void setPastureArea(BigDecimal pastureArea) {
-		this.pastureArea = pastureArea;
-	}
-	public BigDecimal getMiscArea() {
-		return miscArea;
-	}
-	public void setMiscArea(BigDecimal miscArea) {
-		this.miscArea = miscArea;
-	}
-	public BigDecimal getWasteArea() {
-		return wasteArea;
-	}
-	public void setWasteArea(BigDecimal wasteArea) {
-		this.wasteArea = wasteArea;
-	}
-	public BigDecimal getFallowArea() {
-		return fallowArea;
-	}
-	public void setFallowArea(BigDecimal fallowArea) {
-		this.fallowArea = fallowArea;
-	}
-	public BigDecimal getCurrentFallowArea() {
-		return currentFallowArea;
-	}
-	public void setCurrentFallowArea(BigDecimal currentFallowArea) {
-		this.currentFallowArea = currentFallowArea;
-	}
-	public BigDecimal getSownArea() {
-		return sownArea;
-	}
-	public void setSownArea(BigDecimal sownArea) {
-		this.sownArea = sownArea;
-	}
-	public BigDecimal getLandUse() {
-		return landUse;
-	}
-	public void setLandUse(BigDecimal landUse) {
-		this.landUse = landUse;
-	}
-	public String getGeoUnits() {
-		return geoUnits;
-	}
-	public void setGeoUnits(String geoUnits) {
-		this.geoUnits = geoUnits;
-	}
-	public String getManageregime() {
-		return manageregime;
-	}
-	public void setManageregime(String manageregime) {
-		this.manageregime = manageregime;
-	}
-	public String getEnteredBy() {
-		return enteredBy;
-	}
-	public void setEnteredBy(String enteredBy) {
-		this.enteredBy = enteredBy;
-	}
-	public LocalDateTime getEnteredOn() {
-		return enteredOn;
-	}
-	public void setEnteredOn(LocalDateTime enteredOn) {
-		this.enteredOn = enteredOn;
-	}
 	public boolean isInUse() {
 		return inUse;
 	}
 	public void setInUse(boolean inUse) {
 		this.inUse = inUse;
 	}
-	
-	
-	
+	public List<VillageDetails> getVillagedetails() {
+		return villagedetails;
+	}
+	public void setVillagedetails(List<VillageDetails> villagedetails) {
+		this.villagedetails = villagedetails;
+	}
+	public List<VillageAnnexure1> getAnnexure1() {
+		return annexure1;
+	}
+	public void setAnnexure1(List<VillageAnnexure1> annexure1) {
+		this.annexure1 = annexure1;
+	}
+	public List<VillageAnnexure2> getAnnexure2() {
+		return annexure2;
+	}
+	public void setAnnexure2(List<VillageAnnexure2> annexure2) {
+		this.annexure2 = annexure2;
+	}
+	public List<VillageAnnexure3> getAnnexure3() {
+		return annexure3;
+	}
+	public void setAnnexure3(List<VillageAnnexure3> annexure3) {
+		this.annexure3 = annexure3;
+	}
+	public List<VillageAnnexure4> getAnnexure4() {
+		return annexure4;
+	}
+	public void setAnnexure4(List<VillageAnnexure4> annexure4) {
+		this.annexure4 = annexure4;
+	}
+	public List<VillageAnnexure5> getAnnexure5() {
+		return annexure5;
+	}
+	public void setAnnexure5(List<VillageAnnexure5> annexure5) {
+		this.annexure5 = annexure5;
+	}
+	public List<Crops> getCrops() {
+		return crops;
+	}
+	public void setCrops(List<Crops> crops) {
+		this.crops = crops;
+	}
+	public List<Scapes> getScapes() {
+		return scapes;
+	}
+	public void setScapes(List<Scapes> scapes) {
+		this.scapes = scapes;
+	}
+	public List<Markets> getMarkets() {
+		return markets;
+	}
+	public void setMarkets(List<Markets> markets) {
+		this.markets = markets;
+	}
 	
 	
 	

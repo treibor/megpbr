@@ -8,8 +8,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name="MasterCategory", schema = "megpbr")
 public class MasterCategory {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "catid_generator")

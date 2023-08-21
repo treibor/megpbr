@@ -4,7 +4,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.application.megpbr.data.entity.Block;
+import com.application.megpbr.data.entity.District;
 import com.application.megpbr.data.entity.MasterFormat;
+import com.application.megpbr.data.entity.Village;
 import com.application.megpbr.data.entity.pbr.Crops;
 import java.util.List;
 
@@ -17,11 +20,10 @@ public interface CropsRepository extends JpaRepository<Crops, Long>{
 	List<Crops> findDistinctByFormat(MasterFormat format);
 	@Query("select c from Crops c where  c.format= :format and (lower(c.scientificName) like lower(concat('%', :searchTerm, '%'))or lower(c.localName) like lower(concat('%', :searchTerm, '%'))) order by c.id Desc")
 	List<Crops> search(@Param("searchTerm") String searchTerm, @Param("format") MasterFormat format);
-	@Query("select c from Crops c where  c.format= :format and c.village is null and(lower(c.scientificName) like lower(concat('%', :searchTerm, '%'))or lower(c.localName) like lower(concat('%', :searchTerm, '%'))) order by c.id Desc")
-	List<Crops> searchMasterData(@Param("searchTerm") String searchTerm, @Param("format") MasterFormat format);
-	@Query("select c from Crops c where  c.format= :format and c.village is not null and(lower(c.scientificName) like lower(concat('%', :searchTerm, '%'))or lower(c.localName) like lower(concat('%', :searchTerm, '%'))) order by c.id Desc")
-	List<Crops> searchVillageData(@Param("searchTerm") String searchTerm, @Param("format") MasterFormat format);
-	//List<Work> search(@Param("searchTerm") String searchTerm, @Param("district") District district);
+	@Query("select c from Crops c where  c.format= :format  and (c.village=:village or :village is null )  and(lower(c.scientificName) like lower(concat('%', :searchTerm, '%'))or lower(c.localName) like lower(concat('%', :searchTerm, '%'))) order by c.id Desc")
+	List<Crops> searchFilterCropsData(@Param("village") Village village,@Param("searchTerm") String searchTerm, @Param("format") MasterFormat format);
+	@Query("select c from Crops c where  c.format= :format  and (c.village=:village or :village is null ) and c.master=:master and(lower(c.scientificName) like lower(concat('%', :searchTerm, '%'))or lower(c.localName) like lower(concat('%', :searchTerm, '%'))) order by c.id Desc")
+	List<Crops> searchFilterByMaster(@Param("village") Village village,@Param("searchTerm") String searchTerm, @Param("format") MasterFormat format, @Param("master") boolean master);
 	
 	
 	
