@@ -34,3 +34,30 @@
 vaadin-app-layout::part(drawer) {
   width: 300px;
 }
+.radiobutton{
+	--font-size:1px;
+	--background-color: rgb(115, 153, 0);
+}
+vaadin-radio-group vaadin-radio-button{
+	font-size: 0.9em;
+	--height: 60%;
+  	--width: 100%;
+}
+vaadin-radio-group vaadin-radio-button::part(radio){
+	--height: 60%;
+  	--width: 100%;
+  	--font-size:5%;
+}
+vaadin-radio-group vaadin-radio-button::part(radio)::after {
+		height: 60%;
+  		width: 60%;
+	}
+
+vaadin-radio-group vaadin-radio-group::part(group-field){
+	--lumo-font-size-s: 0.8125rem;
+}
+vaadin-radio-group vaadin-radio-group > label{
+	font-size:5%;
+}
+
+

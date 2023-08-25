@@ -41,11 +41,21 @@ public class CropService {
 	public List<Crops> findCropsByFormat(MasterFormat format){
 		return crepo.findByFormat(format);
 	}
-	
+	public List<Crops> findCropsByFormatAndMaster(MasterFormat format, boolean master){
+		return crepo.findByFormatAndMaster(format, master);
+	}
+	public List<Crops> searchCropsFilter(String search, MasterFormat format){
+		return crepo.search(search, format);
+	}
 	public List<Crops> searchCropsFilter(Village villages, String search, MasterFormat format, boolean master){
 		return crepo.searchFilterByMaster(villages, search, format, master);
 	}
-	
+	public List<Crops> searchCropsFilter(District district, String search, MasterFormat format){
+		return crepo.searchFilterCropsData(district,search, format);
+	}
+	public List<Crops> searchCropsFilter(Block block, String search, MasterFormat format){
+		return crepo.searchFilterCropsData(block,search, format);
+	}
 	public List<Crops> searchCropsFilter(Village village, String search, MasterFormat format){
 		return crepo.searchFilterCropsData(village,search, format);
 	}

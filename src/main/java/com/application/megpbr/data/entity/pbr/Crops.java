@@ -9,6 +9,7 @@ import com.application.megpbr.data.entity.MasterStatus;
 import com.application.megpbr.data.entity.MasterWildhome;
 import com.application.megpbr.data.entity.Village;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -43,6 +44,7 @@ public class Crops {
 	private String uses;
 	private String specialFeatures;
 	//common fields
+	 @Column(length = 1000)
 	private String associatedTk;
 	private String knowledgeHolder;
 	private String source;
@@ -74,7 +76,7 @@ public class Crops {
 	@JoinColumn(name = "presentStatus", referencedColumnName = "id")
 	private MasterStatus presentStatus;
 	@ManyToOne
-	@JoinColumn(name = "village", referencedColumnName = "id")
+	@JoinColumn(name = "village", referencedColumnName = "villageCode")
 	private Village village;
 	@ManyToOne
 	@JoinColumn(name = "commercial", referencedColumnName = "id")

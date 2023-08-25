@@ -59,8 +59,9 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.security.PermitAll;
 
-
+@PermitAll
 @PageTitle("villagedetails")
 @Route(value = "Villages Details", layout = MainLayout.class)
 @Uses(Icon.class)
@@ -114,7 +115,6 @@ public class VillageView extends Div{
 	}
 	public Component getTabs() {
 		TabSheet tabSheet = new TabSheet();
-		
 		tabSheet.add("Villages",getContent());
 		tabSheet.add(tab1, getAnnexure1());
 		tabSheet.add(tab2, getAnnexure2());
@@ -128,6 +128,38 @@ public class VillageView extends Div{
 		tab5.setEnabled(false);
 		tabSheet.setSizeFull();
 		return tabSheet;
+	}
+	private Component getContent() {
+		HorizontalLayout content = new HorizontalLayout(getMainContent(), form);
+		content.setFlexGrow(1, vlx);
+		content.setFlexGrow(1, form);
+		content.addClassName("content");
+		content.setSizeFull();
+		return content;
+	}
+	private Component getMainContent() {
+		vlx.add(getToolbar(), grid);
+		vlx.setSizeFull();		
+		return vlx;
+	}
+	private Component getToolbar() {
+		filterText.setPlaceholder("Search Village Name ");
+		filterText.setClearButtonVisible(true);
+		filterText.setValueChangeMode(ValueChangeMode.LAZY);
+		filterText.addValueChangeListener(e -> updateList());
+		//filterText.setWidth("20%");
+		district.addValueChangeListener(e->updateList());
+		block.addValueChangeListener(e->updateList());
+		village.addValueChangeListener(e->updateList());
+		//village.add
+		Button addButton=new Button("New");
+		addButton.setPrefixComponent(LineAwesomeIcon.PLUS_CIRCLE_SOLID.create());
+		//String tempformatName=format.getFormatName();
+		addButton.addClickListener(e->addVillageDetails(new VillageDetails()));
+		HorizontalLayout topvl=new HorizontalLayout(filterText,addButton);
+		topvl.setAlignItems(FlexComponent.Alignment.BASELINE);
+		topvl.setWidthFull();
+		return topvl; 
 	}
 	private void ConfigureCombo() {
 		// TODO Auto-generated method stub
@@ -165,30 +197,8 @@ public class VillageView extends Div{
 		form.addListener(VillagesForm.DeleteEvent.class, this::deleteVillageDetails);
 		//form.addListener(CropPlantsForm.CloseEvent.class, e -> closeEditor());
 	}
-	private Component getMainContent() {
-		vlx.add(getToolbar(), grid);
-		vlx.setSizeFull();		
-		return vlx;
-	}
-	private Component getToolbar() {
-		filterText.setPlaceholder("Search Village Name ");
-		filterText.setClearButtonVisible(true);
-		filterText.setValueChangeMode(ValueChangeMode.LAZY);
-		filterText.addValueChangeListener(e -> updateList());
-		//filterText.setWidth("20%");
-		district.addValueChangeListener(e->updateList());
-		block.addValueChangeListener(e->updateList());
-		village.addValueChangeListener(e->updateList());
-		//village.add
-		Button addButton=new Button("New");
-		addButton.setPrefixComponent(LineAwesomeIcon.PLUS_CIRCLE_SOLID.create());
-		//String tempformatName=format.getFormatName();
-		addButton.addClickListener(e->addVillageDetails(new VillageDetails()));
-		HorizontalLayout topvl=new HorizontalLayout(filterText,addButton);
-		topvl.setAlignItems(FlexComponent.Alignment.BASELINE);
-		topvl.setWidthFull();
-		return topvl; 
-	}
+	
+	
 	
 	
 	public void updateBlockList() {
@@ -304,13 +314,26 @@ public class VillageView extends Div{
 	public void saveVillageDetails(VillagesForm.SaveEvent event) {
 		try {
 			dbservice.updateVillageDetails(event.getVillageDetails());
-			//updateGrid();
+			updateList();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			//Notification.show("Error Encountered :"+e);		
 		}
 	}
-	
+	public void deleteVillageDetails(VillagesForm.DeleteEvent event) {
+		try {
+			Village village=event.getVillageDetails().getVillage();
+			village.setInUse(false);
+			dbservice.updateVillage(village);
+			dbservice.deleteVillageDetails(event.getVillageDetails());
+			Notification.show("Deleted Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);;
+			updateList();
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO Auto-generated catch block
+			Notification.show("Error Encountered :"+e);
+		}
+	}
 	public void editAnnexure1(VillageAnnexure1 annex1) {
 		if (annex1 == null) {
 			form1.save.setText("Add");
@@ -475,28 +498,9 @@ public class VillageView extends Div{
 			Notification.show("Error Encountered :"+e);
 		}
 	}
-	public void deleteVillageDetails(VillagesForm.DeleteEvent event) {
-		try {
-			Village village=event.getVillageDetails().getVillage();
-			village.setInUse(false);
-			dbservice.updateVillage(village);
-			dbservice.deleteVillageDetails(event.getVillageDetails());
-			//updateGrid();
-		} catch (Exception e) {
-			e.printStackTrace();
-			// TODO Auto-generated catch block
-			Notification.show("Error Encountered :"+e);
-		}
-	}
 	
-	private Component getContent() {
-		HorizontalLayout content = new HorizontalLayout(getMainContent(), form);
-		content.setFlexGrow(1, vlx);
-		content.setFlexGrow(1, form);
-		content.addClassName("content");
-		content.setSizeFull();
-		return content;
-	}
+	
+	
 
 	
 	private Component getAnnexure1() { 

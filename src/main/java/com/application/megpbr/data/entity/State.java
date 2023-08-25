@@ -16,8 +16,8 @@ import jakarta.persistence.Table;
 @Table(name="State", schema = "megpbr")
 public class State {
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "state_generator")
-	@SequenceGenerator(name="state_generator", sequenceName = "state_seq", allocationSize=1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userlogin_generator")
+	@SequenceGenerator(name="userlogin_generator", sequenceName = "userlogin_seq", allocationSize=1)
 	private long id;
 	@Column(unique=true)
 	private long stateCode;

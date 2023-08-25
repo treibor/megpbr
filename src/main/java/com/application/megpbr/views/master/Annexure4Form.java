@@ -194,9 +194,9 @@ public class Annexure4Form extends Div {
 		formbasic.add(institute, 4);
 		//formbasic.add(otherDetails, 3);
 		//formbasic.add(associatedTdk, 3);
-		formbasic.setResponsiveSteps(new ResponsiveStep("0", 4),
+		formbasic.setResponsiveSteps(new ResponsiveStep("0", 2),
 				// Use two columns, if layout's width exceeds 500px
-				new ResponsiveStep("500px", 6));
+				new ResponsiveStep("300px", 4));
 		// formbasic.setSizeFull();
 		return formbasic;
 

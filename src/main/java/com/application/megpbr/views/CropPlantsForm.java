@@ -35,6 +35,7 @@ import com.application.megpbr.data.entity.Village;
 import com.application.megpbr.data.entity.pbr.Crops;
 import com.application.megpbr.data.service.CropService;
 import com.application.megpbr.data.service.Dbservice;
+import com.application.megpbr.views.agrobiodiversity.CropPlantsView;
 import com.application.megpbr.views.dashboard.DashboardView;
 import com.vaadin.componentfactory.Autocomplete;
 import com.vaadin.flow.component.Component;
@@ -87,12 +88,12 @@ public class CropPlantsForm extends Div {
 	MasterStatus status;
 	CropPlantsView cropsview;
 	Binder<Crops> binder = new BeanValidationBinder<>(Crops.class);
-	Checkbox masterCheck = new Checkbox("Enter Master Data");
-	Checkbox scientificCheck = new Checkbox("Autofill");
+	public Checkbox masterCheck = new Checkbox("Enter Master Data");
+	public Checkbox scientificCheck = new Checkbox("Autofill");
 	Checkbox localCheck = new Checkbox("Autofill");
 	ComboBox<State> state = new ComboBox("");
-	ComboBox<District> district = new ComboBox("");
-	ComboBox<Block> block = new ComboBox("");
+	public ComboBox<District> district = new ComboBox("");
+	public ComboBox<Block> block = new ComboBox("");
 	ComboBox<Village> village = new ComboBox();
 	ComboBox<MasterStatus> pastStatus = new ComboBox("Past Status");
 	ComboBox<MasterStatus> presentStatus = new ComboBox("Present Status");
@@ -117,7 +118,7 @@ public class CropPlantsForm extends Div {
 	TextField fruitSeason = new TextField();
 	TextField localLanguage = new TextField();
 	FormLayout formbasic = new FormLayout();
-	FormLayout frommaster = new FormLayout();
+	public FormLayout frommaster = new FormLayout();
 	TextField photo1Source = new TextField();
 	TextField photo2Source = new TextField();
 	TextField photo3Source = new TextField();
@@ -127,30 +128,30 @@ public class CropPlantsForm extends Div {
 	TextField management = new TextField("Management Options");
 	TextField xfield1 = new TextField("");
 	TextField xfield2 = new TextField("");
-	Button save = new Button("Save");
+	public Button save = new Button("Save");
 	Button cancel = new Button("Close");
 	Button delete = new Button("Delete");
 	boolean isSuperAdmin;
 	//Checkbox approved = new Checkbox("Approved", true);
-	ComboBox<MasterApproval> approved = new ComboBox("Approval Status");
+	public ComboBox<MasterApproval> approved = new ComboBox("Approval Status");
 	MasterFormat format;
 	MemoryBuffer buffer1 = new MemoryBuffer();
 	MemoryBuffer buffer2 = new MemoryBuffer();
 	MemoryBuffer buffer3 = new MemoryBuffer();
 	MemoryBuffer buffer4 = new MemoryBuffer();
-	HorizontalLayout imageLayout1=new HorizontalLayout();
-	HorizontalLayout imageLayout2=new HorizontalLayout();
-	HorizontalLayout imageLayout3=new HorizontalLayout();
-	HorizontalLayout imageLayout4=new HorizontalLayout();
-	Div imageContainer1=new Div();
-	Div imageContainer2=new Div();
-	Div imageContainer3=new Div();
-	Div imageContainer4=new Div();
+	public HorizontalLayout imageLayout1=new HorizontalLayout();
+	public HorizontalLayout imageLayout2=new HorizontalLayout();
+	public HorizontalLayout imageLayout3=new HorizontalLayout();
+	public HorizontalLayout imageLayout4=new HorizontalLayout();
+	public Div imageContainer1=new Div();
+	public Div imageContainer2=new Div();
+	public Div imageContainer3=new Div();
+	public Div imageContainer4=new Div();
 	Upload upload1 = new Upload(buffer1);
 	Upload upload2= new Upload(buffer2);
 	Upload upload3= new Upload(buffer3);
 	Upload upload4= new Upload(buffer4);
-	
+	//boolean isAdmin;
 	public CropPlantsForm(Dbservice dbservice, CropService cservice) {
 		super();
 		this.setHeightFull();
@@ -159,20 +160,36 @@ public class CropPlantsForm extends Div {
 		addClassName("cropplants-view");
 		initForm();
 		binder.bindInstanceFields(this);
-		//initFields();
+		//isAdmin=dbservice.isAdmin();
 		add(createAccordion());
 		isSuperAdmin = dbservice.isSuperAdmin();
 	}
-
+	private boolean getAdmin() {
+		String role=dbservice.getRole();
+		if(role.endsWith("ADMIN")) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	private String getRole() {
+		String role=dbservice.getRole();
+		if(role.startsWith("STATE")) {
+			return "STATE";
+		}else {
+			return "DISTRICT";
+		}
+	}
+	
 	public Component createAccordion() {
 		Accordion accordion = new Accordion();
 		AccordionPanel topaccordion = new AccordionPanel();
 		AccordionPanel bottomaccordion = new AccordionPanel();
 		AccordionPanel imageaccordion = new AccordionPanel();
 		topaccordion = accordion.add("Basic Info",
-				new VerticalLayout(createCheckPanel(), createMasterForm(), createBasicForm()));
-		bottomaccordion = accordion.add("Other Info",  new VerticalLayout(createCommonForm()));
-		bottomaccordion = accordion.add("Images & Photos",  new VerticalLayout(createImageForm()));
+				new Div(createCheckPanel(), createMasterForm(), createBasicForm()));
+		bottomaccordion = accordion.add("Other Info",  new Div(createCommonForm()));
+		bottomaccordion = accordion.add("Images & Photos",  new Div(createImageForm()));
 		accordion.setSizeFull();
 		masterCheck.addClickListener(e -> hideFields());
 		VerticalLayout vl = new VerticalLayout();
@@ -205,6 +222,7 @@ public class CropPlantsForm extends Div {
 		save.addClickListener(e -> validateCrop());
 		delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
 		delete.addClickListener(e -> deleteCrop(crops));
+		delete.setVisible(getAdmin());
 		hl.setJustifyContentMode(JustifyContentMode.CENTER);
 		hl.add(save, cancel, delete);
 		hl.setSizeFull();
@@ -242,8 +260,8 @@ public class CropPlantsForm extends Div {
 				crops.setPhoto4(getImageAsByteArray(buffer4));
 			}
 			fireEvent(new SaveEvent(this, crops));
-			clearForm(format);
-			Notification.show("Saved Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);;
+			//clearForm(format);
+			//Notification.show("Saved Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);;
 			initMasterFields(format);
 			removeFields();
 			clearBuffer();
@@ -397,9 +415,9 @@ public class CropPlantsForm extends Div {
 		frommaster.add(district, 1);
 		frommaster.add(block, 1);
 		frommaster.add(village, 1);
-		frommaster.setResponsiveSteps(new ResponsiveStep("0", 3),
+		frommaster.setResponsiveSteps(new ResponsiveStep("0", 1),
 				// Use two columns, if layout's width exceeds 500px
-				new ResponsiveStep("500px", 3));
+				new ResponsiveStep("300px", 3));
 		// frommaster.setSizeFull();
 		return frommaster;
 	}
@@ -434,9 +452,9 @@ public class CropPlantsForm extends Div {
 		formbasic.add(xfield2, 3);
 		//formbasic.add(otherDetails, 3);
 		//formbasic.add(associatedTdk, 3);
-		formbasic.setResponsiveSteps(new ResponsiveStep("0", 6),
+		formbasic.setResponsiveSteps(new ResponsiveStep("0", 1),
 				// Use two columns, if layout's width exceeds 500px
-				new ResponsiveStep("500px", 6));
+				new ResponsiveStep("300px", 6));
 		// formbasic.setSizeFull();
 		return formbasic;
 
@@ -444,8 +462,8 @@ public class CropPlantsForm extends Div {
 
 	public Component createCommonForm() {
 		FormLayout formcommon = new FormLayout();
-		formcommon.add(associatedTk, 2);
-		formcommon.add(knowledgeHolder, 2);
+		formcommon.add(associatedTk, 4);
+		formcommon.add(knowledgeHolder, 4);
 		formcommon.add(otherDetails, 2);
 		formcommon.add(latitude, 2);
 		formcommon.add(longitude, 2);
@@ -454,9 +472,9 @@ public class CropPlantsForm extends Div {
 		//formcommon.add(imageLayout, 4);
 		//formcommon.add(createUpload(upload2), 2);
 		//formcommon.add(imageContainer, 1);
-		formcommon.setResponsiveSteps(new ResponsiveStep("0", 4),
+		formcommon.setResponsiveSteps(new ResponsiveStep("0", 2),
 				// Use two columns, if layout's width exceeds 500px
-				new ResponsiveStep("500px", 2));
+				new ResponsiveStep("300px", 4));
 		/*
 		 * photo.addSucceededListener(event -> { String fileName = event.getFileName();
 		 * InputStream inputStream = buffer.getInputStream(fileName); formcommon.add(new
@@ -493,8 +511,13 @@ public class CropPlantsForm extends Div {
 		block.setItemLabelGenerator(block -> block.getBlockName());
 		block.addValueChangeListener(e -> village.setItems(dbservice.getVillages(e.getValue(), true)));
 		village.setItemLabelGenerator(Village::getVillageName);
+		district.getStyle().set("--vaadin-combo-box-overlay-width", "200px");
+		block.getStyle().set("--vaadin-combo-box-overlay-width", "200px");
+		village.getStyle().set("--vaadin-combo-box-overlay-width", "200px");
 		approved.setItems(dbservice.getMasterApproval());
 		approved.setItemLabelGenerator(approved->approved.getApproval());
+		//--approved.setRequired(true);
+		
 		commercial.setItems(dbservice.getMasterCommercial());
 		wildhome.setItems(dbservice.getMasterWildhome());
 		pastStatus.setItems(dbservice.getStatus());

@@ -1,17 +1,20 @@
 package com.application.megpbr.views;
 
 import com.application.megpbr.data.service.Dbservice;
-
+import com.application.megpbr.security.SecurityService;
+import com.application.megpbr.views.agrobiodiversity.CropPlantsView;
 import com.application.megpbr.views.dashboard.DashboardView;
 import com.application.megpbr.views.master.VillageView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H6;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -23,6 +26,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
 /**
@@ -30,15 +34,20 @@ import org.vaadin.lineawesome.LineAwesomeIcon;
  */
 public class MainLayout extends AppLayout {
 
-    private H2 viewTitle;
+    
+
+	private H2 viewTitle;
     Dbservice dbservice;
-    public MainLayout(Dbservice dbservice) {
+
+    SecurityService securityService;
+    public MainLayout(Dbservice dbservice, SecurityService securityService) {
     	this.dbservice=dbservice;
+    	this.securityService=securityService;
         setPrimarySection(Section.NAVBAR);
         addDrawerContent();
         addHeaderContent();
     }
-
+    
     private void addHeaderContent() {
         DrawerToggle toggle = new DrawerToggle();
         toggle.setAriaLabel("Menu toggle");
@@ -50,11 +59,20 @@ public class MainLayout extends AppLayout {
         viewTitle = new H2("MEGHALAYA BIODIVERSITY BOARD");
         viewTitle.getStyle().set("font-size", "20px");
         var viewTitle2 = new H6("People's Biodiversity Register");
-        header.add(img, new VerticalLayout(viewTitle1, viewTitle, viewTitle2));
+        var headerText=new VerticalLayout(viewTitle1, viewTitle, viewTitle2);
+        //header.add(img, new VerticalLayout());
         header.setJustifyContentMode(JustifyContentMode.BETWEEN);
-        //header.setDefaultVerticalComponentAlignment(Alignment.CENTER);
         viewTitle.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
         header.addClassNames(Margin.Top.SMALL, Margin.Bottom.SMALL);
+        if (securityService.getAuthenticatedUser() != null) {
+            Button logout = new Button("Logout", click -> securityService.logout());
+            header .add(img, headerText, logout);
+            header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
+            header.expand(headerText);
+            header.setWidthFull();
+        } else {
+            //header = new HorizontalLayout(logo);
+        }
         addToNavbar(true, toggle,header);
     }
 

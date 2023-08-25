@@ -3,6 +3,7 @@ package com.application.megpbr.data.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ import com.application.megpbr.data.entity.MasterSeason;
 import com.application.megpbr.data.entity.MasterStatus;
 import com.application.megpbr.data.entity.MasterWildhome;
 import com.application.megpbr.data.entity.State;
+import com.application.megpbr.data.entity.UserLogin;
 import com.application.megpbr.data.entity.Village;
 import com.application.megpbr.data.entity.pbr.Crops;
 import com.application.megpbr.data.entity.villages.VillageAnnexure1;
@@ -42,6 +44,7 @@ import com.application.megpbr.data.repository.MasterGenderRepository;
 import com.application.megpbr.data.repository.MasterManagementRegimeRepository;
 import com.application.megpbr.data.repository.MasterPositionRepository;
 import com.application.megpbr.data.repository.StateRepository;
+import com.application.megpbr.data.repository.UserLoginRepository;
 import com.application.megpbr.data.repository.VillageAnnexure1Repository;
 import com.application.megpbr.data.repository.VillageAnnexure2Repository;
 import com.application.megpbr.data.repository.VillageAnnexure3Repository;
@@ -50,6 +53,7 @@ import com.application.megpbr.data.repository.VillageAnnexure5Repository;
 import com.application.megpbr.data.repository.VillageDetailsRepository;
 import com.application.megpbr.data.repository.VillageRepository;
 import com.application.megpbr.data.repository.pbr.CropsRepository;
+import com.application.megpbr.security.SecurityService;
 @Service
 public class Dbservice {
 	@Autowired
@@ -97,8 +101,23 @@ public class Dbservice {
 	private MasterPositionRepository mprepo;
 	@Autowired
 	private MasterApprovalRepository marepo;
+	@Autowired
+	private SecurityService secservice;
+	@Autowired
+	private UserLoginRepository userservice;
 	public boolean isSuperAdmin() {
 		return false;
+	}
+	public boolean isAdmin() {
+		return true;
+	}
+	public String getRole() {
+		UserDetails user= secservice.getAuthenticatedUser();
+		
+		return "";
+	}
+	public UserLogin getUser(String user) {
+		return userservice.findByUserName(user);
 	}
 	public State getState() {
 		return st_repo.findByStateName("Meghalaya");
@@ -189,6 +208,10 @@ public class Dbservice {
 	}
 	public List<MasterApproval> getMasterApproval(){
 		return marepo.findAll();
+	}
+	
+	public MasterApproval getMasterApprovalApproved(){
+		return marepo.findByApproval("Approved");
 	}
 	
 	public void updateCrop(Crops entity) {

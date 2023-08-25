@@ -33,7 +33,7 @@ public class Block {
 	@JoinColumn(name="district", referencedColumnName = "districtCode")
 	@NotBlank
 	private District district;
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "block")
 	private List<Village> village;
 	
 	

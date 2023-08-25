@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
@@ -16,6 +17,7 @@ import com.application.megpbr.data.entity.MasterFormat;
 import com.application.megpbr.data.entity.State;
 import com.application.megpbr.data.entity.Village;
 import com.application.megpbr.data.entity.pbr.Crops;
+import com.application.megpbr.data.repository.pbr.CropsRepository;
 import com.application.megpbr.data.service.CropService;
 import com.application.megpbr.data.service.Dbservice;
 //import com.application.megpbr.views.wilddiversity.WildDiversityView;
@@ -45,6 +47,7 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
+import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 
 import jakarta.annotation.PostConstruct;
 
@@ -53,6 +56,8 @@ import jakarta.annotation.PostConstruct;
 @Route(value = "domesticfruittrees", layout = MainLayout.class)
 @Uses(Icon.class)
 public class DomFruitTreesView extends VerticalLayout{
+	@Autowired
+	CropsRepository cro;
 	private Dbservice dbservice;
 	private CropService cservice;
 	Crops crop;
@@ -290,7 +295,7 @@ public class DomFruitTreesView extends VerticalLayout{
 			grid.addColumn("source").setHeader("Plant/Seed Source").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn("uses").setHeader("Uses").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn("otherDetails").setAutoWidth(true).setResizable(true).setSortable(true);
-			grid.addColumn("area").setHeader("Area Sown").setAutoWidth(true).setResizable(true).setSortable(true);
+			grid.addColumn("area").setHeader("Area Sown").setAutoWidth(false).setResizable(true).setSortable(true);
 			grid.addColumn("associatedTk").setHeader("Associated TK").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn("knowledgeHolder").setHeader("Knowledge Holder").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn("latitude");
@@ -322,8 +327,8 @@ public class DomFruitTreesView extends VerticalLayout{
 	public void updateGrid() {
 		try {
 			List<Crops> crops=cservice.findCropsByFormat(format);
-			//crops.size();
-			grid.setItems(crops);
+			crops.size();
+			
 			localColumn.setFooter("Total : "+crops.size());
 			grid.setSizeFull();
 		} catch (Exception e) {

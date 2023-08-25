@@ -195,8 +195,8 @@ public class VillagesForm extends Div {
 			this.setVillageDetails(new VillageDetails());
 			Notification.show("Saved Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 			initFields();
-		} catch (ValidationException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
+			Notification.show("Failure: Contact Your Administrator").addThemeVariants(NotificationVariant.LUMO_ERROR);
 			//e.printStackTrace();
 		}
 	}
@@ -245,9 +245,9 @@ public class VillagesForm extends Div {
 		frommaster.add(district, 1);
 		frommaster.add(block, 1);
 		frommaster.add(village, 1);
-		frommaster.setResponsiveSteps(new ResponsiveStep("0", 3),
+		frommaster.setResponsiveSteps(new ResponsiveStep("0", 1),
 				// Use two columns, if layout's width exceeds 500px
-				new ResponsiveStep("500px", 3));
+				new ResponsiveStep("200px", 3));
 		// frommaster.setSizeFull();
 		return frommaster;
 	}
@@ -275,9 +275,9 @@ public class VillagesForm extends Div {
 		formbasic.add(managementregime, 4);
 		//formbasic.add(otherDetails, 3);
 		//formbasic.add(associatedTdk, 3);
-		formbasic.setResponsiveSteps(new ResponsiveStep("0", 6),
+		formbasic.setResponsiveSteps(new ResponsiveStep("0", 2),
 				// Use two columns, if layout's width exceeds 500px
-				new ResponsiveStep("500px", 6));
+				new ResponsiveStep("200px", 6));
 		// formbasic.setSizeFull();
 		return formbasic;
 
@@ -286,7 +286,15 @@ public class VillagesForm extends Div {
 	
 
 	public void initFields() {
-		geographicArea.setTooltipText("Geographic Population in Ha");
+		geographicArea.setTooltipText("Geographic Area of The Village in Hectare");
+		habitat.setTooltipText("Habitat & Topography");
+		weatherPatterns.setTooltipText("Other Weather Patterns");
+		barrenArea.setTooltipText("Barren and Un-Cultivable Land(in hectares)");
+		nonagriArea.setTooltipText("Area under Non-Agricultural Uses (in hectares)");
+		pastureArea.setTooltipText("Permanent Pastures and Other Grazing Lands (in hectares)");
+		miscArea.setTooltipText("Land under Miscellaneous Tree Crops, etc (in hectares)");
+		wasteArea.setTooltipText("Cultivable Waste Land (in hectares)");
+		pbrDate.setTooltipText("PBR Preparation Date");
 		totalPopn.setReadOnly(true);
 		state.setItems(dbservice.getStates());
 		State selectedState = dbservice.getState();
@@ -301,10 +309,12 @@ public class VillagesForm extends Div {
 		village.setItemLabelGenerator(Village::getVillageName);
 		managementregime.setItems(dbservice.getMasterManagementRegime());
 		managementregime.setItemLabelGenerator(managementregime-> managementregime.getManagementregime());
-		//villagedetails.
+		district.getStyle().set("--vaadin-combo-box-overlay-width", "200px");
+		block.getStyle().set("--vaadin-combo-box-overlay-width", "200px");
+		village.getStyle().set("--vaadin-combo-box-overlay-width", "200px");
 		
 	}
-	public void initFields2() {
+	public void initFields2x() {
 		geographicArea.setTooltipText("Geographic Population in Ha");
 		totalPopn.setReadOnly(true);
 		state.setItems(dbservice.getStates());

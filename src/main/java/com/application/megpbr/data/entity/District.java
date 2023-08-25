@@ -36,7 +36,7 @@ public class District {
 	@JoinColumn(name="state", referencedColumnName = "stateCode")
 	@NotNull
 	private State state;
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "district")
 	List<Block> block;
 	
 	

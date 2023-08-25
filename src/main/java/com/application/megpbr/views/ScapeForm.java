@@ -379,9 +379,9 @@ public class ScapeForm extends Div {
 		frommaster.add(district, 1);
 		frommaster.add(block, 1);
 		frommaster.add(village, 1);
-		frommaster.setResponsiveSteps(new ResponsiveStep("0", 3),
+		frommaster.setResponsiveSteps(new ResponsiveStep("0", 1),
 				// Use two columns, if layout's width exceeds 500px
-				new ResponsiveStep("500px", 3));
+				new ResponsiveStep("200px", 3));
 		// frommaster.setSizeFull();
 		return frommaster;
 	}
@@ -404,7 +404,7 @@ public class ScapeForm extends Div {
 		formbasic.add(features, 3);
 		formbasic.add(localLanguages, 3);
 		formbasic.add(localLanguage, 3);
-		formbasic.setResponsiveSteps(new ResponsiveStep("0", 6), new ResponsiveStep("500px", 6));
+		formbasic.setResponsiveSteps(new ResponsiveStep("0", 3), new ResponsiveStep("200px", 6));
 		return formbasic;
 	}
 
@@ -416,9 +416,9 @@ public class ScapeForm extends Div {
 		formcommon.add(longitude, 1);
 		formcommon.add(approved, 1);
 		formcommon.add(remarks, 1);
-		formcommon.setResponsiveSteps(new ResponsiveStep("0", 2),
+		formcommon.setResponsiveSteps(new ResponsiveStep("0", 1),
 				// Use two columns, if layout's width exceeds 500px
-				new ResponsiveStep("500px", 2));
+				new ResponsiveStep("300px", 2));
 		
 		return formcommon;
 	}
@@ -447,6 +447,9 @@ public class ScapeForm extends Div {
 		block.setItemLabelGenerator(block -> block.getBlockName());
 		block.addValueChangeListener(e -> village.setItems(dbservice.getVillages(e.getValue(), true)));
 		village.setItemLabelGenerator(Village::getVillageName);
+		district.getStyle().set("--vaadin-combo-box-overlay-width", "200px");
+		block.getStyle().set("--vaadin-combo-box-overlay-width", "200px");
+		village.getStyle().set("--vaadin-combo-box-overlay-width", "200px");
 		approved.setItems(dbservice.getMasterApproval());
 		approved.setItemLabelGenerator(approved->approved.getApproval());
 		localLanguages.setItems(dbservice.getLocalLanguage());

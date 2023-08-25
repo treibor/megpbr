@@ -236,7 +236,7 @@ public class MarketsForm extends Div {
 			}
 			fireEvent(new SaveEvent(this, market));
 			clearForm(format);
-			Notification.show("Saved Successfully");
+			//Notification.show("Saved Successfully");
 			initMasterFields(format);
 			removeFields();
 			clearBuffer();
@@ -359,9 +359,9 @@ public class MarketsForm extends Div {
 		frommaster.add(district, 1);
 		frommaster.add(block, 1);
 		frommaster.add(village, 1);
-		frommaster.setResponsiveSteps(new ResponsiveStep("0", 3),
+		frommaster.setResponsiveSteps(new ResponsiveStep("0", 1),
 				// Use two columns, if layout's width exceeds 500px
-				new ResponsiveStep("500px", 3));
+				new ResponsiveStep("300px", 3));
 		// frommaster.setSizeFull();
 		return frommaster;
 	}
@@ -378,7 +378,7 @@ public class MarketsForm extends Div {
 		formbasic.add(fishLocation, 1);
 		formbasic.add(fishType, 1);
 		formbasic.add(fishSource, 1);
-		formbasic.setResponsiveSteps(new ResponsiveStep("0", 2), new ResponsiveStep("500px", 2));
+		formbasic.setResponsiveSteps(new ResponsiveStep("0", 1), new ResponsiveStep("300px", 2));
 		return formbasic;
 	}
 
@@ -388,9 +388,9 @@ public class MarketsForm extends Div {
 		formcommon.add(longitude, 1);
 		formcommon.add(approved, 1);
 		
-		formcommon.setResponsiveSteps(new ResponsiveStep("0", 2),
+		formcommon.setResponsiveSteps(new ResponsiveStep("0", 1),
 				// Use two columns, if layout's width exceeds 500px
-				new ResponsiveStep("500px", 2));
+				new ResponsiveStep("300px", 2));
 		
 		return formcommon;
 	}
@@ -415,9 +415,12 @@ public class MarketsForm extends Div {
 		block.setItemLabelGenerator(block -> block.getBlockName());
 		block.addValueChangeListener(e -> village.setItems(dbservice.getVillages(e.getValue(), true)));
 		village.setItemLabelGenerator(Village::getVillageName);
+		district.getStyle().set("--vaadin-combo-box-overlay-width", "200px");
+		block.getStyle().set("--vaadin-combo-box-overlay-width", "200px");
+		village.getStyle().set("--vaadin-combo-box-overlay-width", "200px");
 		approved.setItems(dbservice.getMasterApproval());
 		approved.setItemLabelGenerator(approved->approved.getApproval());
-		
+		approved.setValue(dbservice.getMasterApproval().get(1));
 		name.setAllowCustomValue(true);
 		name.addCustomValueSetListener(e -> {
 			String customValue = e.getDetail();
