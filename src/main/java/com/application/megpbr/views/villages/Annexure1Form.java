@@ -1,4 +1,4 @@
-package com.application.megpbr.views.master;
+package com.application.megpbr.views.villages;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -35,7 +35,7 @@ import com.application.megpbr.data.entity.MasterWildhome;
 import com.application.megpbr.data.entity.State;
 import com.application.megpbr.data.entity.Village;
 import com.application.megpbr.data.entity.pbr.Crops;
-import com.application.megpbr.data.entity.villages.VillageAnnexure3;
+import com.application.megpbr.data.entity.villages.VillageAnnexure1;
 import com.application.megpbr.data.service.CropService;
 import com.application.megpbr.data.service.Dbservice;
 import com.application.megpbr.views.CropPlantsForm.SaveEvent;
@@ -88,27 +88,27 @@ import com.vaadin.flow.shared.Registration;
 
 import elemental.json.Json;
 
-public class Annexure3Form extends Div {
+public class Annexure1Form extends Div {
 	Dbservice dbservice;
-	VillageAnnexure3 annexure3;
+	VillageAnnexure1 annexure1;
 	VillageView villageview;
-	Binder<VillageAnnexure3> binder = new BeanValidationBinder<>(VillageAnnexure3.class);
+	Binder<VillageAnnexure1> binder = new BeanValidationBinder<>(VillageAnnexure1.class);
 	public Village village;
 	TextField name = new TextField("Name");
 	TextField age = new TextField("Age");
-	//DatePicker tenureDate=new DatePicker("Tenure Date");
+	DatePicker tenureDate=new DatePicker("Tenure Date");
 	TextArea address=new TextArea("Address");
 	TextArea specialization=new TextArea("Area of Specialization");
 	ComboBox<MasterGender> gender = new ComboBox("Gender");
-	//ComboBox<MasterPosition> position = new ComboBox("Position");
+	ComboBox<MasterPosition> position = new ComboBox("Position");
 	FormLayout formbasic = new FormLayout();
 	FormLayout frommaster = new FormLayout();
 	public Button save = new Button("Add");
 	Button delete = new Button("Delete");
-	boolean isSuperAdmin;
 	
 	
-	public Annexure3Form(Dbservice dbservice) {
+	
+	public Annexure1Form(Dbservice dbservice) {
 		super();
 		this.setHeightFull();
 		this.setWidth("60%");
@@ -116,7 +116,7 @@ public class Annexure3Form extends Div {
 		initForm();
 		binder.bindInstanceFields(this);
 		add(createAccordion());
-		isSuperAdmin = dbservice.isSuperAdmin();
+		
 	}
 
 	public Component createAccordion() {
@@ -134,9 +134,9 @@ public class Annexure3Form extends Div {
 		var hl = new HorizontalLayout();
 		save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 		save.addClickShortcut(Key.ENTER);
-		save.addClickListener(e -> saveVillageAnnexure3());
+		save.addClickListener(e -> saveVillageAnnexure1());
 		delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
-		delete.addClickListener(e -> deleteVillageDetail(annexure3));
+		delete.addClickListener(e -> deleteVillageDetail(annexure1));
 		hl.setJustifyContentMode(JustifyContentMode.CENTER);
 		hl.add(save,  delete);
 		hl.setSizeFull();
@@ -144,39 +144,42 @@ public class Annexure3Form extends Div {
 	}
 
 	
-	private void saveVillageAnnexure3() {
+	private void saveVillageAnnexure1() {
 
 		try {
-			binder.writeBean(annexure3);
-			annexure3.setVillage(village);
-			fireEvent(new SaveEvent(this, annexure3));
-			this.setVillageAnnexure3(new VillageAnnexure3());
+			binder.writeBean(annexure1);
+			annexure1.setVillage(village);
+			fireEvent(new SaveEvent(this, annexure1));
+			this.setVillageAnnexure1(new VillageAnnexure1());
 			Notification.show("Saved Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 			//initFields();
 		} catch (ValidationException e) { // TODO
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 
 	}
 
-	public void deleteVillageDetail(VillageAnnexure3 villagedetail) {
-		ConfirmDialog dialog = new ConfirmDialog();
-		dialog.setHeader("Delete??");
-		dialog.setText("Are You sure you want to delete this item.");
-		dialog.setCancelable(true);
-		dialog.addCancelListener(event -> dialog.close());
-		//dialog.setRejectable(true);
-		//dialog.setRejectText("Cancel");
-		dialog.addRejectListener(event -> dialog.close());
-		dialog.setConfirmText("Delete");
-		dialog.addConfirmListener(event -> fireEvent(new DeleteEvent(this, villagedetail)));
-		dialog.open();
-		
+	public void deleteVillageDetail(VillageAnnexure1 villagedetail) {
+		if (villagedetail.getVillage() == null) {
+			Notification.show("Error. Please Select An Item To Delete").addThemeVariants(NotificationVariant.LUMO_ERROR);
+		} else {
+			ConfirmDialog dialog = new ConfirmDialog();
+			dialog.setHeader("Delete??");
+			dialog.setText("Are You sure you want to delete this item.");
+			dialog.setCancelable(true);
+			dialog.addCancelListener(event -> dialog.close());
+			// dialog.setRejectable(true);
+			// dialog.setRejectText("Cancel");
+			dialog.addRejectListener(event -> dialog.close());
+			dialog.setConfirmText("Delete");
+			dialog.addConfirmListener(event -> fireEvent(new DeleteEvent(this, villagedetail)));
+			dialog.open();
+		}
 	}
 	
-	public void setVillageAnnexure3(VillageAnnexure3 annexure3) {
-		this.annexure3 = annexure3;
-		binder.readBean(annexure3);
+	public void setVillageAnnexure1(VillageAnnexure1 annexure1) {
+		this.annexure1 = annexure1;
+		binder.readBean(annexure1);
 	}
 
 	public void closeForm() {
@@ -184,16 +187,17 @@ public class Annexure3Form extends Div {
 	}
 
 	private void clearForm(MasterFormat format) {
-		this.annexure3 = new VillageAnnexure3();
-		//annexure3.setFormat(format);
+		this.annexure1 = new VillageAnnexure1();
+		//annexure1.setFormat(format);
 		
 	}
 	
 	private void initForm() {
 		//binder.setBean(new Crops());
 		gender.setItems(dbservice.getGenders());
+		position.setItems(dbservice.getPositions());
 		gender.setItemLabelGenerator(gender->gender.getGenderName());
-		
+		position.setItemLabelGenerator(position->position.getPositionName());
 	}
 
 	
@@ -204,6 +208,8 @@ public class Annexure3Form extends Div {
 		formbasic.add(gender, 1);
 		formbasic.add(address, 4);
 		formbasic.add(specialization, 4);
+		formbasic.add(position, 2);
+		formbasic.add(tenureDate, 2);
 		//formbasic.add(otherDetails, 3);
 		//formbasic.add(associatedTdk, 3);
 		formbasic.setResponsiveSteps(new ResponsiveStep("0", 2),
@@ -218,34 +224,34 @@ public class Annexure3Form extends Div {
 	
 	
 
-	public static abstract class VillageAnnexure3FormEvent extends ComponentEvent<Annexure3Form> {
-		private VillageAnnexure3 annexure3;
+	public static abstract class VillageAnnexure1FormEvent extends ComponentEvent<Annexure1Form> {
+		private VillageAnnexure1 annexure1;
 
-		protected VillageAnnexure3FormEvent(Annexure3Form source, VillageAnnexure3 annexure3) {
+		protected VillageAnnexure1FormEvent(Annexure1Form source, VillageAnnexure1 annexure1) {
 			super(source, false);
-			this.annexure3 = annexure3;
+			this.annexure1 = annexure1;
 		}
 
-		public VillageAnnexure3 getVillageAnnexure3() {
-			return annexure3;
-		}
-	}
-
-	public static class SaveEvent extends VillageAnnexure3FormEvent {
-		SaveEvent(Annexure3Form source, VillageAnnexure3 annexure3) {
-			super(source, annexure3);
+		public VillageAnnexure1 getVillageAnnexure1() {
+			return annexure1;
 		}
 	}
 
-	public static class DeleteEvent extends VillageAnnexure3FormEvent {
-		DeleteEvent(Annexure3Form source, VillageAnnexure3 annexure3) {
-			super(source, annexure3);
+	public static class SaveEvent extends VillageAnnexure1FormEvent {
+		SaveEvent(Annexure1Form source, VillageAnnexure1 annexure1) {
+			super(source, annexure1);
+		}
+	}
+
+	public static class DeleteEvent extends VillageAnnexure1FormEvent {
+		DeleteEvent(Annexure1Form source, VillageAnnexure1 annexure1) {
+			super(source, annexure1);
 		}
 
 	}
 
-	public static class CloseEvent extends VillageAnnexure3FormEvent {
-		CloseEvent(Annexure3Form source) {
+	public static class CloseEvent extends VillageAnnexure1FormEvent {
+		CloseEvent(Annexure1Form source) {
 			super(source, null);
 		}
 	}

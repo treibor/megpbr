@@ -1,0 +1,200 @@
+package com.application.megpbr.views;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import com.application.megpbr.data.entity.Block;
+import com.application.megpbr.data.entity.District;
+import com.application.megpbr.data.entity.State;
+import com.application.megpbr.data.entity.UserLogin;
+import com.application.megpbr.data.entity.UserLoginLevel;
+import com.application.megpbr.data.entity.UserRole;
+import com.application.megpbr.data.entity.Village;
+import com.application.megpbr.data.service.Dbservice;
+import com.application.megpbr.data.service.UserService;
+import com.application.megpbr.security.SecurityService;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.PasswordField;
+import com.vaadin.flow.component.textfield.TextField;
+
+public class UserView {
+	private Dbservice dbservice;
+    private UserService userservice;
+    //private SecurityService securityService;
+    Button saveButton=new Button("Save");
+    Button cancelButton=new Button("Cancel");
+    TextField name=new TextField("Full Name");
+    TextField userName=new TextField("User Name");
+    PasswordField password=new PasswordField("Password");
+    PasswordField confirmPassword=new PasswordField("Confirm Password");
+    public ComboBox<UserLoginLevel> userlevel = new ComboBox("User Type");
+    public ComboBox<State> state = new ComboBox("State");
+	public ComboBox<District> district = new ComboBox("District");
+	public ComboBox<Block> block = new ComboBox("Block");
+	public ComboBox<Village> village = new ComboBox("Village");
+	final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+	public UserView(Dbservice dbservice, UserService userservice) {
+		this.dbservice = dbservice;
+		this.userservice = userservice;
+		//this.securityService = securityService;
+	}
+
+	public void createUser() {
+		Dialog userdialog=new Dialog();
+		H2 headline = new H2("Create User");
+		headline.getStyle().set("margin", "var(--lumo-space-m) 0 0 0").set("font-size", "1.5em").set("font-weight",
+				"bold");
+		populateCombobox();
+		cancelButton.addClickListener(e -> userdialog.close());
+		saveButton.addClickListener(e-> saveUser());
+		saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+		HorizontalLayout buttonLayout1 = new HorizontalLayout(cancelButton, saveButton);
+		buttonLayout1.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+		VerticalLayout dialogLayout1 = new VerticalLayout(headline, getFields(), buttonLayout1);
+		dialogLayout1.setPadding(false);
+		dialogLayout1.setAlignItems(FlexComponent.Alignment.STRETCH);
+		dialogLayout1.getStyle().set("width", "300px").set("max-width", "100%");
+		userdialog.add(dialogLayout1);
+		userdialog.open();
+	}
+    
+	
+	public void populateCombobox() { 
+		  int  level=userservice.getLoggedUser().getLevel().getLevel();
+		  userlevel.setItems(userservice.getUserLevels(level));
+		  userlevel.addValueChangeListener(e->ConfigureAccess());
+		  state.setItems(dbservice.getStates());
+		  state.addValueChangeListener(e->district.setItems(dbservice.getDistricts(e.getValue())));
+		  district.addValueChangeListener(e-> block.setItems(dbservice.getBlocks(e.getValue())));
+		  block.addValueChangeListener(e->village.setItems(dbservice.getVillages(e.getValue(), true)));
+		  userlevel.setItemLabelGenerator(userlevel->userlevel.getLevelName());
+		  state.setItemLabelGenerator(state->state.getStateName());
+		  district.setItemLabelGenerator(district->district.getDistrictName());
+		  block.setItemLabelGenerator(block->block.getBlockName());
+		  village.setItemLabelGenerator(village->village.getVillageName());
+		  state.setVisible(false);
+		  district.setVisible(false);
+		  block.setVisible(false);
+		  village.setVisible(false);
+		  password.setRevealButtonVisible(false);
+		  confirmPassword.setRevealButtonVisible(false);
+		  password.setMinLength(10);
+	}
+	public FormLayout getFields() {
+		var form=new FormLayout();
+		form.add(userlevel, 2);
+		form.add(state, 1);
+		form.add(district, 1);
+		form.add(block, 1);
+		form.add(village, 1);
+		form.add(name, 2);
+		form.add(userName, 2);
+		form.add(password, 2);
+		form.add(confirmPassword, 2);
+		form.setResponsiveSteps(new ResponsiveStep("0", 1),
+				// Use two columns, if layout's width exceeds 300px
+				new ResponsiveStep("300px", 2));
+		return form;
+	}
+	private void ConfigureAccess() {
+		String userLevel=userlevel.getValue().getLevelName();
+		state.setVisible(false);
+		district.setVisible(false);
+		block.setVisible(false);
+		village.setVisible(false);
+		if(userLevel.startsWith("STATE")) {
+			state.setVisible(true);
+		}else if(userLevel.startsWith("DISTRICT")) {
+			state.setVisible(true);
+			district.setVisible(true);
+		}else if(userLevel.startsWith("BLOCK")) {
+			state.setVisible(true);
+			district.setVisible(true);
+			block.setVisible(true);
+		}else if(userLevel.startsWith("VILLAGE")) {
+			state.setVisible(true);
+			district.setVisible(true);
+			block.setVisible(true);
+			village.setVisible(true);
+		}
+	}
+	
+	private void saveUser() {
+		if(userlevel.getValue()==null) {
+			Notification.show("Please Select A User Type").addThemeVariants(NotificationVariant.LUMO_WARNING);
+		} else {
+			String userLevel=userlevel.getValue().getLevelName();
+			if (userLevel.startsWith("STATE")&& state.getValue()==null) {
+				Notification.show("Please Select The State").addThemeVariants(NotificationVariant.LUMO_WARNING);
+			} else if (userLevel.startsWith("DISTRICT")&& district.getValue()==null) {
+				Notification.show("Please Select The District").addThemeVariants(NotificationVariant.LUMO_WARNING);
+			} else if (userLevel.startsWith("BLOCK")&&block.getValue()==null) {
+				Notification.show("Please Select The Block").addThemeVariants(NotificationVariant.LUMO_WARNING);
+			} else if (userLevel.startsWith("VILLAGE")&& village.getValue()==null) {
+				Notification.show("Please Select The Village").addThemeVariants(NotificationVariant.LUMO_WARNING);
+			}else if(userName.getValue().length()<=8 ){
+				Notification.show("User Name should be at least 8 characters long").addThemeVariants(NotificationVariant.LUMO_WARNING);
+			}else if(password.getValue().length()<=10){
+				Notification.show("Password is too short").addThemeVariants(NotificationVariant.LUMO_WARNING);
+			}else if(!password.getValue().trim().equals(confirmPassword.getValue().trim())){
+				Notification.show("Passwords Do Not Match").addThemeVariants(NotificationVariant.LUMO_WARNING);
+			}else {
+				try {
+					UserLogin testuser=userservice.getUserByName(userName.getValue());
+					if (testuser == null) {
+						UserLogin newUser = new UserLogin();
+						newUser.setName(name.getValue());
+						newUser.setUserName(userName.getValue());
+						newUser.setLevel(userlevel.getValue());
+						newUser.setState(state.getValue());
+						newUser.setDistrict(district.getValue());
+						newUser.setBlock(block.getValue());
+						newUser.setVillage(village.getValue());
+						newUser.setHashedPassword(passwordEncoder.encode(password.getValue().trim()));
+						userservice.update(newUser);
+						UserRole role = new UserRole();
+						if (userLevel.endsWith("ADMIN")) {
+							role.setRoleName("ADMIN");
+						} else {
+							role.setRoleName("USER");
+						}
+						role.setUser(newUser);
+						userservice.update(role);
+						Notification.show("User "+userName +" Created Successfully")
+								.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+						clearFields();
+					}else {
+						Notification.show("Failed To Create User, User Already Exists").addThemeVariants(NotificationVariant.LUMO_ERROR);
+						clearFields();
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					Notification.show("Failed To Create User").addThemeVariants(NotificationVariant.LUMO_ERROR);
+					e.printStackTrace();
+				}
+				
+			}
+		}
+	}
+
+	private void clearFields() {
+		//userlevel.setValue();
+		name.setValue("");
+		userName.setValue("");
+		password.setValue("");
+		confirmPassword.setValue("");
+		
+	}
+	
+	
+}

@@ -1,4 +1,4 @@
-package com.application.megpbr.views.master;
+package com.application.megpbr.views.villages;
 
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.login.LoginForm;
@@ -17,9 +17,10 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
     private LoginForm login = new LoginForm();
 
     public LoginView() {
-        addClassName("login-view");
+        addClassName("login");
+        //getStyle().set("background-image", "./images/header.jpg");
         setSizeFull();
-
+        
         setJustifyContentMode(JustifyContentMode.CENTER);
         setAlignItems(Alignment.CENTER);
 

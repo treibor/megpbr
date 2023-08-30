@@ -1,4 +1,4 @@
-package com.application.megpbr.views.master;
+package com.application.megpbr.views.villages;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -123,7 +123,7 @@ public class VillagesForm extends Div {
 	FormLayout frommaster = new FormLayout();
 	Button save = new Button("Save");
 	Button cancel = new Button("Close");
-	Button delete = new Button("Delete");
+	public Button delete = new Button("Delete");
 	boolean isSuperAdmin;
 	Checkbox approved = new Checkbox("Approved", true);
 	MasterFormat format;
@@ -154,7 +154,7 @@ public class VillagesForm extends Div {
 		binder.bindInstanceFields(this);
 		initFields();
 		add(createAccordion());
-		isSuperAdmin = dbservice.isSuperAdmin();
+		//isSuperAdmin = dbservice.isSuperAdmin();
 	}
 
 	public Component createAccordion() {
@@ -202,18 +202,21 @@ public class VillagesForm extends Div {
 	}
 
 	public void deleteVillageDetail(VillageDetails villagedetail) {
+		if(villagedetail.getVillage()==null) {
+			Notification.show("Error. Please Select A Village").addThemeVariants(NotificationVariant.LUMO_ERROR);
+		}else {
 		ConfirmDialog dialog = new ConfirmDialog();
 		dialog.setHeader("Delete??");
 		dialog.setText("Are You sure you want to delete this item.");
 		dialog.setCancelable(true);
 		dialog.addCancelListener(event -> dialog.close());
-		//dialog.setRejectable(true);
-		//dialog.setRejectText("Cancel");
+		// dialog.setRejectable(true);
+		// dialog.setRejectText("Cancel");
 		dialog.addRejectListener(event -> dialog.close());
 		dialog.setConfirmText("Delete");
 		dialog.addConfirmListener(event -> fireEvent(new DeleteEvent(this, villagedetail)));
 		dialog.open();
-		
+	}
 	}
 	
 	public void setVillageDetails(VillageDetails villagedetails) {
@@ -275,9 +278,9 @@ public class VillagesForm extends Div {
 		formbasic.add(managementregime, 4);
 		//formbasic.add(otherDetails, 3);
 		//formbasic.add(associatedTdk, 3);
-		formbasic.setResponsiveSteps(new ResponsiveStep("0", 2),
+		formbasic.setResponsiveSteps(new ResponsiveStep("0", 4),
 				// Use two columns, if layout's width exceeds 500px
-				new ResponsiveStep("200px", 6));
+				new ResponsiveStep("300px", 6));
 		// formbasic.setSizeFull();
 		return formbasic;
 

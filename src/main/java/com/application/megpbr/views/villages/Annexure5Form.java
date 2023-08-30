@@ -1,4 +1,4 @@
-package com.application.megpbr.views.master;
+package com.application.megpbr.views.villages;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -122,7 +122,7 @@ public class Annexure5Form extends Div {
 		resolutionPhoto.setDropLabel(new H6("Resolution/Endorsement"));
 		feeCollectionPhoto.setDropLabel(new H6("Details of Collection Fee"));
 		add(createAccordion());
-		isSuperAdmin = dbservice.isSuperAdmin();
+		//isSuperAdmin = dbservice.isSuperAdmin();
 	}
 
 	public Component createAccordion() {
@@ -182,18 +182,22 @@ public class Annexure5Form extends Div {
 	}
 
 	public void deleteVillageDetail(VillageAnnexure5 villagedetail) {
-		ConfirmDialog dialog = new ConfirmDialog();
-		dialog.setHeader("Delete??");
-		dialog.setText("Are You sure you want to delete this item.");
-		dialog.setCancelable(true);
-		dialog.addCancelListener(event -> dialog.close());
-		//dialog.setRejectable(true);
-		//dialog.setRejectText("Cancel");
-		dialog.addRejectListener(event -> dialog.close());
-		dialog.setConfirmText("Delete");
-		dialog.addConfirmListener(event -> fireEvent(new DeleteEvent(this, villagedetail)));
-		dialog.open();
-		
+		if (villagedetail.getVillage() == null) {
+			Notification.show("Error. Please Select An Item To Delete")
+					.addThemeVariants(NotificationVariant.LUMO_ERROR);
+		} else {
+			ConfirmDialog dialog = new ConfirmDialog();
+			dialog.setHeader("Delete??");
+			dialog.setText("Are You sure you want to delete this item.");
+			dialog.setCancelable(true);
+			dialog.addCancelListener(event -> dialog.close());
+			// dialog.setRejectable(true);
+			// dialog.setRejectText("Cancel");
+			dialog.addRejectListener(event -> dialog.close());
+			dialog.setConfirmText("Delete");
+			dialog.addConfirmListener(event -> fireEvent(new DeleteEvent(this, villagedetail)));
+			dialog.open();
+		}
 	}
 	
 	public void setVillageAnnexure5(VillageAnnexure5 annexure5) {

@@ -59,5 +59,8 @@ vaadin-radio-group vaadin-radio-group::part(group-field){
 vaadin-radio-group vaadin-radio-group > label{
 	font-size:5%;
 }
-
+.login{
+	--background-image: url("../images/bg.jpg");
+	--background: url("../images/bg.jpg") !important;
+}
 

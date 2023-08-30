@@ -1,61 +1,133 @@
 package com.application.megpbr.data.entity;
 
 import java.util.List;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name="UserLogin", schema = "megpbr")
-
-
 public class UserLogin {
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "state_generator")
-	@SequenceGenerator(name="state_generator", sequenceName = "state_seq", allocationSize=1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userlogin_generator")
+	@SequenceGenerator(name="userlogin_generator", sequenceName = "userlogin_seq", allocationSize=1)
 	private long id;
 	@Column(unique=true)
-	private String  userName;
-	@NotEmpty
-	private String userPassword;
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userlogin")
-	public List<UserRole> userrole;
+	private String userName;
+	private String name;
+	//@JsonIgnore
+	private String hashedPassword;
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
+	private List<UserRole> Roles;
+	@Column(length = 1000000)
+	private byte[] profilePicture; 
+	@ManyToOne
+	@JoinColumn(name="level", referencedColumnName = "id")
+	@NotNull
+	private UserLoginLevel level;
+	@ManyToOne
+	@JoinColumn(name = "village", referencedColumnName = "villageCode")
+	private Village village;
+	@ManyToOne
+	@JoinColumn(name = "block", referencedColumnName = "blockCode")
+	private Block block;
+	@ManyToOne
+	@JoinColumn(name = "district", referencedColumnName = "districtCode")
+	private District district;
+	@ManyToOne
+	@JoinColumn(name = "state", referencedColumnName = "stateCode")
+	private State state;
 	
 	
-	public long getId() {
-		return id;
-	}
-	public void setId(long id) {
-		this.id = id;
-	}
 	public String getUserName() {
 		return userName;
 	}
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
-	public String getUserPassword() {
-		return userPassword;
+	public String getName() {
+		return name;
 	}
-	public void setUserPassword(String userPassword) {
-		this.userPassword = userPassword;
+	public void setName(String name) {
+		this.name = name;
 	}
-	public List<UserRole> getUserrole() {
-		return userrole;
+	public String getHashedPassword() {
+		return hashedPassword;
 	}
-	public void setUserrole(List<UserRole> userrole) {
-		this.userrole = userrole;
+	public void setHashedPassword(String hashedPassword) {
+		this.hashedPassword = hashedPassword;
 	}
+	
+	public byte[] getProfilePicture() {
+		return profilePicture;
+	}
+	public void setProfilePicture(byte[] profilePicture) {
+		this.profilePicture = profilePicture;
+	}
+	public long getId() {
+		return id;
+	}
+	public void setId(long id) {
+		this.id = id;
+	}
+	public List<UserRole> getRoles() {
+		return Roles;
+	}
+	public void setRoles(List<UserRole> roles) {
+		Roles = roles;
+	}
+	public UserLoginLevel getLevel() {
+		return level;
+	}
+	public void setLevel(UserLoginLevel level) {
+		this.level = level;
+	}
+	public Village getVillage() {
+		return village;
+	}
+	public void setVillage(Village village) {
+		this.village = village;
+	}
+	public Block getBlock() {
+		return block;
+	}
+	public void setBlock(Block block) {
+		this.block = block;
+	}
+	public District getDistrict() {
+		return district;
+	}
+	public void setDistrict(District district) {
+		this.district = district;
+	}
+	public State getState() {
+		return state;
+	}
+	public void setState(State state) {
+		this.state = state;
+	}
+	
+	
+	
 	
 	
 	

@@ -91,10 +91,10 @@ public class CropPlantsForm extends Div {
 	public Checkbox masterCheck = new Checkbox("Enter Master Data");
 	public Checkbox scientificCheck = new Checkbox("Autofill");
 	Checkbox localCheck = new Checkbox("Autofill");
-	ComboBox<State> state = new ComboBox("");
+	public ComboBox<State> state = new ComboBox("");
 	public ComboBox<District> district = new ComboBox("");
 	public ComboBox<Block> block = new ComboBox("");
-	ComboBox<Village> village = new ComboBox();
+	public ComboBox<Village> village = new ComboBox();
 	ComboBox<MasterStatus> pastStatus = new ComboBox("Past Status");
 	ComboBox<MasterStatus> presentStatus = new ComboBox("Present Status");
 	ComboBox<MasterCommercial> commercial= new ComboBox("Commercial/Non Commercial");
@@ -130,7 +130,7 @@ public class CropPlantsForm extends Div {
 	TextField xfield2 = new TextField("");
 	public Button save = new Button("Save");
 	Button cancel = new Button("Close");
-	Button delete = new Button("Delete");
+	public Button delete = new Button("Delete");
 	boolean isSuperAdmin;
 	//Checkbox approved = new Checkbox("Approved", true);
 	public ComboBox<MasterApproval> approved = new ComboBox("Approval Status");
@@ -162,24 +162,9 @@ public class CropPlantsForm extends Div {
 		binder.bindInstanceFields(this);
 		//isAdmin=dbservice.isAdmin();
 		add(createAccordion());
-		isSuperAdmin = dbservice.isSuperAdmin();
+		
 	}
-	private boolean getAdmin() {
-		String role=dbservice.getRole();
-		if(role.endsWith("ADMIN")) {
-			return true;
-		}else {
-			return false;
-		}
-	}
-	private String getRole() {
-		String role=dbservice.getRole();
-		if(role.startsWith("STATE")) {
-			return "STATE";
-		}else {
-			return "DISTRICT";
-		}
-	}
+	
 	
 	public Component createAccordion() {
 		Accordion accordion = new Accordion();
@@ -222,7 +207,7 @@ public class CropPlantsForm extends Div {
 		save.addClickListener(e -> validateCrop());
 		delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
 		delete.addClickListener(e -> deleteCrop(crops));
-		delete.setVisible(getAdmin());
+		//delete.setVisible(getAdmin());
 		hl.setJustifyContentMode(JustifyContentMode.CENTER);
 		hl.add(save, cancel, delete);
 		hl.setSizeFull();
@@ -267,21 +252,21 @@ public class CropPlantsForm extends Div {
 			clearBuffer();
 		} catch (ValidationException e) {
 			// TODO Auto-generated catch block
-			Notification.show("Error. Please Check").addThemeVariants(NotificationVariant.LUMO_ERROR);;
+			Notification.show("Error. Please Check").addThemeVariants(NotificationVariant.LUMO_ERROR);
 		}
 	}
 	public void deleteCrop(Crops crop) {
 		ConfirmDialog dialog = new ConfirmDialog();
 		if (crop == null || crop.equals(null) || crop.getScientificName()==null) {
-			//dialog.open();
+			Notification.show("Error. Please Select An Item To Delete").addThemeVariants(NotificationVariant.LUMO_ERROR);
 		} else {
 			
 			dialog.setHeader("Delete??");
-			dialog.setText("Are You sure you want to delete this item.");
+			dialog.setText("Are You sure you want to delete this item? You will not be able to undo this action.");
 			dialog.setCancelable(true);
 			dialog.addCancelListener(event -> dialog.close());
 			dialog.setRejectable(true);
-			dialog.setRejectText("Discard");
+			dialog.setRejectText("No");
 			dialog.addRejectListener(event -> dialog.close());
 			dialog.setConfirmText("Delete");
 			dialog.addConfirmListener(event ->fireEvent(new DeleteEvent(this, crop)));
@@ -406,7 +391,7 @@ public class CropPlantsForm extends Div {
 	}
 
 	public Component createMasterForm() {
-		state.setVisible(isSuperAdmin);
+		//state.setVisible(isSuperAdmin);
 		state.setPlaceholder("State");
 		district.setPlaceholder("District");
 		block.setPlaceholder("Block");
@@ -501,11 +486,11 @@ public class CropPlantsForm extends Div {
 		xfield1.setVisible(false);
 		xfield2.setVisible(false);
 		state.setItems(dbservice.getStates());
-		State selectedState = dbservice.getState();
-		state.setValue(selectedState);
-		state.addValueChangeListener(e -> district.setItems(dbservice.getDistricts(selectedState)));
+		//State selectedState = dbservice.getState();
+		//state.setValue(selectedState);
+		state.addValueChangeListener(e -> district.setItems(dbservice.getDistricts(e.getValue())));
 		state.setItemLabelGenerator(state -> state.getStateName());
-		district.setItems(dbservice.getDistricts(selectedState));
+		district.setItems(dbservice.getDistricts(state.getValue()));
 		district.setItemLabelGenerator(district -> district.getDistrictName());
 		district.addValueChangeListener(e -> block.setItems(dbservice.getBlocks(e.getValue())));
 		block.setItemLabelGenerator(block -> block.getBlockName());

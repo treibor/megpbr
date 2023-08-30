@@ -160,7 +160,7 @@ public class ScapeForm extends Div {
 		binder.bindInstanceFields(this);
 		// initFields();
 		add(createAccordion());
-		isSuperAdmin = dbservice.isSuperAdmin();
+		//isSuperAdmin = dbservice.isSuperAdmin();
 	}
 
 	public Component createAccordion() {

@@ -3,6 +3,8 @@ package com.application.megpbr.data.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ import com.application.megpbr.data.entity.MasterStatus;
 import com.application.megpbr.data.entity.MasterWildhome;
 import com.application.megpbr.data.entity.State;
 import com.application.megpbr.data.entity.UserLogin;
+import com.application.megpbr.data.entity.UserLoginLevel;
 import com.application.megpbr.data.entity.Village;
 import com.application.megpbr.data.entity.pbr.Crops;
 import com.application.megpbr.data.entity.villages.VillageAnnexure1;
@@ -44,7 +47,7 @@ import com.application.megpbr.data.repository.MasterGenderRepository;
 import com.application.megpbr.data.repository.MasterManagementRegimeRepository;
 import com.application.megpbr.data.repository.MasterPositionRepository;
 import com.application.megpbr.data.repository.StateRepository;
-import com.application.megpbr.data.repository.UserLoginRepository;
+import com.application.megpbr.data.repository.UserLevelRepository;
 import com.application.megpbr.data.repository.VillageAnnexure1Repository;
 import com.application.megpbr.data.repository.VillageAnnexure2Repository;
 import com.application.megpbr.data.repository.VillageAnnexure3Repository;
@@ -104,21 +107,17 @@ public class Dbservice {
 	@Autowired
 	private SecurityService secservice;
 	@Autowired
-	private UserLoginRepository userservice;
-	public boolean isSuperAdmin() {
-		return false;
+	private UserService userservice;
+	@Autowired
+	private UserLevelRepository levelrepo;
+	
+	public UserDetails getloggeduser() {
+		//Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		return secservice.getAuthenticatedUser();
 	}
-	public boolean isAdmin() {
-		return true;
-	}
-	public String getRole() {
-		UserDetails user= secservice.getAuthenticatedUser();
-		
-		return "";
-	}
-	public UserLogin getUser(String user) {
-		return userservice.findByUserName(user);
-	}
+	
+	
+
 	public State getState() {
 		return st_repo.findByStateName("Meghalaya");
 	}
@@ -282,4 +281,6 @@ public class Dbservice {
 	public List<MasterPosition> getPositions(){
 		return mprepo.findAll();
 	}
+	
+	
 }

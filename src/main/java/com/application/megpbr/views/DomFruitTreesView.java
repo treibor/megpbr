@@ -50,8 +50,9 @@ import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.security.RolesAllowed;
 
-
+@RolesAllowed("USER")
 @PageTitle("Fruit Trees- Domestic")
 @Route(value = "domesticfruittrees", layout = MainLayout.class)
 @Uses(Icon.class)

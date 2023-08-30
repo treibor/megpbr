@@ -9,31 +9,23 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name="UserRoles", schema = "megpbr")
-
-
 public class UserRole {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userroles_generator")
 	@SequenceGenerator(name="userroles_generator", sequenceName = "userroles_seq", allocationSize=1)
 	private long id;
-	@Column(unique=true)
 	private String  roleName;
 	@ManyToOne
-	@JoinColumn(name="userLogin", referencedColumnName = "id")
-	@NotNull
-	private UserLogin userlogin;
+	@JoinColumn(name="userlogin", referencedColumnName = "id")
 	
-	public UserLogin getUserlogin() {
-		return userlogin;
-	}
-	public void setUserlogin(UserLogin userlogin) {
-		this.userlogin = userlogin;
-	}
+	private UserLogin user;
+	
 	public long getId() {
 		return id;
 	}
@@ -45,6 +37,12 @@ public class UserRole {
 	}
 	public void setRoleName(String roleName) {
 		this.roleName = roleName;
+	}
+	public UserLogin getUser() {
+		return user;
+	}
+	public void setUser(UserLogin user) {
+		this.user = user;
 	}
 	
 	

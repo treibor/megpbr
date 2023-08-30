@@ -1,19 +1,40 @@
 package com.application.megpbr.views;
 
+import com.application.megpbr.data.entity.Block;
+import com.application.megpbr.data.entity.District;
+import com.application.megpbr.data.entity.State;
+import com.application.megpbr.data.entity.UserLogin;
+import com.application.megpbr.data.entity.UserLoginLevel;
+import com.application.megpbr.data.entity.UserRole;
+import com.application.megpbr.data.entity.Village;
 import com.application.megpbr.data.service.Dbservice;
+import com.application.megpbr.data.service.UserService;
 import com.application.megpbr.security.SecurityService;
 import com.application.megpbr.views.agrobiodiversity.CropPlantsView;
 import com.application.megpbr.views.dashboard.DashboardView;
-import com.application.megpbr.views.master.VillageView;
+import com.application.megpbr.views.villages.VillageView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.avatar.Avatar;
+import com.vaadin.flow.component.avatar.AvatarVariant;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.contextmenu.MenuItem;
+import com.vaadin.flow.component.contextmenu.SubMenu;
+import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H6;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.menubar.MenuBar;
+import com.vaadin.flow.component.menubar.MenuBarVariant;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
@@ -22,33 +43,47 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
+import com.vaadin.flow.component.textfield.PasswordField;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
+import com.vaadin.flow.theme.lumo.LumoUtility.Padding;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
 /**
  * The main view is a top-level placeholder for other views.
  */
 public class MainLayout extends AppLayout {
-
-    
-
 	private H2 viewTitle;
-    Dbservice dbservice;
-
-    SecurityService securityService;
-    public MainLayout(Dbservice dbservice, SecurityService securityService) {
+    private Dbservice dbservice;
+    private UserService userservice;
+    private SecurityService securityService;
+    
+    public MainLayout(Dbservice dbservice, UserService userservice, SecurityService securityService) {
     	this.dbservice=dbservice;
     	this.securityService=securityService;
+    	this.userservice=userservice;
         setPrimarySection(Section.NAVBAR);
         addDrawerContent();
         addHeaderContent();
     }
     
     private void addHeaderContent() {
+    	Avatar avatarImage = new Avatar(userservice.getLoggedUser().getName());
+    	avatarImage.addThemeVariants(AvatarVariant.LUMO_SMALL);
+		avatarImage.setColorIndex(2);
+		MenuBar menuBar = new MenuBar();
+		menuBar.addThemeVariants(MenuBarVariant.LUMO_TERTIARY_INLINE);
+		MenuItem item = menuBar.addItem(avatarImage);
+		SubMenu subMenu = item.getSubMenu();
+		subMenu.addItem("About");
+		subMenu.addItem("Change Password");
+		subMenu.addItem("Create User",e->createUser());
+		subMenu.addItem("Logout", e -> securityService.logout());
         DrawerToggle toggle = new DrawerToggle();
         toggle.setAriaLabel("Menu toggle");
         Image img = new Image("images/emblem-dark.png", "placeholder plant");
@@ -64,11 +99,13 @@ public class MainLayout extends AppLayout {
         header.setJustifyContentMode(JustifyContentMode.BETWEEN);
         viewTitle.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
         header.addClassNames(Margin.Top.SMALL, Margin.Bottom.SMALL);
+        header.addClassName(Padding.Left.XLARGE);
         if (securityService.getAuthenticatedUser() != null) {
-            Button logout = new Button("Logout", click -> securityService.logout());
-            header .add(img, headerText, logout);
+            //Button logout = new Button("Logout", click -> securityService.logout());
+            header .add(img, headerText, menuBar);
             header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
             header.expand(headerText);
+            //header.getStyle().set("background-image", "./images/header.jpg");
             header.setWidthFull();
         } else {
             //header = new HorizontalLayout(logo);
@@ -80,7 +117,7 @@ public class MainLayout extends AppLayout {
         H1 appName = new H1("MegPbr");
         appName.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
         Header header = new Header(appName);
-
+        
         Scroller scroller = new Scroller(createNavigation());
 
         addToDrawer(header, scroller, createFooter());
@@ -160,29 +197,11 @@ public class MainLayout extends AppLayout {
         category3.addItem(format18,format19,format20,format21,format22,format23,format24,format25,format26,format27);
         nav.addItem(category1, category2, category3);
         nav.addItem(new SideNavItem("Villages Details", VillageView.class, LineAwesomeIcon.AVIANEX.create()));
-        
-        
-        /*nav.addItem(new SideNavItem("Dashboard", DashboardView.class, LineAwesomeIcon.FILE.create()));
-        nav.addItem(new SideNavItem("Agro Biodiversity", AgroBiodiversityView.class,
-                LineAwesomeIcon.COLUMNS_SOLID.create()));
-        
-        nav.addItem(new SideNavItem("Domesticated Diversity", DomesticatedDiversityView.class,
-                LineAwesomeIcon.COLUMNS_SOLID.create()));
-        nav.addItem(new SideNavItem("Wild Diversity", WildDiversityView.class, LineAwesomeIcon.COLUMNS_SOLID.create()));
-        nav.addItem(new SideNavItem("Person Form", PersonFormView.class, LineAwesomeIcon.USER.create()));
-        nav.addItem(
-                new SideNavItem("Grid with Filters", GridwithFiltersView.class, LineAwesomeIcon.FILTER_SOLID.create()));
-        nav.addItem(new SideNavItem("Checkout Form", CheckoutFormView.class, LineAwesomeIcon.CREDIT_CARD.create()));
-        nav.addItem(new SideNavItem("Card List2", CardList2View.class, LineAwesomeIcon.LIST_SOLID.create()));
-        nav.addItem(new SideNavItem("Collaborative Master-Detail2", CollaborativeMasterDetail2View.class,
-                LineAwesomeIcon.COLUMNS_SOLID.create()));
-		*/
-        return nav;
+          return nav;
     }
 
     private Footer createFooter() {
         Footer layout = new Footer();
-
         return layout;
     }
 
@@ -196,4 +215,26 @@ public class MainLayout extends AppLayout {
         PageTitle title = getContent().getClass().getAnnotation(PageTitle.class);
         return title == null ? "" : title.value();
     }
+    
+	
+	public void createUser() {
+		UserView user=new UserView(dbservice, userservice);
+		user.createUser();
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

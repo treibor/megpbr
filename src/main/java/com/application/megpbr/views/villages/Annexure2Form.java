@@ -1,4 +1,4 @@
-package com.application.megpbr.views.master;
+package com.application.megpbr.views.villages;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -110,7 +110,7 @@ public class Annexure2Form extends Div {
 	FormLayout frommaster = new FormLayout();
 	public Button save = new Button("Add");
 	Button delete = new Button("Delete");
-	boolean isSuperAdmin;
+	
 	
 	
 	public Annexure2Form(Dbservice dbservice) {
@@ -121,7 +121,7 @@ public class Annexure2Form extends Div {
 		initForm();
 		binder.bindInstanceFields(this);
 		add(createAccordion());
-		isSuperAdmin = dbservice.isSuperAdmin();
+		
 	}
 
 	public Component createAccordion() {
@@ -165,18 +165,22 @@ public class Annexure2Form extends Div {
 	}
 
 	public void deleteVillageDetail(VillageAnnexure2 villagedetail) {
-		ConfirmDialog dialog = new ConfirmDialog();
-		dialog.setHeader("Delete??");
-		dialog.setText("Are You sure you want to delete this item.");
-		dialog.setCancelable(true);
-		dialog.addCancelListener(event -> dialog.close());
-		//dialog.setRejectable(true);
-		//dialog.setRejectText("Cancel");
-		dialog.addRejectListener(event -> dialog.close());
-		dialog.setConfirmText("Delete");
-		dialog.addConfirmListener(event -> fireEvent(new DeleteEvent(this, villagedetail)));
-		dialog.open();
-		
+		if (villagedetail.getVillage() == null) {
+			Notification.show("Error. Please Select An Item To Delete")
+					.addThemeVariants(NotificationVariant.LUMO_ERROR);
+		} else {
+			ConfirmDialog dialog = new ConfirmDialog();
+			dialog.setHeader("Delete??");
+			dialog.setText("Are You sure you want to delete this item.");
+			dialog.setCancelable(true);
+			dialog.addCancelListener(event -> dialog.close());
+			// dialog.setRejectable(true);
+			// dialog.setRejectText("Cancel");
+			dialog.addRejectListener(event -> dialog.close());
+			dialog.setConfirmText("Delete");
+			dialog.addConfirmListener(event -> fireEvent(new DeleteEvent(this, villagedetail)));
+			dialog.open();
+		}
 	}
 	
 	public void setVillageAnnexure2(VillageAnnexure2 annexure2) {

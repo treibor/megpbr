@@ -148,7 +148,7 @@ public class MarketsForm extends Div {
 		binder.bindInstanceFields(this);
 		// initFields();
 		add(createAccordion());
-		isSuperAdmin = dbservice.isSuperAdmin();
+		//isSuperAdmin = u//.isSuperAdmin();
 	}
 
 	public Component createAccordion() {

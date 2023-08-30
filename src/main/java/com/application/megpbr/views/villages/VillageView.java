@@ -1,4 +1,4 @@
-package com.application.megpbr.views.master;
+package com.application.megpbr.views.villages;
 
 
 
@@ -15,6 +15,7 @@ import com.application.megpbr.data.entity.Block;
 import com.application.megpbr.data.entity.District;
 import com.application.megpbr.data.entity.MasterFormat;
 import com.application.megpbr.data.entity.State;
+import com.application.megpbr.data.entity.UserLogin;
 import com.application.megpbr.data.entity.Village;
 import com.application.megpbr.data.entity.pbr.Crops;
 import com.application.megpbr.data.entity.villages.VillageAnnexure1;
@@ -24,6 +25,7 @@ import com.application.megpbr.data.entity.villages.VillageAnnexure4;
 import com.application.megpbr.data.entity.villages.VillageAnnexure5;
 import com.application.megpbr.data.entity.villages.VillageDetails;
 import com.application.megpbr.data.service.Dbservice;
+import com.application.megpbr.data.service.UserService;
 import com.application.megpbr.views.MainLayout;
 
 import com.vaadin.flow.component.Component;
@@ -67,6 +69,7 @@ import jakarta.annotation.security.PermitAll;
 @Uses(Icon.class)
 public class VillageView extends Div{
 	private Dbservice dbservice;
+	private UserService userservice;
 	Village currentvillage;
 	VerticalLayout vlx=new VerticalLayout();
 	Grid<VillageDetails> grid=new Grid<>(VillageDetails.class);
@@ -85,6 +88,7 @@ public class VillageView extends Div{
 	VillageAnnexure1 villageannexure1;
 	//MasterFormat format;
 	TextField filterText=new TextField("");
+	ComboBox<State> state = new ComboBox("");
 	ComboBox<District> district = new ComboBox("");
 	ComboBox<Block> block = new ComboBox("");
 	ComboBox<Village> village = new ComboBox();
@@ -95,9 +99,14 @@ public class VillageView extends Div{
 	Tab tab4=new Tab("Annexure 4");
 	Tab tab5=new Tab("Annexure 5");
 	//Grid.Column<Crops> localColumn;
+	Grid.Column<VillageDetails> stateColumn;
 	Grid.Column<VillageDetails> districtColumn;
-	public VillageView(Dbservice service) {
+	Grid.Column<VillageDetails> blockColumn;
+	Grid.Column<VillageDetails> villageColumn;
+	Grid.Column<VillageDetails> geographicColumn;
+	public VillageView(Dbservice service, UserService userservice) {
 		this.dbservice=service;
+		this.userservice=userservice;
 		//format=dbservice.getFormat(1);
 		setSizeFull();
 		ConfigureGrid();
@@ -109,9 +118,99 @@ public class VillageView extends Div{
 		ConfigureForm4();
 		ConfigureForm5();
 		ConfigureCombo();
+		ConfigureAccess();
 		//updateGrid();
 		//add(getToolbar(),getContent());
 		add(getTabs());
+	}
+	private boolean isAdmin() {
+		//UserLogin user=uservice.getLoggedUser();
+		String userLevel=userservice.getLoggedUserLevel();
+		if(userLevel.endsWith("ADMIN")) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	private void ConfigureAccess() {
+		UserLogin user=userservice.getLoggedUser();
+		String userLevel=userservice.getLoggedUserLevel();
+		if(userLevel.startsWith("STATE")) {
+			//System.out.println("C");
+			state.setValue(user.getState());
+			stateColumn.setVisible(false);
+		}else if(userLevel.startsWith("DISTRICT")) {
+			//System.out.println("C");
+			state.setValue(user.getState());
+			district.setValue(user.getDistrict());
+			stateColumn.setVisible(false);
+			districtColumn.setVisible(false);
+		}else if(userLevel.startsWith("BLOCK")) {
+			state.setValue(user.getState());
+			district.setValue(user.getDistrict());
+			block.setValue(user.getBlock());
+			stateColumn.setVisible(false);
+			districtColumn.setVisible(false);
+			blockColumn.setVisible(false);
+		}else if(userLevel.startsWith("VILLAGE")) {
+			state.setValue(user.getState());
+			district.setValue(user.getDistrict());
+			block.setValue(user.getBlock());
+			village.setValue(user.getVillage());
+			stateColumn.setVisible(false);
+			districtColumn.setVisible(false);
+			blockColumn.setVisible(false);
+			villageColumn.setVisible(false);
+		}
+	}
+	private void ConfigureFormAccess() {
+		//UserLogin user=uservice.getLoggedUser();
+		String userLevel=userservice.getLoggedUserLevel();
+		if(userLevel.startsWith("STATE")) {
+			form.state.setVisible(false);
+		}else if(userLevel.startsWith("DISTRICT")) {
+			form.state.setVisible(false);
+			form.district.setVisible(false);
+		}else if(userLevel.startsWith("BLOCK")) {
+			form.state.setVisible(false);
+			form.district.setVisible(false);
+			form.block.setVisible(false);
+		}else if(userLevel.startsWith("VILLAGE")) {
+			form.state.setVisible(false);
+			form.district.setVisible(false);
+			form.block.setVisible(false);
+			form.village.setVisible(false);
+		}
+	}
+	private void ConfigureNewFormAccess() {
+		UserLogin user=userservice.getLoggedUser();
+		String userLevel=userservice.getLoggedUserLevel();
+		if(userLevel.startsWith("STATE")) {
+			form.state.setValue(user.getState());
+			form.state.setVisible(false);
+		}else if(userLevel.startsWith("DISTRICT")) {
+			//
+			form.state.setValue(user.getState());
+			form.district.setValue(user.getDistrict());
+			form.state.setVisible(false);
+			form.district.setVisible(false);
+		}else if(userLevel.startsWith("BLOCK")) {
+			form.state.setValue(user.getState());
+			form.district.setValue(user.getDistrict());
+			form.block.setValue(user.getBlock());
+			form.state.setVisible(false);
+			form.district.setVisible(false);
+			form.block.setVisible(false);
+		}else if(userLevel.startsWith("VILLAGE")) {
+			state.setValue(user.getState());
+			district.setValue(user.getDistrict());
+			block.setValue(user.getBlock());
+			village.setValue(user.getVillage());
+			form.state.setVisible(false);
+			form.district.setVisible(false);
+			form.block.setVisible(false);
+			form.village.setVisible(false);
+		}
 	}
 	public Component getTabs() {
 		TabSheet tabSheet = new TabSheet();
@@ -162,9 +261,10 @@ public class VillageView extends Div{
 		return topvl; 
 	}
 	private void ConfigureCombo() {
-		// TODO Auto-generated method stub
-		State state=dbservice.getState();
-		district.setItems(dbservice.getDistricts(state));
+		state.setItems(dbservice.getStates());
+		state.setItemLabelGenerator(state->state.getStateName());
+		state.addValueChangeListener(e->district.setItems(dbservice.getDistricts(e.getValue())));
+		//district.setItems(dbservice.getDistricts(state));
 		district.setItemLabelGenerator(district -> district.getDistrictName());
 		district.setPlaceholder("District");
 		district.addValueChangeListener(e -> getBlocks());
@@ -209,9 +309,9 @@ public class VillageView extends Div{
 		//List<VillageDetails> villagesList=dbservice.getVillageDetails(district.getValue());
 		grid.setItems(villagesList);
 		if(villagesList==null) {
-			districtColumn.setFooter("Total : 0");
+			geographicColumn.setFooter("Total : 0");
 		}else {
-			districtColumn.setFooter("Total : " + villagesList.size());
+			geographicColumn.setFooter("Total : " + villagesList.size());
 		}
 	}
 	public void updateDistrictList() {
@@ -220,9 +320,9 @@ public class VillageView extends Div{
 		List<VillageDetails> villagesList=dbservice.getVillageDetails(district.getValue(), search);
 		grid.setItems(villagesList);
 		if(villagesList==null) {
-			districtColumn.setFooter("Total : 0");
+			geographicColumn.setFooter("Total : 0");
 		}else {
-			districtColumn.setFooter("Total : " + villagesList.size());
+			geographicColumn.setFooter("Total : " + villagesList.size());
 		}
 	}
 	public void updateVillageList() {
@@ -231,16 +331,16 @@ public class VillageView extends Div{
 		List<VillageDetails> villagesList=dbservice.getVillageDetails( villageValue, search);
 		grid.setItems(villagesList);
 		if(villagesList==null) {
-			districtColumn.setFooter("Total : 0");
+			geographicColumn.setFooter("Total : 0");
 		}else {
-			districtColumn.setFooter("Total : " + villagesList.size());
+			geographicColumn.setFooter("Total : " + villagesList.size());
 		}
 	}
 	
 	public void updateList() {
 		if (district.getValue()==null){
 			grid.setItems(Collections.EMPTY_LIST);
-			districtColumn.setFooter("Total : 0");
+			geographicColumn.setFooter("Total : 0");
 		}else if(village.getValue()==null && block.getValue()==null) {
 			updateDistrictList();
 		}else if(village.getValue()==null && block.getValue()!=null) {
@@ -278,6 +378,8 @@ public class VillageView extends Div{
 		form.block.setEnabled(true);
 	}
 	public void editVillageDetails(VillageDetails crop) {
+		form.save.setText("Update");
+		form.delete.setVisible(isAdmin());
 		form.initFields();
 		form.setVisible(true);
 		if (crop == null) {
@@ -292,6 +394,7 @@ public class VillageView extends Div{
 			form3.village=crop.getVillage();
 			form4.village=crop.getVillage();
 			form5.village=crop.getVillage();
+			ConfigureFormAccess();
 			disableMasterFields();
 			ConfigureGrid1(crop.getVillage());
 			ConfigureGrid2(crop.getVillage());
@@ -308,7 +411,9 @@ public class VillageView extends Div{
 		grid.asSingleSelect().clear();
 		form.setVillageDetails(crop);
 		enableMasterFields();
+		form.save.setText("Save");
 		form.setVisible(true);
+		ConfigureNewFormAccess();
 	}
 	
 	public void saveVillageDetails(VillagesForm.SaveEvent event) {
@@ -320,19 +425,24 @@ public class VillageView extends Div{
 			//Notification.show("Error Encountered :"+e);		
 		}
 	}
+
 	public void deleteVillageDetails(VillagesForm.DeleteEvent event) {
+
 		try {
-			Village village=event.getVillageDetails().getVillage();
+			Village village = event.getVillageDetails().getVillage();
 			village.setInUse(false);
 			dbservice.updateVillage(village);
 			dbservice.deleteVillageDetails(event.getVillageDetails());
-			Notification.show("Deleted Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);;
+			Notification.show("Deleted Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 			updateList();
+		} catch (NullPointerException npe) {
+			Notification.show("Please Select A Village To Delete").addThemeVariants(NotificationVariant.LUMO_ERROR);
 		} catch (Exception e) {
 			e.printStackTrace();
 			// TODO Auto-generated catch block
-			Notification.show("Error Encountered :"+e);
+			Notification.show("Error Encountered :" + e);
 		}
+
 	}
 	public void editAnnexure1(VillageAnnexure1 annex1) {
 		if (annex1 == null) {
@@ -378,14 +488,11 @@ public class VillageView extends Div{
 	public void saveAnnexure2Details(Annexure2Form.SaveEvent event) {
 		try {
 			dbservice.updateAnnexure2Details(event.getVillageAnnexure2());
-			//updateGrid();
-			System.out.println(event.getVillageAnnexure2());
 			form2.save.setText("Add");
 			ConfigureGrid2(event.getVillageAnnexure2().getVillage());
 		} catch (Exception e) {
 			e.printStackTrace();
-			// TODO Auto-generated catch block
-			//Notification.show("Error Encountered :"+e);		
+					
 		}
 	}
 	public void deleteAnnexure2Details(Annexure2Form.DeleteEvent event) {
@@ -582,13 +689,16 @@ public class VillageView extends Div{
 		try {
 			grid.removeAllColumns();
 			//grid.addColumn(VillageDetails::getHabitat).setHeader("Test");
+			stateColumn = grid.addColumn(villagedetails-> villagedetails.getVillage()==null ? "":villagedetails.getVillage().getBlock().getDistrict().getState().getStateName())
+					.setHeader("State").setSortable(true).setAutoWidth(true).setResizable(true);
+			
 			districtColumn = grid.addColumn(villagedetails-> villagedetails.getVillage()==null ? "":villagedetails.getVillage().getBlock().getDistrict().getDistrictName())
 					.setHeader("District").setSortable(true).setAutoWidth(true).setResizable(true);
-			Grid.Column<VillageDetails> blockColumn = grid.addColumn(villagedetails-> villagedetails.getVillage()==null ? "":villagedetails.getVillage().getBlock().getBlockName())
+			blockColumn = grid.addColumn(villagedetails-> villagedetails.getVillage()==null ? "":villagedetails.getVillage().getBlock().getBlockName())
 					.setHeader("Block").setSortable(true).setAutoWidth(true).setResizable(true);
-			Grid.Column<VillageDetails> villageColumn = grid.addColumn(villagedetails-> villagedetails.getVillage()==null ? "":villagedetails.getVillage().getVillageName())
+			villageColumn = grid.addColumn(villagedetails-> villagedetails.getVillage()==null ? "":villagedetails.getVillage().getVillageName())
 					.setHeader("Village").setSortable(true).setAutoWidth(true).setResizable(true);
-			grid.addColumn("geographicArea").setHeader("Geographic Area").setAutoWidth(true).setResizable(true);
+			geographicColumn=grid.addColumn("geographicArea").setHeader("Geographic Area").setAutoWidth(true).setResizable(true);
 			grid.addColumn("habitat").setHeader("Habitat & Topography").setAutoWidth(true).setResizable(true);
 			grid.addColumn(villagedetails->villagedetails.getMalePopn()).setHeader("Male Population").setAutoWidth(true).setResizable(true);
 			grid.addColumn("femalePopn").setHeader("Female Population").setAutoWidth(true).setResizable(true);
@@ -608,6 +718,7 @@ public class VillageView extends Div{
 			grid.addColumn("sownArea").setHeader("Net Sown Area").setAutoWidth(true).setResizable(true);
 			grid.asSingleSelect().addValueChangeListener(e -> editVillageDetails(e.getValue()));
 			HeaderRow headerRow = grid.appendHeaderRow();
+			headerRow.getCell(stateColumn).setComponent(state);
 			headerRow.getCell(districtColumn).setComponent(district);
 			headerRow.getCell(blockColumn).setComponent(block);
 			headerRow.getCell(villageColumn).setComponent(village);
@@ -624,10 +735,10 @@ public class VillageView extends Div{
 		try {
 			List<VillageDetails> crops=dbservice.getVillageDetails();
 			//grid.setItems(crops);
-			districtColumn.setFooter("Total : " + crops.size());
+			geographicColumn.setFooter("Total : " + crops.size());
 			grid.setSizeFull();
 		} catch (Exception e) {
-			districtColumn.setFooter("Total : 0");
+			geographicColumn.setFooter("Total : 0");
 			e.printStackTrace();
 		}
 	}
