@@ -7,6 +7,7 @@ import com.megpbr.data.entity.MasterCommercial;
 import com.megpbr.data.entity.MasterFormat;
 import com.megpbr.data.entity.MasterStatus;
 import com.megpbr.data.entity.MasterWildhome;
+import com.megpbr.data.entity.State;
 import com.megpbr.data.entity.UserLogin;
 import com.megpbr.data.entity.Village;
 
@@ -80,6 +81,9 @@ public class Crops {
 	@ManyToOne
 	@JoinColumn(name = "village", referencedColumnName = "villageCode")
 	private Village village;
+	@ManyToOne
+	@JoinColumn(name = "state", referencedColumnName = "stateCode")
+	private State state;
 	@ManyToOne
 	@JoinColumn(name = "commercial", referencedColumnName = "id")
 	private MasterCommercial commercial;
@@ -339,6 +343,13 @@ public class Crops {
 	public void setEnteredBy(UserLogin enteredBy) {
 		this.enteredBy = enteredBy;
 	}
+	public State getState() {
+		return state;
+	}
+	public void setState(State state) {
+		this.state = state;
+	}
+	
 	
 	
 	

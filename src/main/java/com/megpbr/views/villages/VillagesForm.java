@@ -102,7 +102,7 @@ public class VillagesForm extends Div {
 	//IntegerField
 	IntegerField malePopn=new IntegerField("Male Population");
 	IntegerField femalePopn=new IntegerField("Female Population");
-	NumberField totalPopn=new NumberField("Total Population");
+	IntegerField totalPopn=new IntegerField("Total Population");
 	TextField rainfall = new TextField("Rainfall (mm)");
 	//BigDecimalField rainfall = new BigDecimalField("Rainfall(mm)");
 	//BigDecimalField temperature = new BigDecimalField("Temperature(C)");
@@ -315,7 +315,19 @@ public class VillagesForm extends Div {
 		district.getStyle().set("--vaadin-combo-box-overlay-width", "200px");
 		block.getStyle().set("--vaadin-combo-box-overlay-width", "200px");
 		village.getStyle().set("--vaadin-combo-box-overlay-width", "200px");
-		
+		malePopn.addValueChangeListener(e->getTotalPopn());
+		femalePopn.addValueChangeListener(e->getTotalPopn());
+	}
+	public void getTotalPopn() {
+		int mpop=0;
+		int fpop=0;
+		if(malePopn.getValue()!=null) {
+			mpop=malePopn.getValue();
+		}
+		if(femalePopn.getValue()!=null) {
+			fpop=femalePopn.getValue();
+		}
+		totalPopn.setValue(mpop+fpop);
 	}
 	public void initFields2x() {
 		geographicArea.setTooltipText("Geographic Population in Ha");

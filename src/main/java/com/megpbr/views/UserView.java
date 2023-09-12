@@ -170,7 +170,7 @@ public class UserView {
 						}
 						role.setUser(newUser);
 						userservice.update(role);
-						Notification.show("User "+userName +" Created Successfully")
+						Notification.show("User "+ name.getValue()+" Created Successfully")
 								.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 						clearFields();
 					}else {

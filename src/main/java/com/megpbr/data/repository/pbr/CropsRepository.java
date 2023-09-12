@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import com.megpbr.data.entity.Block;
 import com.megpbr.data.entity.District;
 import com.megpbr.data.entity.MasterFormat;
+import com.megpbr.data.entity.State;
 import com.megpbr.data.entity.Village;
 import com.megpbr.data.entity.pbr.Crops;
 
@@ -16,13 +17,19 @@ import java.util.List;
 public interface CropsRepository extends JpaRepository<Crops, Long>{
 	Crops findTopByScientificName(String scientificName);
 	List<Crops> findByFormatOrderByScientificName(MasterFormat format);
-	List<Crops> findByFormatAndMaster(MasterFormat format, boolean master);
+	List<Crops> findByStateAndFormatAndMaster(State state,MasterFormat format, boolean master);
+	//List<Crops> findByDistrict(District district);
 	List<Crops> findAllByOrderByHabitat();
 	List<Crops> findByFormat(MasterFormat format);
 	List<Crops> findDistinctByFormat(MasterFormat format);
-	@Query("select c from Crops c where c.master=true and c.format= :format and (lower(c.scientificName) like lower(concat('%', :searchTerm, '%'))or lower(c.localName) like lower(concat('%', :searchTerm, '%'))or lower(c.type) like lower(concat('%', :searchTerm, '%'))) order by c.id Desc")
-	List<Crops> search(@Param("searchTerm") String searchTerm, @Param("format") MasterFormat format);
 	
+	//MasterData
+	@Query("select c from Crops c where c.state=:state and c.master=true and c.format= :format and (lower(c.scientificName) like lower(concat('%', :searchTerm, '%'))or lower(c.localName) like lower(concat('%', :searchTerm, '%'))or lower(c.type) like lower(concat('%', :searchTerm, '%'))) order by c.id Desc")
+	List<Crops> search(@Param("state") State state,@Param("searchTerm") String searchTerm, @Param("format") MasterFormat format);
+	
+	//District Count
+	@Query("select  count(*) from Crops c join c.village d join d.block e join e.district f where c.master =:master and   district=:district " )
+	int getCropsCount(@Param("district") District district, @Param("master") boolean master);
 	
 	//District Data
 	@Query("select  c from Crops c join c.village d join d.block e join e.district f where c.format= :format and  (district=:district or :district is null) and(lower(c.scientificName) like lower(concat('%', :searchTerm, '%'))or lower(c.localName) like lower(concat('%', :searchTerm, '%'))or lower(c.type) like lower(concat('%', :searchTerm, '%')))" )

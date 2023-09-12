@@ -48,6 +48,7 @@ import com.megpbr.data.repository.MasterStatusRepository;
 import com.megpbr.data.repository.MasterWildhomeRepository;
 import com.megpbr.data.repository.StateRepository;
 import com.megpbr.data.repository.UserLevelRepository;
+import com.megpbr.data.repository.UserRepository;
 import com.megpbr.data.repository.VillageAnnexure1Repository;
 import com.megpbr.data.repository.VillageAnnexure2Repository;
 import com.megpbr.data.repository.VillageAnnexure3Repository;
@@ -112,16 +113,27 @@ public class Dbservice {
 	private UserService userservice;
 	@Autowired
 	private UserLevelRepository levelrepo;
+	@Autowired
+	private UserRepository repository;
 	
 	public UserDetails getloggeduser() {
 		//Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		return secservice.getAuthenticatedUser();
 	}
-	
-	
 
+	public UserDetails getUser() {
+		return secservice.getAuthenticatedUser();
+	}
+	public String getLoggedUserName() {
+    	return getUser().getUsername();
+    }
+	 
+    public UserLogin getLoggedUser() {
+    	return repository.findByUserName(getLoggedUserName());
+    }
 	public State getState() {
-		return st_repo.findByStateName("Meghalaya");
+		return getLoggedUser().getState();
+		//return st_repo.findByStateName("Meghalaya");
 	}
 	public List<State> getStates(){
 		return st_repo.findAll();
@@ -216,6 +228,7 @@ public class Dbservice {
 	}
 	
 	public void updateCrop(Crops entity) {
+		entity.setState(getState());
 		crepo.save(entity);
 		
 	}

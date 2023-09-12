@@ -32,6 +32,8 @@ public class CropService {
 	private BlockRepository brepo;
 	@Autowired
 	private VillageRepository vrepo;
+	@Autowired
+	private Dbservice dbservice;
 	
 	public List<Crops> findCrops(){
 		return crepo.findAll();
@@ -41,10 +43,10 @@ public class CropService {
 		return crepo.findByFormat(format);
 	}
 	public List<Crops> findCropsByFormatAndMaster(MasterFormat format, boolean master){
-		return crepo.findByFormatAndMaster(format, master);
+		return crepo.findByStateAndFormatAndMaster(dbservice.getState(),format, master);
 	}
 	public List<Crops> searchCropsFilter(String search, MasterFormat format){
-		return crepo.search(search, format);
+		return crepo.search(dbservice.getState(), search, format);
 	}
 	public List<Crops> searchCropsFilter(Village villages, String search, MasterFormat format, boolean master){
 		return crepo.searchFilterByMaster(villages, search, format, master);

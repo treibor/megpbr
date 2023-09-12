@@ -115,36 +115,49 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
+			<artifactId>
+				spring-boot-starter-security</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
+			<groupId>
+				org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
+			<groupId>
+				org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
-			<scope>provided</scope>
+			<scope>
+				provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
+			<groupId>
+				org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
-			<scope>test</scope>
+			<scope>
+				test</scope>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/nl.captcha/simplecaptcha -->
+		<dependency>
+			<groupId>org.vaadin.addons</groupId>
+			<artifactId>jcaptchafield</artifactId>
+			<version>1.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.storedobject.chart</groupId>
+			<artifactId>
+				so-charts</artifactId>
+			<version>3.2.4</version>
+		</dependency>
+
+
 	</dependencies>
 
     <build>
         <defaultGoal>
 			spring-boot:run</defaultGoal>
         <plugins>
-			
-   
-            <plugin>
+	         <plugin>
                 <groupId>
 					org.springframework.boot</groupId>
                 <artifactId>
@@ -173,10 +186,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
+
 		</plugins>
 	</build>
 
@@ -211,7 +221,8 @@
                             <execution>
                                 <goals>
 									<goal>prepare-frontend</goal>
-                                    <goal>build-frontend</goal>
+                                    <goal>
+										build-frontend</goal>
 								</goals>
                                 <phase>
 									compile</phase>

@@ -140,7 +140,7 @@ public class MainLayout extends AppLayout {
     private void addDrawerContent() {
         H1 appName = new H1("Hi, "+ userservice.getLoggedUserName());
         appName.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
-        //appName.getStyle().set("font-color", "red");
+        //appName.add
         Header header = new Header(appName);
         Scroller scroller = new Scroller(createNavigation());
         addToDrawer(header, scroller, createFooter());

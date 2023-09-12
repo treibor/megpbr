@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import com.megpbr.data.entity.Block;
 import com.megpbr.data.entity.District;
 import com.megpbr.data.entity.MasterFormat;
+import com.megpbr.data.entity.State;
 import com.megpbr.data.entity.Village;
 import com.megpbr.data.entity.pbr.Scapes;
 import com.megpbr.data.entity.pbr.Scapes;
@@ -17,11 +18,13 @@ public interface ScapeRepository extends JpaRepository<Scapes, Long>{
 	
 	Scapes findTopByFaunaPopulation(String fauna);
 	List<Scapes> findByFormatOrderByFaunaPopulation(MasterFormat format);
-	List<Scapes> findByFormatAndMasterOrderByFaunaPopulation(MasterFormat format, boolean master);
+	List<Scapes> findByStateAndFormatAndMasterOrderByFaunaPopulation(State state, MasterFormat format, boolean master);
+	//Scapes Count
+	@Query("select  count(*) from Scapes c join c.village d join d.block e join e.district f where  c.master=:master and district=:district " )
+	int getScapesCount(@Param("district") District district, @Param("master") boolean master);
 	
-	
-	@Query("select c from Scapes c where c.master=true and c.format= :format and (lower(c.faunaPopulation) like lower(concat('%', :searchTerm, '%'))or lower(c.floraOccupation) like lower(concat('%', :searchTerm, '%'))or lower(c.typeAgriOccupation) like lower(concat('%', :searchTerm, '%'))) order by c.id Desc")
-	List<Scapes> search(@Param("searchTerm") String searchTerm, @Param("format") MasterFormat format);
+	@Query("select c from Scapes c where c.state=:state and c.master=true and c.format= :format and (lower(c.faunaPopulation) like lower(concat('%', :searchTerm, '%'))or lower(c.floraOccupation) like lower(concat('%', :searchTerm, '%'))or lower(c.typeAgriOccupation) like lower(concat('%', :searchTerm, '%'))) order by c.id Desc")
+	List<Scapes> search(@Param("state") State state,@Param("searchTerm") String searchTerm, @Param("format") MasterFormat format);
 	
 	//District Data
 	@Query("select  c from Scapes c join c.village d join d.block e join e.district f where c.format= :format and  (district=:district or :district is null) and(lower(c.faunaPopulation) like lower(concat('%', :searchTerm, '%'))or lower(c.floraOccupation) like lower(concat('%', :searchTerm, '%'))or lower(c.typeAgriOccupation) like lower(concat('%', :searchTerm, '%')))" )

@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import com.megpbr.data.entity.Block;
 import com.megpbr.data.entity.District;
 import com.megpbr.data.entity.MasterFormat;
+import com.megpbr.data.entity.State;
 import com.megpbr.data.entity.Village;
 import com.megpbr.data.entity.pbr.Crops;
 import com.megpbr.data.entity.pbr.Markets;
@@ -16,10 +17,14 @@ import com.megpbr.data.entity.pbr.Markets;
 public interface MarketsRepository extends JpaRepository<Markets, Long>{
 	Markets findTopByName(String fauna);
 	List<Markets> findByFormatOrderByName(MasterFormat format);
-	List<Markets> findByFormatAndMaster(MasterFormat format, boolean master);
+	List<Markets> findByStateAndFormatAndMaster(State state, MasterFormat format, boolean master);
+	//Markets Count
+	@Query("select  count(*) from Markets c join c.village d join d.block e join e.district f where c.master=:master and district=:district " )
+	int getMarketsCount(@Param("district") District district, @Param("master") boolean master);
 	
-	@Query("select c from Markets c where c.master=true and c.format= :format and (lower(c.name) like lower(concat('%', :searchTerm, '%'))or lower(c.frequency) like lower(concat('%', :searchTerm, '%'))or lower(c.animalType) like lower(concat('%', :searchTerm, '%'))) order by c.id Desc")
-	List<Markets> search(@Param("searchTerm") String searchTerm, @Param("format") MasterFormat format);
+	//Master Data
+	@Query("select c from Markets c where c.state=:state and c.master=true and c.format= :format and (lower(c.name) like lower(concat('%', :searchTerm, '%'))or lower(c.frequency) like lower(concat('%', :searchTerm, '%'))or lower(c.animalType) like lower(concat('%', :searchTerm, '%'))) order by c.id Desc")
+	List<Markets> search(@Param("state") State state,@Param("searchTerm") String searchTerm, @Param("format") MasterFormat format);
 	// District Data
 	@Query("select  c from Markets c join c.village d join d.block e join e.district f where c.format= :format and  (district=:district or :district is null) and(lower(c.name) like lower(concat('%', :searchTerm, '%'))or lower(c.frequency) like lower(concat('%', :searchTerm, '%'))or lower(c.animalType) like lower(concat('%', :searchTerm, '%')))")
 	List<Markets> searchFilterMarketsData(@Param("district") District district, @Param("searchTerm") String searchTerm,

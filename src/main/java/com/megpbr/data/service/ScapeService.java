@@ -34,7 +34,8 @@ public class ScapeService {
 	private BlockRepository brepo;
 	@Autowired
 	private VillageRepository vrepo;
-	
+	@Autowired
+	private Dbservice dbservice;
 	
 	public Scapes getScapeByFauna(String fauna) {
 		return srepo.findTopByFaunaPopulation(fauna);
@@ -43,17 +44,18 @@ public class ScapeService {
 		return srepo.findByFormatOrderByFaunaPopulation(format);
 	}
 	public List<Scapes> getScapesByFormatAndMaster(MasterFormat format, boolean master){
-		return srepo.findByFormatAndMasterOrderByFaunaPopulation(format, master);
+		return srepo.findByStateAndFormatAndMasterOrderByFaunaPopulation(dbservice.getState(),format, master);
 	}
 	
 	public void saveScape(Scapes scape) {
+		scape.setState(dbservice.getState());
 		srepo.save(scape);
 	}
 	public void deleteScape(Scapes scape) {
 		srepo.delete(scape);
 	}
 	public List<Scapes> searchScapeFilter(String search, MasterFormat format){
-		return srepo.search(search, format);
+		return srepo.search(dbservice.getState(),search, format);
 	}
 	public List<Scapes> searchScapeFilter(Village village, String search, MasterFormat format){
 		return srepo.searchFilterScapesData(village,search, format);

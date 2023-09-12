@@ -35,7 +35,8 @@ public class MarketsService {
 	private BlockRepository brepo;
 	@Autowired
 	private VillageRepository vrepo;
-	
+	@Autowired
+	private Dbservice dbservice;
 	
 	public Markets getMarketByName(String market) {
 		return srepo.findTopByName(market);
@@ -44,11 +45,11 @@ public class MarketsService {
 		return srepo.findByFormatOrderByName(format);
 	}
 	public List<Markets> getMarketsByFormat(MasterFormat format, boolean master){
-		return srepo.findByFormatAndMaster(format, master);
+		return srepo.findByStateAndFormatAndMaster(dbservice.getState(),format,  master);
 	}
 
 	public List<Markets> searchMarketsFilter(String search, MasterFormat format){
-		return srepo.search(search, format);
+		return srepo.search(dbservice.getState(),search, format);
 	}
 	public List<Markets> searchMarketsFilter(Village villages, String search, MasterFormat format, boolean master){
 		return srepo.searchFilterMarketsData(villages, search, format, master);
@@ -64,6 +65,7 @@ public class MarketsService {
 	}
 	
 	public void saveMarket(Markets market) {
+		market.setState(dbservice.getState());
 		srepo.save(market);
 	}
 	public void deleteMarket(Markets market) {

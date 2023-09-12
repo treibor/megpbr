@@ -7,6 +7,7 @@ import com.megpbr.data.entity.MasterCommercial;
 import com.megpbr.data.entity.MasterFormat;
 import com.megpbr.data.entity.MasterStatus;
 import com.megpbr.data.entity.MasterWildhome;
+import com.megpbr.data.entity.State;
 import com.megpbr.data.entity.UserLogin;
 import com.megpbr.data.entity.Village;
 
@@ -79,7 +80,9 @@ public class Scapes {
 	@ManyToOne
 	@JoinColumn(name = "format", referencedColumnName = "id")
 	private MasterFormat format;
-	
+	@ManyToOne
+	@JoinColumn(name = "state", referencedColumnName = "stateCode")
+	private State state;
 	@ManyToOne
 	@JoinColumn(name = "village", referencedColumnName = "villageCode")
 	private Village village;
@@ -373,6 +376,14 @@ public class Scapes {
 
 	
 	
+
+	public State getState() {
+		return state;
+	}
+
+	public void setState(State state) {
+		this.state = state;
+	}
 
 	public MasterApproval getApproved() {
 		return approved;
