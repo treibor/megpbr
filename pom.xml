@@ -5,7 +5,7 @@
     <!-- Project from https://start.vaadin.com/project/74fd66dc-ead8-4db0-abad-724e1b9f2c03 -->
     <groupId>com.application.megpbr</groupId>
     <artifactId>megpbr</artifactId>
-    <name>megpbr</name>
+    <name>megpbrtest</name>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
@@ -140,17 +140,33 @@
 		<!-- https://mvnrepository.com/artifact/nl.captcha/simplecaptcha -->
 		<dependency>
 			<groupId>org.vaadin.addons</groupId>
-			<artifactId>jcaptchafield</artifactId>
+			<artifactId>
+				jcaptchafield</artifactId>
 			<version>1.0.1</version>
 		</dependency>
 		<dependency>
-			<groupId>com.storedobject.chart</groupId>
+			<groupId>
+				com.storedobject.chart</groupId>
 			<artifactId>
 				so-charts</artifactId>
 			<version>3.2.4</version>
 		</dependency>
-
-
+		<dependency>
+			<groupId>
+				org.vaadin.addons.flowingcode</groupId>
+			<artifactId>extended-login</artifactId>
+			<version>1.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>6.20.6</version>
+		</dependency>
+		<dependency>
+			<groupId>com.mpobjects.jasperreports.font</groupId>
+			<artifactId>jasperreports-fonts-liberation</artifactId>
+			<version>2.1.2</version>
+		</dependency>
 	</dependencies>
 
     <build>

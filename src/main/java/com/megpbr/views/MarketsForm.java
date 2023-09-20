@@ -373,8 +373,8 @@ public class MarketsForm extends Div {
 		formbasic.add(day, 1);
 		formbasic.add(animalType, 1);
 		formbasic.add(transactions, 1);
-		formbasic.add(placesFrom, 1);
-		formbasic.add(placesTo, 1);
+		formbasic.add(placesFrom, 2);
+		formbasic.add(placesTo, 2);
 		formbasic.add(fishLocation, 1);
 		formbasic.add(fishType, 1);
 		formbasic.add(fishSource, 1);

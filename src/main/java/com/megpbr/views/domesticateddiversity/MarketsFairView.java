@@ -203,7 +203,7 @@ public class MarketsFairView extends HorizontalLayout{
 		return content;
 	}
 	private Component getToolbar() {
-		filterText.setPlaceholder("Search by Market Name/ Type of Animal");
+		filterText.setPlaceholder("Search by Market Name/ Types of Animal");
 		filterText.setClearButtonVisible(true);
 		filterText.setValueChangeMode(ValueChangeMode.LAZY);
 		filterText.addValueChangeListener(e -> updateGrid());

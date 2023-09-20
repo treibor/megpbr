@@ -38,7 +38,10 @@ public class CropService {
 	public List<Crops> findCrops(){
 		return crepo.findAll();
 	}
-	
+	public List<Crops> findCropsByFormatAndVillage(int formatint, Village village){
+		MasterFormat format=dbservice.getFormat(formatint);
+		return crepo.findByFormatAndVillage(format, village);
+	}
 	public List<Crops> findCropsByFormat(MasterFormat format){
 		return crepo.findByFormat(format);
 	}
@@ -103,8 +106,8 @@ public class CropService {
 	}
 	
 	public Crops findCropBySientificName(String sname) {
-		return crepo.findTopByScientificName(sname);
-		
+		//return crepo.findTopByScientificName(sname);
+		return crepo.findTopByScientificNameOrderByIdDesc(sname);
 	}
 	public void deleteCrop(Crops crop) {
 		crepo.delete(crop);

@@ -5,11 +5,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +22,7 @@ import com.megpbr.data.entity.AuditTrail;
 import com.megpbr.data.entity.UserLogin;
 import com.megpbr.data.repository.AuditRepository;
 import com.megpbr.data.repository.UserRepository;
+import com.megpbr.views.villages.LoginView;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -33,17 +38,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    	//LoginView abc=new LoginView();
         UserLogin user = userRepository.findByUserName(username);
         AuditTrail audit=new AuditTrail();
     	if (user == null) {
         	throw new UsernameNotFoundException("No user present with username: " + username);
+        	
         } else {
-        	audit.setAction("Login Successful");
-        	audit.setActionBy(username);
-        	audit.setActionOn(LocalDateTime.now());
-        	auditrepo.save(audit);
+        	//System.out.println("Test1");
         	return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getHashedPassword(),
                     getAuthorities(user));
+        	
         }
     }
 
@@ -55,5 +60,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
       
 
     }
+    
+
+   
 
 }

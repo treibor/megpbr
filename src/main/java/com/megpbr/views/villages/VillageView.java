@@ -3,12 +3,20 @@ package com.megpbr.views.villages;
 
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
@@ -30,6 +38,7 @@ import com.megpbr.data.service.AuditService;
 import com.megpbr.data.service.Dbservice;
 import com.megpbr.data.service.UserService;
 import com.megpbr.views.MainLayout;
+
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
@@ -65,6 +74,13 @@ import com.vaadin.flow.server.StreamResource;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.PermitAll;
 import jakarta.transaction.Transactional;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+
 
 @PermitAll
 @PageTitle("Village Details")
@@ -110,6 +126,8 @@ public class VillageView extends Div{
 	Grid.Column<VillageDetails> blockColumn;
 	Grid.Column<VillageDetails> villageColumn;
 	Grid.Column<VillageDetails> geographicColumn;
+	Button pbreport1=new Button("Pbr I");
+	Button pbreport2=new Button("Pbr 2");
 	public VillageView(Dbservice service, UserService userservice, UserService uservice, AuditService auditservice) {
 		this.dbservice=service;
 		this.userservice=userservice;
@@ -261,11 +279,51 @@ public class VillageView extends Div{
 		addButton.setPrefixComponent(LineAwesomeIcon.PLUS_CIRCLE_SOLID.create());
 		//String tempformatName=format.getFormatName();
 		addButton.addClickListener(e->addVillageDetails(new VillageDetails()));
-		HorizontalLayout topvl=new HorizontalLayout(filterText,addButton);
+		pbreport1.addClickListener(e->generatePbr1Report());
+		//pbreport2.addClickListener(e->generatePbr2Report());
+		HorizontalLayout topvl=new HorizontalLayout(filterText,addButton, pbreport1, pbreport2);
 		topvl.setAlignItems(FlexComponent.Alignment.BASELINE);
 		topvl.setWidthFull();
 		return topvl; 
 	}
+
+
+	private void generatePbr1Report() {
+		try {
+			String reportPath = "F:";
+			URL res = getClass().getClassLoader().getResource("report/Part1.jrxml");
+			File file = Paths.get(res.toURI()).toFile();
+			String absolutePath = file.getAbsolutePath();
+			//String reportPath = absolutePath.substring(0, absolutePath.length() - 15);
+			Village selectedvillage= village.getValue();
+			//System.out.println(selectedvillage.getVillageName());
+			List<VillageDetails> details = dbservice.getVillageDetails(selectedvillage, "");
+			//System.out.println(details.size());
+			Resource resource = new ClassPathResource("report/Part1.jrxml");
+			InputStream employeeReportStream = resource.getInputStream();
+			JasperReport jasperReport = JasperCompileManager.compileReport(employeeReportStream);
+			JRBeanCollectionDataSource jrBeanCollectionDataSource = new JRBeanCollectionDataSource(details);
+			Map<String, Object> parameters = new HashMap<>();
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters,
+					jrBeanCollectionDataSource);
+			JasperExportManager.exportReportToPdfFile(jasperPrint, reportPath + "//detailreport.pdf");
+			File a = new File(reportPath + "//detailreport.pdf");
+			/*StreamResource resourcerange = new StreamResource("DetailedReport.pdf", () -> createResource(a));
+			PdfViewer pdfViewerrange = new PdfViewer();
+			pdfViewerrange.setSrc(resourcerange);279376
+			hl4.setVisible(true);
+			hl4.setSizeFull();
+			hl4.add(pdfViewerrange);
+			*/
+			//System.out.println("Sexess");
+
+		} catch (Exception e) {
+			// notify.show("Error:" + e, 5000, Position.TOP_CENTER);
+			e.printStackTrace();
+		}
+
+	}
+	
 	private void ConfigureCombo() {
 		state.setItems(dbservice.getStates());
 		state.setPlaceholder("State");
@@ -780,6 +838,7 @@ public class VillageView extends Div{
 			grid.addColumn("fallowArea").setHeader("Fallow Land(Ha)").setAutoWidth(true).setResizable(true);
 			grid.addColumn("currentFallowArea").setHeader("Current Fallow Land(Ha)").setAutoWidth(true).setResizable(true);
 			grid.addColumn("sownArea").setHeader("Net Sown Area").setAutoWidth(true).setResizable(true);
+			grid.addColumn(villagedetails->villagedetails.getManagementregime().getManagementregime()).setHeader("Management Regime").setAutoWidth(true).setResizable(true);
 			grid.asSingleSelect().addValueChangeListener(e -> editVillageDetails(e.getValue()));
 			HeaderRow headerRow = grid.appendHeaderRow();
 			headerRow.getCell(stateColumn).setComponent(state);

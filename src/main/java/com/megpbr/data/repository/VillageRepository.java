@@ -14,6 +14,8 @@ import java.util.List;
 
 public interface VillageRepository extends JpaRepository<Village, Long>{
 	List<Village> findByBlock(Block block);
+	List<Village> findById(long id);
+	Village findByVillageCode(long id);
 	List<Village> findByBlockAndInUse(Block block, boolean inUse);
 	//List<Village> findByVillagedetailsIn(List<VillageDetails> villagedetails);
 	

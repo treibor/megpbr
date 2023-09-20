@@ -203,7 +203,7 @@ public class PeopleScapeView extends HorizontalLayout{
 		return content;
 	}
 	private Component getToolbar() {
-		filterText.setPlaceholder("Search by Market Name/ Type of Animal ");
+		filterText.setPlaceholder("Search by Occupation ");
 		filterText.setClearButtonVisible(true);
 		filterText.setValueChangeMode(ValueChangeMode.LAZY);
 		filterText.addValueChangeListener(e -> updateGrid());

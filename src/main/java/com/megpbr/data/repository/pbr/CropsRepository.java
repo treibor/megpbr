@@ -15,12 +15,15 @@ import java.util.List;
 
 
 public interface CropsRepository extends JpaRepository<Crops, Long>{
+	Crops findTopByScientificNameOrderByIdDesc(String scientificName);
 	Crops findTopByScientificName(String scientificName);
 	List<Crops> findByFormatOrderByScientificName(MasterFormat format);
 	List<Crops> findByStateAndFormatAndMaster(State state,MasterFormat format, boolean master);
 	//List<Crops> findByDistrict(District district);
 	List<Crops> findAllByOrderByHabitat();
 	List<Crops> findByFormat(MasterFormat format);
+	//For Pbr2 Report
+	List<Crops> findByFormatAndVillage(MasterFormat format, Village village);
 	List<Crops> findDistinctByFormat(MasterFormat format);
 	
 	//MasterData

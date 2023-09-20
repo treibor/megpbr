@@ -106,7 +106,7 @@ public class MainLayout extends AppLayout {
 		MenuItem item = menuBar.addItem(avatarImage);
 		SubMenu subMenu = item.getSubMenu();
 		subMenu.addItem("About");
-		subMenu.addItem("Change Password");
+		subMenu.addItem("Change Password", e->changePassword());
 		subMenu.addItem("Create User",e->createUser());
 		subMenu.addItem("Logout", e -> securityService.logout());
         DrawerToggle toggle = new DrawerToggle();
@@ -220,7 +220,8 @@ public class MainLayout extends AppLayout {
         category3.addItem(format18,format19,format20,format21,format22,format23,format24,format25,format26,format27);
         nav.addItem(category1, category2, category3);
         nav.addItem(new SideNavItem("Villages Details", VillageView.class, LineAwesomeIcon.AVIANEX.create()));
-          return nav;
+        nav.addItem(new SideNavItem("Report", ReportView.class, LineAwesomeIcon.ACCESSIBLE_ICON.create()));
+        return nav;
     }
 
     private Footer createFooter() {
@@ -241,8 +242,12 @@ public class MainLayout extends AppLayout {
     
 	
 	public void createUser() {
-		UserView user=new UserView(dbservice, userservice);
+		final UserView user=new UserView(dbservice, userservice);
 		user.createUser();
+	}
+	public void changePassword() {
+		final UserView user=new UserView(dbservice, userservice);
+		user.changePassword();
 	}
 }
 

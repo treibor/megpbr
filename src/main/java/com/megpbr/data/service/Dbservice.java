@@ -157,6 +157,12 @@ public class Dbservice {
 	public List <Village> getVillages(){
 		return vrepo.findAll();
 	}
+	public List <Village> getVillages(long id){
+		return vrepo.findById(id);
+	}
+	public Village getVillagesByVillageCode(long id){
+		return vrepo.findByVillageCode(id);
+	}
 	public List <Village> getVillages(Block block){
 		return vrepo.findByBlock(block);
 	}
@@ -166,6 +172,9 @@ public class Dbservice {
 	
 	public List <Village> getVillagesTest(Block block){
 		return vrepo.findByBlock(block);
+	}
+	public List <VillageDetails> getVillageDetail(Village village){
+		return vdrepo.findByVillage(village);
 	}
 	public List <VillageDetails> getVillageDetails(){
 		return vdrepo.findAll();

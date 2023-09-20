@@ -1,0 +1,598 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.6.final using JasperReports Library version 6.20.6-5c96b6aa8a39ac1dc6b6bea4b81168e16dd39231  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Cherry_1" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="13acf49e-4913-4d1b-bccc-113817ad15d1">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.jrdax"/>
+	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false"/>
+	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false"/>
+	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true"/>
+	<style name="Detail" mode="Transparent" fontName="Times New Roman"/>
+	<style name="Row" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style mode="Opaque" backcolor="#F0EFEF"/>
+		</conditionalStyle>
+	</style>
+	<queryString language="SQL">
+		<![CDATA[select state.state_name, district.district_name, block.block_name, village.village_name, village.village_code,village_details.barren_area , village_details.current_fallow_area ,
+  village_details.fallow_area , village_details.female_popn , village_details.forest_area , village_details.geo_units ,
+   village_details.geographic_area , village_details.habitat , village_details.in_use , village_details.land_use , village_details.male_popn,
+     village_details.misc_area , village_details.nonagri_area , village_details.pasture_area , village_details.pbr_date , village_details.rainfall ,
+      village_details.sown_area , village_details.temperature , village_details.waste_area , village_details.weather_patterns, master_management_regime.managementregime
+ from  megpbr.village village
+ 
+ inner join megpbr.village_details village_details on village_details.village=village.village_code
+ inner join megpbr.block on block.block_code= village.block
+ inner join megpbr.district on district.district_code=block.district 
+ inner join megpbr.state on state.state_code=district.state 
+ inner join megpbr.master_management_regime on master_management_regime.id=village_details.managementregime
+  where village.village_code=277263]]>
+	</queryString>
+	<field name="village.block.district.state.stateName" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="state_name"/>
+		<property name="com.jaspersoft.studio.field.label" value="state_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="state"/>
+	</field>
+	<field name="village.block.district.districtName" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="district_name"/>
+		<property name="com.jaspersoft.studio.field.label" value="district_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="district"/>
+	</field>
+	<field name="village.block.blockName" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="block_name"/>
+		<property name="com.jaspersoft.studio.field.label" value="block_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="block"/>
+	</field>
+	<field name="village.villageName" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="village_name"/>
+		<property name="com.jaspersoft.studio.field.label" value="village_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="village"/>
+	</field>
+	<field name="village.villageCode" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="village_code"/>
+		<property name="com.jaspersoft.studio.field.label" value="village_code"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="village"/>
+	</field>
+	<field name="barrenArea" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="barren_area"/>
+		<property name="com.jaspersoft.studio.field.label" value="barren_area"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="village_details"/>
+	</field>
+	<field name="currentFallowArea" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="current_fallow_area"/>
+		<property name="com.jaspersoft.studio.field.label" value="current_fallow_area"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="village_details"/>
+	</field>
+	<field name="fallowArea" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="fallow_area"/>
+		<property name="com.jaspersoft.studio.field.label" value="fallow_area"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="village_details"/>
+	</field>
+	<field name="femalePopn" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="female_popn"/>
+		<property name="com.jaspersoft.studio.field.label" value="female_popn"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="village_details"/>
+	</field>
+	<field name="forestArea" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="forest_area"/>
+		<property name="com.jaspersoft.studio.field.label" value="forest_area"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="village_details"/>
+	</field>
+	<field name="geoUnits" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="geo_units"/>
+		<property name="com.jaspersoft.studio.field.label" value="geo_units"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="village_details"/>
+	</field>
+	<field name="geographicArea" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="geographic_area"/>
+		<property name="com.jaspersoft.studio.field.label" value="geographic_area"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="village_details"/>
+	</field>
+	<field name="habitat" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="habitat"/>
+		<property name="com.jaspersoft.studio.field.label" value="habitat"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="village_details"/>
+	</field>
+	<field name="inUse" class="java.lang.Boolean">
+		<property name="com.jaspersoft.studio.field.name" value="in_use"/>
+		<property name="com.jaspersoft.studio.field.label" value="in_use"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="village_details"/>
+	</field>
+	<field name="landUse" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="land_use"/>
+		<property name="com.jaspersoft.studio.field.label" value="land_use"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="village_details"/>
+	</field>
+	<field name="malePopn" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="male_popn"/>
+		<property name="com.jaspersoft.studio.field.label" value="male_popn"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="village_details"/>
+	</field>
+	<field name="miscArea" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="misc_area"/>
+		<property name="com.jaspersoft.studio.field.label" value="misc_area"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="village_details"/>
+	</field>
+	<field name="nonagriArea" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="nonagri_area"/>
+		<property name="com.jaspersoft.studio.field.label" value="nonagri_area"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="village_details"/>
+	</field>
+	<field name="pastureArea" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="pasture_area"/>
+		<property name="com.jaspersoft.studio.field.label" value="pasture_area"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="village_details"/>
+	</field>
+	<field name="pbrDate" class="java.time.LocalDate">
+		<property name="com.jaspersoft.studio.field.name" value="pbr_date"/>
+		<property name="com.jaspersoft.studio.field.label" value="pbr_date"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="village_details"/>
+	</field>
+	<field name="rainfall" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="rainfall"/>
+		<property name="com.jaspersoft.studio.field.label" value="rainfall"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="village_details"/>
+	</field>
+	<field name="sownArea" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="sown_area"/>
+		<property name="com.jaspersoft.studio.field.label" value="sown_area"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="village_details"/>
+	</field>
+	<field name="temperature" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="temperature"/>
+		<property name="com.jaspersoft.studio.field.label" value="temperature"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="village_details"/>
+	</field>
+	<field name="wasteArea" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="waste_area"/>
+		<property name="com.jaspersoft.studio.field.label" value="waste_area"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="village_details"/>
+	</field>
+	<field name="weatherPatterns" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="weather_patterns"/>
+		<property name="com.jaspersoft.studio.field.label" value="weather_patterns"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="village_details"/>
+	</field>
+	<field name="managementregime.managementregime" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="managementregime"/>
+		<property name="com.jaspersoft.studio.field.label" value="managementregime"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="master_management_regime"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="48" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="1" width="554" height="20" uuid="2a933405-6085-4b74-8b61-4e9d0a1eb6d3"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[People's Biodiversity Register (PBR) : General Details]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="21" width="554" height="20" uuid="cef08000-cfb5-40a1-a330-0d1f0e429a32"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Part 1]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<detail>
+		<band height="572" splitType="Stretch">
+			<textField textAdjust="StretchHeight">
+				<reportElement x="208" y="18" width="280" height="20" uuid="da537670-08a6-4389-bb87-b37199c8f2eb"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{village.villageName}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="208" y="39" width="280" height="20" uuid="a376166e-d300-4bd8-85ef-a8e92677e919"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{village.block.district.districtName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="8" y="60" width="200" height="20" uuid="5e74c121-56bf-4eba-b54d-f0a5d3210f49"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[State]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="8" y="39" width="200" height="20" uuid="517def3f-7bcc-4ecb-9a02-7d9686ad6245"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[District:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="8" y="118" width="200" height="20" uuid="69b017fe-6d3d-4c7c-b63e-0ad5b2be99a4"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Geographical Area of the Village:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="247" y="118" width="81" height="20" uuid="1523e569-60fb-4700-a2ee-57abbb0c68be"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<text><![CDATA[Sq. Km.]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="208" y="60" width="280" height="20" uuid="76783a02-ad5e-4b06-916a-c1052f39bea6"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{village.block.district.state.stateName}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="208" y="118" width="38" height="20" uuid="b6f2036f-44d5-4a68-a604-4492058ce0c0"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{geographicArea}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="8" y="144" width="200" height="20" uuid="6f1cb4cc-eca0-431c-bb28-4610b4014c5e"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Population under the Village:]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="42" y="165" width="74" height="20" uuid="6e5c0157-2cae-4291-893a-4f31a94d8bd0"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{malePopn}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="8" y="165" width="34" height="20" uuid="09fcf166-720c-4f7b-a926-a681c7c3e937"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Male:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="116" y="165" width="58" height="20" uuid="88049488-eb39-492f-9514-dc52f9734a29"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Female:]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="174" y="165" width="75" height="20" uuid="7eab96f2-eb24-4590-ba30-f4318fcd617d"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{femalePopn}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="283" y="165" width="100" height="20" uuid="1db02f21-aa18-4f75-a094-b24c0ce50d97"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{femalePopn}+$F{malePopn}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="249" y="165" width="34" height="20" uuid="19cfdda7-5fc4-4e82-adc5-48e1e4356972"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Total:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="11" y="187" width="200" height="20" uuid="2fa21a07-e1e9-476d-bbe8-55ad02dbb7f1"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Habitat and Topography:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="11" y="213" width="331" height="20" uuid="c75e4d52-a39f-48e0-a3f4-a5b8c4890f4c"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Climate (Rainfall, temperature and other weather patterns):]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="11" y="235" width="48" height="20" uuid="ccd97540-5b66-409d-8fc9-a87c62593361"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Rainfall:]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="59" y="235" width="27" height="20" uuid="509d0d39-aa42-46a2-879d-3afccb1e49b8"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{rainfall}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="86" y="235" width="25" height="20" uuid="a84dc158-7342-4132-b88f-196f7e6ee47b"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<text><![CDATA[mm]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="134" y="235" width="77" height="20" uuid="31d3bb14-e33d-4558-9a4f-11832800e703"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Temperature:]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="212" y="235" width="34" height="20" uuid="1c5935e3-766f-432a-970f-329cf4f36c55"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{temperature}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="248" y="235" width="38" height="20" uuid="d8a17788-aafd-48d4-8da8-c7c49e463d54"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<text><![CDATA[celcius]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="302" y="235" width="134" height="20" uuid="c74dd2d2-f12d-48a8-9c2e-7263741f1a39"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Other weather patterns:]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="438" y="235" width="50" height="20" uuid="5ba1bd69-60c3-4fe6-96da-392bcb0b800e"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{weatherPatterns}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="11" y="266" width="356" height="20" uuid="61eeb01a-f96d-421a-a84f-70e325ad7438"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Land Use (Nine fold classification available with village records):]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="11" y="287" width="48" height="20" uuid="fd77cd77-2b91-4662-b708-1c969677a0db"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Forest:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="11" y="307" width="190" height="20" uuid="1765d559-71fe-4b6e-9b84-24af4e3e6ec8"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Area under non-agricultural uses:]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="258" y="287" width="64" height="20" uuid="fd3fac14-b204-4847-9e04-6c77c5e25993"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{forestArea}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="333" y="287" width="44" height="20" uuid="c9ad7053-1064-4d25-b2be-74e242a78027"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<text><![CDATA[hectares]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="333" y="307" width="44" height="20" uuid="4ce8b1c0-c955-49c0-a92e-04f275e45f77"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<text><![CDATA[hectares]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="258" y="307" width="75" height="20" uuid="84267930-c0a7-4a59-9f38-e899a5fc058b"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nonagriArea}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="11" y="327" width="190" height="20" uuid="1f948296-fea3-48b6-9232-0d55c5042076"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Barren and uncultivatable land:]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="259" y="327" width="74" height="20" uuid="068ef2c5-0c2b-4f42-8e3d-c521fb836636"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{barrenArea}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="333" y="327" width="44" height="20" uuid="51f8af60-3dfa-4f19-a941-fab71e2dc506"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<text><![CDATA[hectares]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="333" y="347" width="44" height="20" uuid="aec7b616-f7c6-4fed-a743-565463040fca"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<text><![CDATA[hectares]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="259" y="347" width="74" height="20" uuid="f6ee0aa0-8f6e-4209-b349-65898924db80"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pastureArea}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="11" y="347" width="248" height="20" uuid="b19968ae-dff7-4411-a2c1-81f46c0fc552"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Permanent pastures and other grazing lands:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="11" y="367" width="213" height="20" uuid="c387e3e5-7b9c-4380-ba00-72f81304ac86"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Land under miscellaneous tree crops:]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="258" y="367" width="75" height="20" uuid="946239c0-4a64-423e-8963-d8c25745442a"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{miscArea}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="333" y="367" width="44" height="20" uuid="6d47229d-4fd3-45a7-a672-c178725b5de8"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<text><![CDATA[hectares]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="333" y="387" width="44" height="20" uuid="681a73d3-4540-44d7-83b6-f07fcd5c06b4"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<text><![CDATA[hectares]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="258" y="387" width="75" height="20" uuid="1876b917-c86c-4e65-b599-2503162b4219"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{wasteArea}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="11" y="387" width="213" height="20" uuid="fcdcf380-06ea-4bbd-ad3d-1cd8fdf035ce"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Cultivable waste land:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="11" y="416" width="223" height="20" uuid="e3f2ac8f-6858-498a-9219-cca65d0764df"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Fallows lands other then current fallows:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="12" y="436" width="87" height="20" uuid="c561563c-dbd7-480d-82dc-3af93962f75f"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Fallows lands:]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="98" y="436" width="68" height="20" uuid="09f75613-f51f-48c9-b087-e3015be26721"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fallowArea}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="167" y="436" width="44" height="20" uuid="91851658-0d92-4a1e-8508-431ff7ff839d"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<text><![CDATA[hectares]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="224" y="436" width="98" height="20" uuid="e2ec01e3-d88c-4118-ac85-1d8d68c6fced"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Current Fallows:]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="322" y="436" width="68" height="20" uuid="e79e7b7b-aca1-42b9-af48-9410d3b3a5ce"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{currentFallowArea}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="391" y="436" width="44" height="20" uuid="35e599f1-feee-4e56-b8d4-3d1952614f4c"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<text><![CDATA[hectares]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="98" y="456" width="64" height="20" uuid="be71a6ad-2cbf-46d5-85ea-68c0efef93f0"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sownArea}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="12" y="456" width="87" height="20" uuid="bbd83e76-a324-4a76-8163-70f75a405f17"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Net area sown:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="12" y="485" width="223" height="20" uuid="008c19c8-ba07-4add-8ae0-0546b18c5b41"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Date, Month and Year of PBR generation:]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="235" y="485" width="100" height="20" uuid="6a2f9517-6e9d-4705-be2a-ee29bc975a74"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pbrDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="12" y="528" width="122" height="20" uuid="fb01c924-3103-41c4-9342-23e8b96fc31b"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Management Regime:]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement x="134" y="528" width="100" height="20" uuid="253da7be-7d20-441e-a2d0-5caa64a94bc7"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{managementregime.managementregime}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="8" y="18" width="200" height="20" uuid="3c9ec262-24b0-47fb-94f6-5d0c56590853"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Name of the Village:]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

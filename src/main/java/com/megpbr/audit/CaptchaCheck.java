@@ -31,21 +31,5 @@ public class CaptchaCheck {
 	}
 
 	// Driver code
-	public static void main(String[] args) throws IOException {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
-		// Generate a random CAPTCHA
-		String captcha = generateCaptcha(9);
-		System.out.println(captcha);
-
-		// Ask user to enter a CAPTCHA
-		System.out.println("Enter above CAPTCHA: ");
-		String usr_captcha = reader.readLine();
-
-		// Notify user about matching status
-		if (checkCaptcha(captcha, usr_captcha))
-			System.out.println("CAPTCHA Matched");
-		else
-			System.out.println("CAPTCHA Not Matched");
-	}
+	
 }

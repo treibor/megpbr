@@ -32,9 +32,12 @@ public class UserView {
     private UserService userservice;
     //private SecurityService securityService;
     Button saveButton=new Button("Save");
-    Button cancelButton=new Button("Cancel");
+    Button savePassButton=new Button("Save");
+    Button cancelButton=new Button("Close");
+    Button cancelPassButton=new Button("Close");
     TextField name=new TextField("Full Name");
     TextField userName=new TextField("User Name");
+    PasswordField oldpassword=new PasswordField("Old Password");
     PasswordField password=new PasswordField("Password");
     PasswordField confirmPassword=new PasswordField("Confirm Password");
     public ComboBox<UserLoginLevel> userlevel = new ComboBox("User Type");
@@ -67,8 +70,44 @@ public class UserView {
 		userdialog.add(dialogLayout1);
 		userdialog.open();
 	}
-    
+	public void changePassword() {
+		Dialog passdialog=new Dialog();
+		H2 headline = new H2("ChangePassword");
+		headline.getStyle().set("margin", "var(--lumo-space-m) 0 0 0").set("font-size", "1.5em").set("font-weight",
+				"bold");
+		populateCombobox();
+		cancelPassButton.addClickListener(e -> passdialog.close());
+		savePassButton.addClickListener(e-> saveNewPassword());
+		savePassButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+		HorizontalLayout buttonLayout2 = new HorizontalLayout(cancelPassButton, savePassButton);
+		buttonLayout2.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+		VerticalLayout dialogLayout2 = new VerticalLayout(headline, getPassFields(), buttonLayout2);
+		dialogLayout2.setPadding(false);
+		dialogLayout2.setAlignItems(FlexComponent.Alignment.STRETCH);
+		dialogLayout2.getStyle().set("width", "300px").set("max-width", "100%");
+		passdialog.add(dialogLayout2);
+		passdialog.open();
+	}
 	
+	private void saveNewPassword() {
+		String oldpass=oldpassword.getValue();
+		UserLogin user=userservice.getLoggedUser();
+		if(!passwordEncoder.matches(oldpass.trim(), user.getHashedPassword())) {
+			Notification.show("Invalid Password").addThemeVariants(NotificationVariant.LUMO_WARNING);
+		}else if(!password.getValue().trim().equals(confirmPassword.getValue().trim())){
+			Notification.show("Passwords Don Not Match").addThemeVariants(NotificationVariant.LUMO_WARNING);
+		}else if(password.getValue().trim().length()<=10){
+			Notification.show("Password is too short").addThemeVariants(NotificationVariant.LUMO_WARNING);
+		}else {
+			user.setHashedPassword(passwordEncoder.encode(password.getValue()));
+			userservice.update(user);
+			Notification.show("Password Changed Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+			password.setValue("");
+			oldpassword.setValue("");
+			confirmPassword.setValue("");
+		}
+	}
+
 	public void populateCombobox() { 
 		  int  level=userservice.getLoggedUser().getLevel().getLevel();
 		  userlevel.setItems(userservice.getUserLevels(level));
@@ -99,6 +138,16 @@ public class UserView {
 		form.add(village, 1);
 		form.add(name, 2);
 		form.add(userName, 2);
+		form.add(password, 2);
+		form.add(confirmPassword, 2);
+		form.setResponsiveSteps(new ResponsiveStep("0", 1),
+				// Use two columns, if layout's width exceeds 300px
+				new ResponsiveStep("300px", 2));
+		return form;
+	}
+	public FormLayout getPassFields() {
+		var form=new FormLayout();
+		form.add(oldpassword, 2);
 		form.add(password, 2);
 		form.add(confirmPassword, 2);
 		form.setResponsiveSteps(new ResponsiveStep("0", 1),

@@ -289,7 +289,7 @@ public class VillagesForm extends Div {
 	
 
 	public void initFields() {
-		geographicArea.setTooltipText("Geographic Area of The Village in Hectare");
+		geographicArea.setTooltipText("Geographic Area of The Village(Sq. Km)");
 		habitat.setTooltipText("Habitat & Topography");
 		weatherPatterns.setTooltipText("Other Weather Patterns");
 		barrenArea.setTooltipText("Barren and Un-Cultivable Land(in hectares)");

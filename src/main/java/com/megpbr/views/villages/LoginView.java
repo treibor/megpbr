@@ -13,21 +13,26 @@ import javax.swing.ImageIcon;
 import org.apache.commons.io.IOUtils;
 
 import com.megpbr.audit.CaptchaCheck;
+import com.megpbr.security.AuthenticatedUser;
 import com.megpbr.views.dashboard.DashboardView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.login.LoginForm;
+import com.vaadin.flow.component.login.LoginI18n;
+import com.vaadin.flow.component.login.LoginOverlay;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
+import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
@@ -35,64 +40,70 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
-import nl.captcha.Captcha;
 
 @Route("login")
 @PageTitle("Login")
 @AnonymousAllowed
-public class LoginView extends VerticalLayout implements BeforeEnterObserver {
+public class LoginView extends LoginOverlay implements BeforeEnterObserver {
 	FormLayout form=new FormLayout();
-    private LoginForm login = new LoginForm();
+    //private LoginForm login = new LoginForm();
     private TextField username=new TextField("User Name");
-    private TextField captchatext=new TextField("Enter The Captcha Text Above");
+    public TextField captchatext=new TextField("Enter The Captcha Text Above");
     private PasswordField password=new PasswordField("Password");
     private Button loginbutton=new Button("Login");
-    private Button captchabutton=new Button("Login");
-    public LoginView() {
-    	//addClassName("login");
-        setSizeFull();
-        setJustifyContentMode(JustifyContentMode.CENTER);
-        setAlignItems(Alignment.CENTER);
-        login.setAction("dashboard");
-        
-        add(login,createForm());
-    }
+    public Button captchabutton=new Button("Login");
+    //private final AuthenticatedUser authenticatedUser;
+    //MyLoginForm login=new MyLoginForm();
+	public LoginView() {
+		// addClassName("login");
+		//this.authenticatedUser = authenticatedUser;
+		
+		  LoginI18n i18n = LoginI18n.createDefault(); i18n.setHeader(new
+		  LoginI18n.Header()); i18n.getHeader().setTitle("MEGPBR");
+		  i18n.getHeader().setDescription(""); i18n.setAdditionalInformation(null);
+		  setI18n(i18n); addCaptchaText(); addCaptcha();
+		  setForgotPasswordButtonVisible(false); setOpened(true);
+		 setAction("login");
+		//login.setAction("logincheck");
+		//add(login);
+	}
+    
 
-    private Component createCaptcha() {
-		CaptchaCheck captcha = new CaptchaCheck();
+    public void addCaptcha() {
+    	CaptchaCheck captcha = new CaptchaCheck();
 		String a=captcha.generateCaptcha(5);
 		captchabutton=new Button(a);
-		//captchabutton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
 		captchabutton.setEnabled(false);
-		return(captchabutton);
+		captchabutton.setHeight("50px");
+        captchabutton.getElement().setAttribute("name", "remember-me");
+        //TextField captchaText=new TextField("Enter Captcha");
+        Element loginFormElement = getElement();
+        Element element = captchabutton.getElement();
+        //Element element2 = captchaText.getElement();
+        loginFormElement.appendChild(element);
+        //loginFormElement.appendChild(element2);
+        
+        String executeJsForFieldString = "const field = document.getElementById($0);" +
+              "if(field) {" +"   field.after($1)" +"} else {" +"   console.error('could not find field', $0);" +"}";
+        getElement().executeJs(executeJsForFieldString, "vaadinLoginPassword", element);
     }
-    private Component createForm() {
-    	loginbutton.addClickListener(e->login());
-    	
-    	form.add(username,2);
-    	form.add(password, 2);
-    	form.add(createCaptcha(), 1);
-    	form.add(captchatext, 1);
-    	form.add(loginbutton, 2);
-    	form.setResponsiveSteps(new ResponsiveStep("0", 2),new ResponsiveStep("500px", 2));
-    	var container=new VerticalLayout();
-    	container.setWidth("20%");
-    	container.add(new H1("MEGPBR"),form);
-    	return container;
+    public void addCaptchaText() {
+    	TextField captchaText=new TextField("Enter Captcha");
+        Element loginFormElement = getElement();
+        //Element element = captchabutton.getElement();
+        Element element = captchaText.getElement();
+        //loginFormElement.appendChild(element);
+        loginFormElement.appendChild(element);
+        
+        String executeJsForFieldString = "const field = document.getElementById($0);" +
+                "if(field) {" +
+                "   field.after($1)" +
+                "} else {" +
+                "   console.error('could not find field', $0);" +
+                "}";
+        getElement().executeJs(executeJsForFieldString, "vaadinLoginPassword", element);
     }
     
-    public void login() {
-    	String x=captchatext.getValue();
-    	String y=captchabutton.getText();
-    	//System.out.println("x="+x );
-    	//System.out.println("y="+y );
-    	if((x==y)||(x.equals(y))) {
-    		System.out.println("y="+y );
-    		UI.getCurrent().navigate(DashboardView.class);
-    	}else {
-    		System.out.println("x!=y" );
-    	}
-    }
     
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
@@ -100,7 +111,20 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
             .getQueryParameters()
             .getParameters()
             .containsKey("error")) {
-            login.setError(true);
+            //login.setError(true);
         }
     }
+    /*
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        if (authenticatedUser.get().isPresent()) {
+            // Already logged in
+            setOpened(false);
+            event.forwardTo("");
+        }
+
+        setError(event.getLocation().getQueryParameters().getParameters().containsKey("error"));
+    }*/
+    
+   
 }

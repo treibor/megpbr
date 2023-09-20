@@ -42,7 +42,7 @@ import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
 
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
-import nl.captcha.Captcha;
+
 @PermitAll
 @PageTitle("Dashboard")
 @Route(value = "dashboard", layout = MainLayout.class)
