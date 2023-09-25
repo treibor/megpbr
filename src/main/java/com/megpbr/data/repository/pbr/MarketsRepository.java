@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.megpbr.data.entity.Block;
 import com.megpbr.data.entity.District;
+import com.megpbr.data.entity.MasterApproval;
 import com.megpbr.data.entity.MasterFormat;
 import com.megpbr.data.entity.State;
 import com.megpbr.data.entity.Village;
@@ -18,6 +19,9 @@ public interface MarketsRepository extends JpaRepository<Markets, Long>{
 	Markets findTopByName(String fauna);
 	List<Markets> findByFormatOrderByName(MasterFormat format);
 	List<Markets> findByStateAndFormatAndMaster(State state, MasterFormat format, boolean master);
+	List<Markets>  findByFormatAndVillage(MasterFormat format, Village village);
+	List<Markets>  findByVillage(Village village);
+	List<Markets>  findByVillageAndApproved(Village village, MasterApproval approved);
 	//Markets Count
 	@Query("select  count(*) from Markets c join c.village d join d.block e join e.district f where c.master=:master and district=:district " )
 	int getMarketsCount(@Param("district") District district, @Param("master") boolean master);

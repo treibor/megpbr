@@ -48,6 +48,7 @@ public class VillageAnnexure1 {
 	private MasterGender gender;
 	private String address;
 	private String specialization;
+	private String remarks;
 	@ManyToOne
 	@JoinColumn(name="position", referencedColumnName = "id")
 	private MasterPosition position;
@@ -126,6 +127,12 @@ public class VillageAnnexure1 {
 	}
 	public void setEnteredOn(LocalDateTime enteredOn) {
 		this.enteredOn = enteredOn;
+	}
+	public String getRemarks() {
+		return remarks;
+	}
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
 	}
 	
 	

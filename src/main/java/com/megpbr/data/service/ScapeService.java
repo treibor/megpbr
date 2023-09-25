@@ -17,6 +17,7 @@ import com.megpbr.data.entity.pbr.Crops;
 import com.megpbr.data.entity.pbr.Scapes;
 import com.megpbr.data.repository.BlockRepository;
 import com.megpbr.data.repository.DistrictRepository;
+import com.megpbr.data.repository.MasterApprovalRepository;
 import com.megpbr.data.repository.StateRepository;
 import com.megpbr.data.repository.VillageRepository;
 import com.megpbr.data.repository.pbr.CropsRepository;
@@ -36,13 +37,28 @@ public class ScapeService {
 	private VillageRepository vrepo;
 	@Autowired
 	private Dbservice dbservice;
-	
+	@Autowired
+	private MasterApprovalRepository apprrepo;
 	public Scapes getScapeByFauna(String fauna) {
 		return srepo.findTopByFaunaPopulation(fauna);
 	}
 	public List<Scapes> getScapesByFormat(MasterFormat format){
 		return srepo.findByFormatOrderByFaunaPopulation(format);
 	}
+	public List<Scapes> getScapesByFormatAndVillage(int formatint, Village village){
+		MasterFormat format=dbservice.getFormat(formatint);
+		return srepo.findByFormatAndVillage(format, village);
+	}
+	public List<Scapes> getScapesByVillage(Village village, boolean approved){
+		//return srepo.findByVillageAndApproved(village, approved);
+		if(approved) {
+			
+			return srepo.findByVillageAndApproved(village, apprrepo.findByApproval("Approved"));
+		}else {
+			return srepo.findByVillage(village);
+		}
+	}
+	
 	public List<Scapes> getScapesByFormatAndMaster(MasterFormat format, boolean master){
 		return srepo.findByStateAndFormatAndMasterOrderByFaunaPopulation(dbservice.getState(),format, master);
 	}

@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.megpbr.data.entity.Block;
 import com.megpbr.data.entity.District;
+import com.megpbr.data.entity.MasterApproval;
 import com.megpbr.data.entity.MasterFormat;
 import com.megpbr.data.entity.State;
 import com.megpbr.data.entity.Village;
@@ -24,6 +25,8 @@ public interface CropsRepository extends JpaRepository<Crops, Long>{
 	List<Crops> findByFormat(MasterFormat format);
 	//For Pbr2 Report
 	List<Crops> findByFormatAndVillage(MasterFormat format, Village village);
+	List<Crops> findByVillage(Village village);
+	List<Crops> findByVillageAndApproved(Village village, MasterApproval approved);
 	List<Crops> findDistinctByFormat(MasterFormat format);
 	
 	//MasterData

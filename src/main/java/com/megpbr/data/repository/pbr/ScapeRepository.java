@@ -8,9 +8,11 @@ import org.springframework.data.repository.query.Param;
 
 import com.megpbr.data.entity.Block;
 import com.megpbr.data.entity.District;
+import com.megpbr.data.entity.MasterApproval;
 import com.megpbr.data.entity.MasterFormat;
 import com.megpbr.data.entity.State;
 import com.megpbr.data.entity.Village;
+import com.megpbr.data.entity.pbr.Markets;
 import com.megpbr.data.entity.pbr.Scapes;
 import com.megpbr.data.entity.pbr.Scapes;
 
@@ -19,6 +21,9 @@ public interface ScapeRepository extends JpaRepository<Scapes, Long>{
 	Scapes findTopByFaunaPopulation(String fauna);
 	List<Scapes> findByFormatOrderByFaunaPopulation(MasterFormat format);
 	List<Scapes> findByStateAndFormatAndMasterOrderByFaunaPopulation(State state, MasterFormat format, boolean master);
+	List<Scapes>  findByFormatAndVillage(MasterFormat format, Village village);
+	List<Scapes>  findByVillage(Village village);
+	List<Scapes>  findByVillageAndApproved(Village village, MasterApproval approved);
 	//Scapes Count
 	@Query("select  count(*) from Scapes c join c.village d join d.block e join e.district f where  c.master=:master and district=:district " )
 	int getScapesCount(@Param("district") District district, @Param("master") boolean master);

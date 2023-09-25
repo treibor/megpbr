@@ -10,12 +10,14 @@ import org.springframework.stereotype.Service;
 
 import com.megpbr.data.entity.Block;
 import com.megpbr.data.entity.District;
+import com.megpbr.data.entity.MasterApproval;
 import com.megpbr.data.entity.MasterFormat;
 import com.megpbr.data.entity.State;
 import com.megpbr.data.entity.Village;
 import com.megpbr.data.entity.pbr.Crops;
 import com.megpbr.data.repository.BlockRepository;
 import com.megpbr.data.repository.DistrictRepository;
+import com.megpbr.data.repository.MasterApprovalRepository;
 import com.megpbr.data.repository.StateRepository;
 import com.megpbr.data.repository.VillageRepository;
 import com.megpbr.data.repository.pbr.CropsRepository;
@@ -33,6 +35,8 @@ public class CropService {
 	@Autowired
 	private VillageRepository vrepo;
 	@Autowired
+	private MasterApprovalRepository apprrepo;
+	@Autowired
 	private Dbservice dbservice;
 	
 	public List<Crops> findCrops(){
@@ -41,6 +45,15 @@ public class CropService {
 	public List<Crops> findCropsByFormatAndVillage(int formatint, Village village){
 		MasterFormat format=dbservice.getFormat(formatint);
 		return crepo.findByFormatAndVillage(format, village);
+	}
+	public List<Crops> findCropsByVillage(Village village, boolean approved){
+		//MasterFormat format=dbservice.getFormat(formatint);
+		if(approved) {
+			
+			return crepo.findByVillageAndApproved(village,apprrepo.findByApproval("Approved"));
+		}else {
+			return crepo.findByVillage(village);
+		}
 	}
 	public List<Crops> findCropsByFormat(MasterFormat format){
 		return crepo.findByFormat(format);

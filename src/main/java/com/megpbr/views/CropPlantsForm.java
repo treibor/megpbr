@@ -507,6 +507,7 @@ public class CropPlantsForm extends Div {
 		//--approved.setRequired(true);
 		
 		commercial.setItems(dbservice.getMasterCommercial());
+		commercial.setItemLabelGenerator(MasterCommercial::getCname);
 		wildhome.setItems(dbservice.getMasterWildhome());
 		pastStatus.setItems(dbservice.getStatus());
 		presentStatus.setItems(dbservice.getStatus());

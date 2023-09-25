@@ -920,6 +920,7 @@ public class VillageView extends Div{
 			annex1grid.addColumn(villageannexure1->villageannexure1.getSpecialization()).setHeader("Area of Specialization").setResizable(true).setSortable(true);
 			annex1grid.addColumn(villageannexure1->villageannexure1.getPosition()==null ? "": villageannexure1.getPosition().getPositionName()).setHeader("Position").setResizable(true).setSortable(true);
 			annex1grid.addColumn(villageannexure1->villageannexure1.getTenureDate()==null ? "": villageannexure1.getPosition().getPositionName()).setHeader("Tenure Start Date").setResizable(true).setSortable(true);
+			annex1grid.addColumn(villageannexure1->villageannexure1.getRemarks()).setHeader("Remarks").setResizable(true).setSortable(true);
 			annex1grid.setSizeFull();
 			annex1grid.asSingleSelect().addValueChangeListener(e -> editAnnexure1(e.getValue()));
 			return annex1grid;

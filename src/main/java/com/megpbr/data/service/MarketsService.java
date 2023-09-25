@@ -17,6 +17,7 @@ import com.megpbr.data.entity.pbr.Crops;
 import com.megpbr.data.entity.pbr.Markets;
 import com.megpbr.data.repository.BlockRepository;
 import com.megpbr.data.repository.DistrictRepository;
+import com.megpbr.data.repository.MasterApprovalRepository;
 import com.megpbr.data.repository.StateRepository;
 import com.megpbr.data.repository.VillageRepository;
 import com.megpbr.data.repository.pbr.CropsRepository;
@@ -37,13 +38,28 @@ public class MarketsService {
 	private VillageRepository vrepo;
 	@Autowired
 	private Dbservice dbservice;
-	
+	@Autowired
+	private MasterApprovalRepository apprrepo;
 	public Markets getMarketByName(String market) {
 		return srepo.findTopByName(market);
+	}
+	public List<Markets> getMarketsByFormatAndVillage(int formatint, Village village){
+		MasterFormat format=dbservice.getFormat(formatint);
+		return srepo.findByFormatAndVillage(format, village);
+	}
+	public List<Markets> getMarketsByVillage(Village village, boolean approved){
+		//return srepo.findByVillageAndApproved(village, approved);
+		if(approved) {
+			//apprrepo.findByApproval("Approved");
+			return srepo.findByVillageAndApproved(village, apprrepo.findByApproval("Approved"));
+		}else {
+			return srepo.findByVillage(village);
+		}
 	}
 	public List<Markets> getMarketsByFormat(MasterFormat format){
 		return srepo.findByFormatOrderByName(format);
 	}
+	
 	public List<Markets> getMarketsByFormat(MasterFormat format, boolean master){
 		return srepo.findByStateAndFormatAndMaster(dbservice.getState(),format,  master);
 	}

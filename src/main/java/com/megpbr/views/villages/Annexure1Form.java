@@ -96,6 +96,7 @@ public class Annexure1Form extends Div {
 	public Village village;
 	TextField name = new TextField("Name");
 	TextField age = new TextField("Age");
+	TextField remarks = new TextField("Remarks");
 	DatePicker tenureDate=new DatePicker("Tenure Date");
 	TextArea address=new TextArea("Address");
 	TextArea specialization=new TextArea("Area of Specialization");
@@ -210,6 +211,7 @@ public class Annexure1Form extends Div {
 		formbasic.add(specialization, 4);
 		formbasic.add(position, 2);
 		formbasic.add(tenureDate, 2);
+		formbasic.add(remarks, 4);
 		//formbasic.add(otherDetails, 3);
 		//formbasic.add(associatedTdk, 3);
 		formbasic.setResponsiveSteps(new ResponsiveStep("0", 2),
