@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.6.final using JasperReports Library version 6.20.6-5c96b6aa8a39ac1dc6b6bea4b81168e16dd39231  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Annexures" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="817" leftMargin="15" rightMargin="10" topMargin="20" bottomMargin="20" uuid="7e171c8a-6df6-4f13-92c9-384343eec21c">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<parameter name="village_param" class="java.lang.Long"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DATA1" class="java.util.List"/>
+	<parameter name="SUBREPORT_DATA2" class="java.util.List"/>
+	<parameter name="SUBREPORT_DATA3" class="java.util.List"/>
+	<parameter name="SUBREPORT_DATA4" class="java.util.List"/>
+	<parameter name="SUBREPORT_DATA5" class="java.util.List"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="28" splitType="Stretch">
+			<subreport>
+				<reportElement x="0" y="2" width="800" height="17" uuid="c9bb99c0-ed69-4486-819c-8bf1fea8ef54">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<subreportParameter name="village_param">
+					<subreportParameterExpression><![CDATA[$P{village_param}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="SUBREPORT_DATA5">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DATA1}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{SUBREPORT_DATA1})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}+"annexure1.jasper"]]></subreportExpression>
+			</subreport>
+			<break>
+				<reportElement x="0" y="27" width="100" height="1" uuid="7e7a5f9b-2a67-4532-aaf2-e7c01f1d78e3"/>
+			</break>
+		</band>
+		<band height="29">
+			<subreport>
+				<reportElement x="0" y="2" width="800" height="17" uuid="c9bb99c0-ed69-4486-819c-8bf1fea8ef54">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<subreportParameter name="village_param">
+					<subreportParameterExpression><![CDATA[$P{village_param}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="SUBREPORT_DATA5">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DATA2}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{SUBREPORT_DATA2})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}+"annexure2.jasper"]]></subreportExpression>
+			</subreport>
+			<break>
+				<reportElement x="0" y="23" width="100" height="1" uuid="f4733e93-848c-4122-afcd-e8d8359f6f42"/>
+			</break>
+		</band>
+		<band height="24">
+			<subreport>
+				<reportElement x="0" y="2" width="800" height="17" uuid="c9bb99c0-ed69-4486-819c-8bf1fea8ef54">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<subreportParameter name="village_param">
+					<subreportParameterExpression><![CDATA[$P{village_param}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="SUBREPORT_DATA5">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DATA3}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{SUBREPORT_DATA3})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}+"annexure3.jasper"]]></subreportExpression>
+			</subreport>
+			<break>
+				<reportElement x="0" y="21" width="100" height="1" uuid="6f949966-323b-4a3d-b358-0b45864b9cc2"/>
+			</break>
+		</band>
+		<band height="31">
+			<subreport>
+				<reportElement x="0" y="0" width="800" height="20" uuid="7ff92cf0-9c5a-4607-ad77-f73d3b1356a8"/>
+				<subreportParameter name="village_param">
+					<subreportParameterExpression><![CDATA[$P{village_param}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="SUBREPORT_DATA4">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DATA4}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{SUBREPORT_DATA4})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}+"annexure4.jasper"]]></subreportExpression>
+			</subreport>
+			<break>
+				<reportElement x="0" y="23" width="100" height="1" uuid="59c87720-8b21-44bf-b362-847ad1214438"/>
+			</break>
+		</band>
+		<band height="29">
+			<subreport>
+				<reportElement x="1" y="3" width="799" height="17" uuid="bbdfcdb4-3584-45e6-84aa-414dd34f75b7"/>
+				<subreportParameter name="village_param">
+					<subreportParameterExpression><![CDATA[$P{village_param}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="SUBREPORT_DATA5">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DATA5}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{SUBREPORT_DATA5})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}+"annexure5.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+</jasperReport>

@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.megpbr.data.entity.pbr.Crops;
+import com.megpbr.data.entity.pbr.Crowd;
 import com.megpbr.data.entity.pbr.Markets;
 import com.megpbr.data.entity.pbr.Scapes;
 import com.megpbr.data.entity.villages.VillageAnnexure1;
@@ -63,10 +64,17 @@ public class Village {
 	@OneToMany(mappedBy = "village")
 	private List<Markets> markets;
 	
+	@OneToMany(mappedBy = "village")
+	private List<Crowd> crowd;
 	
 	
 	
-	
+	public List<Crowd> getCrowd() {
+		return crowd;
+	}
+	public void setCrowd(List<Crowd> crowd) {
+		this.crowd = crowd;
+	}
 	public long getId() {
 		return id;
 	}

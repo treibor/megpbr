@@ -3,7 +3,6 @@ package com.megpbr.views.agrobiodiversity;
 
 
 import java.io.ByteArrayInputStream;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -41,6 +40,8 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.Uses;
+import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
@@ -69,6 +70,7 @@ import com.vaadin.flow.server.VaadinSession;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
+import software.xdev.vaadin.grid_exporter.GridExporter;
 
 @RolesAllowed({"ADMIN", "USER"})
 @PageTitle("Fruit Trees")
@@ -102,6 +104,7 @@ public class FruitTreesView extends HorizontalLayout{
 	Grid.Column<Crops> longitudeColumn;
 	HeaderRow headerRow;
 	Button getDataButton=new Button("Get Data");
+	Button expButton=new Button("Export ");
 	VerticalLayout vlx=new VerticalLayout();
 	@Autowired
 	private Audit auditobject;
@@ -129,6 +132,15 @@ public class FruitTreesView extends HorizontalLayout{
 			return false;
 		}
 	}
+	private boolean isStateAdmin() {
+		//UserLogin user=uservice.getLoggedUser();
+		String userLevel=uservice.getLoggedUserLevel();
+		if(userLevel.startsWith("STATE")&&userLevel.endsWith("ADMIN")) {
+			return true;
+		}else {
+			return false;
+		}
+	}
 	private void ConfigureAccess() {
 		UserLogin user=uservice.getLoggedUser();
 		String userLevel=uservice.getLoggedUserLevel();
@@ -136,6 +148,7 @@ public class FruitTreesView extends HorizontalLayout{
 			//System.out.println("C");
 			state.setValue(user.getState());
 			stateColumn.setVisible(false);
+			state.setVisible(false);
 		}else if(userLevel.startsWith("DISTRICT")) {
 			//System.out.println("C");
 			state.setValue(user.getState());
@@ -171,15 +184,24 @@ public class FruitTreesView extends HorizontalLayout{
 			villageColumn.setVisible(false);
 			getDataButton.setVisible(false);
 			approvalColumn.setVisible(false);
+			district.setVisible(false);
+			block.setVisible(false);
+			village.setVisible(false);
+			//getDataButton.setVisible(false);
+			
 			updateGrid();
 		}else {
-			stateColumn.setVisible(true);
+			//stateColumn.setVisible(true);
 			districtColumn.setVisible(true);
 			blockColumn.setVisible(true);
 			villageColumn.setVisible(true);
 			getDataButton.setVisible(true);
 			approvalColumn.setVisible(true);
-			headerRow.getCell(scientificColumn).setComponent(getDataButton);
+			district.setVisible(true);
+			block.setVisible(true);
+			village.setVisible(true);
+			
+			//headerRow.getCell(scientificColumn).setComponent(getDataButton);
 			ConfigureAccess();
 			updateGrid();
 		}
@@ -187,7 +209,7 @@ public class FruitTreesView extends HorizontalLayout{
 	
 	private Component getMainContent() {
 		
-		vlx.add(getToolbar(), grid);
+		vlx.add(getToolbar(), getToolBar2(), grid);
 		grid.setSizeFull();
 		vlx.setSizeFull();
 		return vlx;
@@ -202,17 +224,27 @@ public class FruitTreesView extends HorizontalLayout{
 		return content;
 	}
 	private Component getToolbar() {
+		state.setVisible(false);
+		district.setVisible(false);
+		block.setVisible(false);
+		village.setVisible(false);
+		getDataButton.setVisible(false);
 		filterText.setPlaceholder("Search by Scientific/Local Name/Type ");
 		filterText.setClearButtonVisible(true);
 		filterText.setValueChangeMode(ValueChangeMode.LAZY);
 		filterText.addValueChangeListener(e -> updateGrid());
+		filterText.setWidth("400px");
 		Button addButton=new Button("New");
+		
 		addButton.setPrefixComponent(LineAwesomeIcon.PLUS_CIRCLE_SOLID.create());
 		String tempformatName=format.getFormatName();
-		String formatName;
+		//String formatName;
 		var label=new H3("Format-"+format.getFormat()+" - "+tempformatName);
 		addButton.addClickListener(e->addCrops(new Crops()));
-		HorizontalLayout topvl=new HorizontalLayout(radioGroup,filterText,addButton,label  );
+		
+		//formx.setMaxWidth("60%");
+		
+		HorizontalLayout topvl=new HorizontalLayout(radioGroup,filterText,label, addButton  );
 		topvl.setAlignItems(FlexComponent.Alignment.BASELINE);
 		label.getStyle().set("margin-left", "auto");
 		label.getStyle().set("font-size", "12px");
@@ -220,6 +252,21 @@ public class FruitTreesView extends HorizontalLayout{
 		topvl.setWidthFull();
 		return topvl; 
 	}
+	public Component getToolBar2() {
+		FormLayout formx=new FormLayout();
+		formx.add(state, 2);
+		formx.add(district, 2);
+		formx.add(block, 2);
+		formx.add(village, 2);
+		formx.add(getDataButton, 1);
+		formx.add(expButton, 1);
+		formx.setResponsiveSteps(new ResponsiveStep("0", 4),
+				// Use two columns, if layout's width exceeds 500px
+				new ResponsiveStep("800px", 10));
+		//VerticalLayout abc=new VerticalLayout(formx);
+		return formx;
+	}
+	
 	private void ConfigureCombo() {
 		state.setItems(dbservice.getStates());
 		state.setItemLabelGenerator(state->state.getStateName());
@@ -243,10 +290,13 @@ public class FruitTreesView extends HorizontalLayout{
 		//Text text1=new Text("Village Data");
 		radioGroup.setItems("Master Data", "Village Data");
 		radioGroup.setValue("Master Data");
-		radioGroup.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
+		//radioGroup.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
 		radioGroup.addValueChangeListener(e->updateList());
-		filterText.setWidth("20%");
-		//System.out.println("Village Exist");
+		
+		expButton.addClickListener(e->GridExporter
+				.newWithDefaults(grid)
+				.open());
+		
 	}
 	
 	private void ConfigureForm() {
@@ -264,7 +314,7 @@ public class FruitTreesView extends HorizontalLayout{
 		try {
 			List<Crops> crops=cservice.findCropsByFormatAndMaster(format, true);
 			grid.setItems(crops);
-			localColumn.setFooter("Total : "+crops.size());
+			//localColumn.setFooter("Total : "+crops.size());
 			grid.setSizeFull();
 		} catch (Exception e) {
 			localColumn.setFooter("Total : 0");
@@ -278,10 +328,10 @@ public class FruitTreesView extends HorizontalLayout{
 		if (data != "Master Data") {
 			if (district.getValue() == null) {
 				grid.setItems(Collections.EMPTY_LIST);
-				localColumn.setFooter("Total : 0");
+				//localColumn.setFooter("Total : 0");
 			} else if (village.getValue() == null && block.getValue() == null) {
 				grid.setItems(Collections.EMPTY_LIST);
-				localColumn.setFooter("Total : 0");
+				//localColumn.setFooter("Total : 0");
 			} else if (village.getValue() == null && block.getValue() != null) {
 				updateBlockList();
 			} else {
@@ -293,10 +343,10 @@ public class FruitTreesView extends HorizontalLayout{
 				//List<Crops> crops=cservice.findCropsByFormatAndMaster(format, true);
 				List<Crops> crops=cservice.searchCropsFilter(search, format);
 				grid.setItems(crops);
-				localColumn.setFooter("Total : "+crops.size());
+				//localColumn.setFooter("Total : "+crops.size());
 				grid.setSizeFull();
 			} catch (Exception e) {
-				localColumn.setFooter("Total : 0");
+				//localColumn.setFooter("Total : 0");
 				e.printStackTrace();
 			}
 		}
@@ -307,9 +357,9 @@ public class FruitTreesView extends HorizontalLayout{
 		grid.setItems(villagesList);
 		if(villagesList.size()==0) {
 			//Notification.show("No Data Found in the District"+villagesList.get(0).getVillage().getBlock().getDistrict()).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-			localColumn.setFooter("Total : 0");
+			//localColumn.setFooter("Total : 0");
 		}else {
-			localColumn.setFooter("Total : " + villagesList.size());
+			//localColumn.setFooter("Total : " + villagesList.size());
 		}
 	}
 	public void updateBlockList() {
@@ -318,9 +368,9 @@ public class FruitTreesView extends HorizontalLayout{
 		grid.setItems(villagesList);
 		if(villagesList.size()==0) {
 			//Notification.show("No Data Found in the Selected Block +"+block.getValue().getBlockName()).addThemeVariants(NotificationVariant.LUMO_WARNING);
-			localColumn.setFooter("Total : 0");
+			//localColumn.setFooter("Total : 0");
 		}else {
-			localColumn.setFooter("Total : " + villagesList.size());
+			//localColumn.setFooter("Total : " + villagesList.size());
 		}
 	}
 	public void updateVillageList() {
@@ -329,9 +379,9 @@ public class FruitTreesView extends HorizontalLayout{
 		grid.setItems(villagesList);
 		if(villagesList.size()==0) {
 			Notification.show("No Data Found in the Selected Village :"+village.getValue().getVillageName()).addThemeVariants(NotificationVariant.LUMO_WARNING);
-			localColumn.setFooter("Total : 0");
+			//localColumn.setFooter("Total : 0");
 		}else {
-			localColumn.setFooter("Total : " + villagesList.size());
+			//localColumn.setFooter("Total : " + villagesList.size());
 		}
 	}
 	
@@ -439,6 +489,7 @@ public class FruitTreesView extends HorizontalLayout{
 			}
 			form.save.setText("Update");
 			form.delete.setVisible(isAdmin());
+			stateAdminCheck();
 			form.setVisible(true);
 		}
 	}
@@ -454,11 +505,22 @@ public class FruitTreesView extends HorizontalLayout{
 		form.masterCheck.setEnabled(true);
 		form.frommaster.setVisible(true);
 		form.masterCheck.setValue(false);
+		form.masterCheck.addClickListener(e->stateAdminCheck());
 		MasterApproval abc=dbservice.getMasterApprovalApproved();
 		form.approved.setValue(abc);
 		ConfigureNewFormAccess();
 		form.setVisible(true);
 		form.save.setText("Save");
+	}
+	
+	public void stateAdminCheck() {
+		if(form.masterCheck.getValue() && !isStateAdmin()) {
+			form.save.setEnabled(false);
+			form.delete.setEnabled(false);
+		}else {
+			form.save.setEnabled(true);
+			form.delete.setEnabled(true);
+		}
 	}
 	public void saveCrops(CropPlantsForm.SaveEvent event) {
 		try {
@@ -497,6 +559,7 @@ public class FruitTreesView extends HorizontalLayout{
 		try {
 			grid.setSizeFull();
 			grid.removeAllColumns();
+			//grid.set
 			stateColumn= grid.addColumn(crop -> crop.getVillage() == null ? "": crop.getVillage().getBlock().getDistrict().getState().getStateName())
 					.setHeader("State").setSortable(true).setAutoWidth(true).setResizable(true);
 			districtColumn = grid.addColumn(crop -> crop.getVillage() == null ? "": crop.getVillage().getBlock().getDistrict().getDistrictName())
@@ -506,20 +569,20 @@ public class FruitTreesView extends HorizontalLayout{
 			villageColumn = grid.addColumn(crop -> crop.getVillage() == null ? "" : crop.getVillage().getVillageName())
 					.setHeader("Village").setSortable(true).setAutoWidth(true).setResizable(true);
 			grid.addColumn("type").setAutoWidth(true).setHeader("Plant Type").setAutoWidth(true).setResizable(true).setSortable(true);
-			
 			scientificColumn=grid.addColumn("scientificName").setAutoWidth(true).setResizable(true).setSortable(true);
 			localColumn=grid.addColumn("localName").setHeader("Local Name").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn("localLanguage").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn("habitat").setHeader("Habitat").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn("variety").setAutoWidth(true).setResizable(true).setSortable(true);
-			//grid.addColumn("area").setHeader("Area Sown").setAutoWidth(true).setResizable(true).setSortable(true);
+			grid.addColumn("area").setHeader("Area Sown").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn(crop-> crop.getPresentStatus()==null ? "":crop.getPresentStatus().getStatus()).setHeader("Past Status").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn(crop-> crop.getPastStatus()==null ? "":crop.getPastStatus().getStatus()).setHeader("Present Status").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn("fruitSeason").setHeader("Cropping Season").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn("source").setHeader("Plant/Seed Source").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn("uses").setHeader("Uses").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn("otherDetails").setAutoWidth(true).setResizable(true).setSortable(true);
-			//grid.addColumn("specialFeatures").setAutoWidth(true).setResizable(true).setSortable(true);
+			
+			grid.addColumn("specialFeatures").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn("associatedTk").setHeader("Associated TK").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn("knowledgeHolder").setHeader("Knowledge Holder").setAutoWidth(true).setResizable(true).setSortable(true);
 			latitudeColumn=grid.addColumn("latitude");
@@ -536,11 +599,11 @@ public class FruitTreesView extends HorizontalLayout{
 			latitudeColumn.setVisible(false);
 			longitudeColumn.setVisible(false);
 			grid.getHeaderRows().clear();
-			headerRow = grid.appendHeaderRow();
-			headerRow.getCell(stateColumn).setComponent(state);
-			headerRow.getCell(districtColumn).setComponent(district);
-			headerRow.getCell(blockColumn).setComponent(block);
-			headerRow.getCell(villageColumn).setComponent(village);
+			//headerRow = grid.appendHeaderRow();
+			//headerRow.getCell(stateColumn).setComponent(state);
+			//headerRow.getCell(districtColumn).setComponent(district);
+			//headerRow.getCell(blockColumn).setComponent(block);
+			//headerRow.getCell(villageColumn).setComponent(village);
 			grid.asSingleSelect().addValueChangeListener(e -> editCrops(e.getValue()));
 			
 			return grid;

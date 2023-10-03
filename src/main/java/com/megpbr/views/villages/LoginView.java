@@ -6,6 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -61,8 +62,13 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
 		  LoginI18n i18n = LoginI18n.createDefault(); i18n.setHeader(new
 		  LoginI18n.Header()); i18n.getHeader().setTitle("MEGPBR");
 		  i18n.getHeader().setDescription(""); i18n.setAdditionalInformation(null);
-		  setI18n(i18n); addCaptchaText(); addCaptcha();
-		  setForgotPasswordButtonVisible(false); setOpened(true);
+		  setI18n(i18n); 
+		  addCaptchaText(); 
+		  //addCustomComponent(captchatext);
+		  //addCaptcha();
+		  setForgotPasswordButtonVisible(false); 
+		  setOpened(true);
+		  
 		 setAction("login");
 		//login.setAction("logincheck");
 		//add(login);
@@ -89,6 +95,7 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
     }
     public void addCaptchaText() {
     	TextField captchaText=new TextField("Enter Captcha");
+    	captchaText.setRequired(true);
         Element loginFormElement = getElement();
         //Element element = captchabutton.getElement();
         Element element = captchaText.getElement();
@@ -103,7 +110,24 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
                 "}";
         getElement().executeJs(executeJsForFieldString, "vaadinLoginPassword", element);
     }
-    
+    public void addCustomComponent(Component... pComponents) {
+        Element loginFormElement = getElement();
+        
+        Element[] elements = Arrays.stream(pComponents).map(Component::getElement).toArray(Element[]::new);
+        loginFormElement.appendChild(elements); // to have them in the DOM
+
+        String executeJsForFieldString = "let fields = this.getElementsByTagName($0);" +
+                "if(fields && fields[0] && fields[0].id === $1) {" +
+                "   fields[0].after($2)" +
+                "} else {" +
+                "   console.error('could not find field', $0, $1);" +
+                "}";
+
+        // adding them in reverse to simply reuse the same execution string. you could also reuse the previously added element for the "after" call
+        for (int i = elements.length - 1; i >= 0; i--) {
+            loginFormElement.executeJs(executeJsForFieldString, "vaadin-password-field", "vaadinLoginPassword", elements[i]);
+        }
+    }
     
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {

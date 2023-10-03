@@ -4,10 +4,13 @@ package com.megpbr.views.villages;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,6 +31,8 @@ import com.megpbr.data.entity.State;
 import com.megpbr.data.entity.UserLogin;
 import com.megpbr.data.entity.Village;
 import com.megpbr.data.entity.pbr.Crops;
+import com.megpbr.data.entity.pbr.Markets;
+import com.megpbr.data.entity.pbr.Scapes;
 import com.megpbr.data.entity.villages.VillageAnnexure1;
 import com.megpbr.data.entity.villages.VillageAnnexure2;
 import com.megpbr.data.entity.villages.VillageAnnexure3;
@@ -35,7 +40,10 @@ import com.megpbr.data.entity.villages.VillageAnnexure4;
 import com.megpbr.data.entity.villages.VillageAnnexure5;
 import com.megpbr.data.entity.villages.VillageDetails;
 import com.megpbr.data.service.AuditService;
+import com.megpbr.data.service.CropService;
 import com.megpbr.data.service.Dbservice;
+import com.megpbr.data.service.MarketsService;
+import com.megpbr.data.service.ScapeService;
 import com.megpbr.data.service.UserService;
 import com.megpbr.views.MainLayout;
 
@@ -49,6 +57,7 @@ import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Image;
@@ -80,6 +89,11 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
+import software.xdev.vaadin.grid_exporter.GridExporter;
 
 
 @PermitAll
@@ -91,6 +105,9 @@ public class VillageView extends Div{
 	private UserService userservice;
 	private UserService uservice;
 	private AuditService auditservice;
+	private CropService cservice;
+	private final MarketsService mservice;
+	private final ScapeService sservice;
 	Village currentvillage;
 	Audit auditobject;
 	VerticalLayout vlx=new VerticalLayout();
@@ -126,12 +143,18 @@ public class VillageView extends Div{
 	Grid.Column<VillageDetails> blockColumn;
 	Grid.Column<VillageDetails> villageColumn;
 	Grid.Column<VillageDetails> geographicColumn;
-	Button pbreport1=new Button("Pbr I");
-	Button pbreport2=new Button("Pbr 2");
-	public VillageView(Dbservice service, UserService userservice, UserService uservice, AuditService auditservice) {
+	Button reportbutton=new Button("Generate");
+	Anchor link = new Anchor();
+	HorizontalLayout reportpanel;
+	ComboBox<String> reporttype = new ComboBox("Select Report");
+	ComboBox<String> formattype = new ComboBox("Format");
+	public VillageView(Dbservice service, UserService userservice, UserService uservice, AuditService auditservice, CropService cservice, MarketsService mservice, ScapeService sservice) {
 		this.dbservice=service;
 		this.userservice=userservice;
 		this.uservice=uservice;
+		this.cservice = cservice;
+		this.mservice=mservice;
+		this.sservice=sservice;
 		this.auditservice=auditservice;
 		//format=dbservice.getFormat(1);
 		setSizeFull();
@@ -261,7 +284,7 @@ public class VillageView extends Div{
 		return content;
 	}
 	private Component getMainContent() {
-		vlx.add(getToolbar(), grid);
+		vlx.add(getToolbar(), grid, getReportBar());
 		vlx.setSizeFull();		
 		return vlx;
 	}
@@ -279,50 +302,204 @@ public class VillageView extends Div{
 		addButton.setPrefixComponent(LineAwesomeIcon.PLUS_CIRCLE_SOLID.create());
 		//String tempformatName=format.getFormatName();
 		addButton.addClickListener(e->addVillageDetails(new VillageDetails()));
-		pbreport1.addClickListener(e->generatePbr1Report());
+		
 		//pbreport2.addClickListener(e->generatePbr2Report());
-		HorizontalLayout topvl=new HorizontalLayout(filterText,addButton, pbreport1, pbreport2);
+		HorizontalLayout topvl=new HorizontalLayout(filterText,addButton);
 		topvl.setAlignItems(FlexComponent.Alignment.BASELINE);
 		topvl.setWidthFull();
 		return topvl; 
 	}
-
-
-	private void generatePbr1Report() {
+	private Component getReportBar() {
+		reporttype.setItems("Pbr1", "Pbr2", "Annexures");
+		formattype.setItems("Pdf", "Excel");
+		reporttype.setWidth("10%");
+		formattype.setWidth("10%");
+		reportbutton.addClickListener(e->generateReport());
+		var expButton=new Button("Export"); 
+		expButton.addClickListener(e->GridExporter
+				.newWithDefaults(grid)
+				.open());
+		expButton.getStyle().set("margin-left", "auto");
+		reportpanel=new HorizontalLayout(reporttype,formattype, reportbutton, expButton);
+		reportpanel.setAlignItems(FlexComponent.Alignment.BASELINE);
+		reportpanel.setWidthFull();
+		//reportpanel.setEnabled(false);
+		reportbutton.setEnabled(false);
+		expButton.setEnabled(true);
+		return reportpanel;
+	}
+	
+	private void generateReport() {
 		try {
-			String reportPath = "F:";
-			URL res = getClass().getClassLoader().getResource("report/Part1.jrxml");
-			File file = Paths.get(res.toURI()).toFile();
-			String absolutePath = file.getAbsolutePath();
-			//String reportPath = absolutePath.substring(0, absolutePath.length() - 15);
-			Village selectedvillage= village.getValue();
-			//System.out.println(selectedvillage.getVillageName());
-			List<VillageDetails> details = dbservice.getVillageDetails(selectedvillage, "");
-			//System.out.println(details.size());
-			Resource resource = new ClassPathResource("report/Part1.jrxml");
-			InputStream employeeReportStream = resource.getInputStream();
-			JasperReport jasperReport = JasperCompileManager.compileReport(employeeReportStream);
-			JRBeanCollectionDataSource jrBeanCollectionDataSource = new JRBeanCollectionDataSource(details);
-			Map<String, Object> parameters = new HashMap<>();
-			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters,
-					jrBeanCollectionDataSource);
-			JasperExportManager.exportReportToPdfFile(jasperPrint, reportPath + "//detailreport.pdf");
-			File a = new File(reportPath + "//detailreport.pdf");
-			/*StreamResource resourcerange = new StreamResource("DetailedReport.pdf", () -> createResource(a));
-			PdfViewer pdfViewerrange = new PdfViewer();
-			pdfViewerrange.setSrc(resourcerange);279376
-			hl4.setVisible(true);
-			hl4.setSizeFull();
-			hl4.add(pdfViewerrange);
-			*/
-			//System.out.println("Sexess");
+			if ("".equals(reporttype.getValue()) || "".equals(formattype.getValue())) {
+				Notification.show("Error. Please Select the Report type and Format")
+						.addThemeVariants(NotificationVariant.LUMO_ERROR);
+			} else if (grid.asSingleSelect().getValue().getVillage().equals(null)
+					|| grid.asSingleSelect().getValue().getVillage() == null) {
+				Notification.show("Error. Please Select a Village from the Table")
+						.addThemeVariants(NotificationVariant.LUMO_ERROR);
+			} else {
+				String type = reporttype.getValue().trim();
+				String fileformat = formattype.getValue().trim();
 
-		} catch (Exception e) {
-			// notify.show("Error:" + e, 5000, Position.TOP_CENTER);
-			e.printStackTrace();
+				Village selectedvillage = grid.asSingleSelect().getValue().getVillage();
+
+				URL res = getClass().getClassLoader().getResource("report/Part1.jrxml");
+				File file = Paths.get(res.toURI()).toFile();
+				String absolutePath = file.getAbsolutePath();
+				String reportPath = absolutePath.substring(0, absolutePath.length() - 11);
+				if (type.trim() == "Pbr1") {
+					List<VillageDetails> details = dbservice.getVillageDetails(selectedvillage, "");
+					Resource resource = new ClassPathResource("report/Part1.jrxml");
+					InputStream ReportStream = resource.getInputStream();
+					JasperReport jasperReport = JasperCompileManager.compileReport(ReportStream);
+					JRBeanCollectionDataSource jrBeanCollectionDataSource = new JRBeanCollectionDataSource(details);
+					Map<String, Object> parameters = new HashMap<>();
+					JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters,
+							jrBeanCollectionDataSource);
+					File downloadfile=null;
+					if (fileformat == "Pdf") {
+						JasperExportManager.exportReportToPdfFile(jasperPrint, reportPath + "//Pbr1.pdf");
+						downloadfile = new File(reportPath + "//Pbr1.pdf");
+					}else {
+						JRXlsxExporter exporter = new JRXlsxExporter();
+						exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+						exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(reportPath + "//Pbr1.xlsx"));
+						SimpleXlsxReportConfiguration reportConfig  = new SimpleXlsxReportConfiguration();
+						reportConfig.setSheetNames(new String[] { "Pbr1" });
+						exporter.setConfiguration(reportConfig);
+						exporter.exportReport();
+						downloadfile = new File(reportPath + "//Pbr1.xlsx");
+					}
+					addLinkToFile(downloadfile);
+				} else if (type.trim() == "Pbr2") {
+					List<Village> details = dbservice.getVillages(selectedvillage.getId());
+					Resource resource = new ClassPathResource("report/pbr2report.jrxml");
+					InputStream employeeReportStream = resource.getInputStream();
+					JasperReport jasperReport = JasperCompileManager.compileReport(employeeReportStream);
+					JRBeanCollectionDataSource jrBeanCollectionDataSource = new JRBeanCollectionDataSource(details);
+					Map<String, Object> parameters = new HashMap<>();
+					// parameters.put("SUBREPORT_DIR", reportPathx);
+					List<Crops> crops = cservice.findCropsByVillage(selectedvillage, true);
+					List<Markets> markets = mservice.getMarketsByVillage(selectedvillage, true);
+					List<Scapes> scapes = sservice.getScapesByVillage(selectedvillage, true);
+					Map<Integer, List<Crops>> formatVsCropsMap = new HashMap<>();
+					Map<Integer, List<Markets>> formatVsMarketsMap = new HashMap<>();
+					Map<Integer, List<Scapes>> formatVsScapesMap = new HashMap<>();
+					parameters.put("SUBREPORT_DIR", reportPath + "Formats\\");
+					for (Crops crop : crops) {
+						formatVsCropsMap.computeIfAbsent(crop.getFormat().getFormat(), k -> new ArrayList<>());
+						formatVsCropsMap.get(crop.getFormat().getFormat()).add(crop);
+					}
+					for (Integer format : formatVsCropsMap.keySet()) {
+						parameters.put("SUBREPORT_DATA" + format.toString(), formatVsCropsMap.get(format));
+					}
+
+					for (Markets market : markets) {
+						formatVsMarketsMap.computeIfAbsent(market.getFormat().getFormat(), k -> new ArrayList<>());
+						formatVsMarketsMap.get(market.getFormat().getFormat()).add(market);
+					}
+					for (Integer format : formatVsMarketsMap.keySet()) {
+						parameters.put("SUBREPORT_DATA" + format.toString(), formatVsMarketsMap.get(format));
+					}
+
+					for (Scapes scape : scapes) {
+						formatVsScapesMap.computeIfAbsent(scape.getFormat().getFormat(), k -> new ArrayList<>());
+						formatVsScapesMap.get(scape.getFormat().getFormat()).add(scape);
+					}
+					for (Integer format : formatVsScapesMap.keySet()) {
+						parameters.put("SUBREPORT_DATA" + format.toString(), formatVsScapesMap.get(format));
+					}
+					JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters,
+							jrBeanCollectionDataSource);
+					
+					File downloadfile =null;
+					if (fileformat == "Pdf") {
+						JasperExportManager.exportReportToPdfFile(jasperPrint, reportPath + "//Pbr2.pdf");
+						downloadfile = new File(reportPath + "//Pbr2.pdf");
+					}else {
+						JRXlsxExporter exporter = new JRXlsxExporter();
+						exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+						exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(reportPath + "//Pbr2.xlsx"));
+						SimpleXlsxReportConfiguration reportConfig  = new SimpleXlsxReportConfiguration();
+						reportConfig.setSheetNames(new String[] { "Pbr2" });
+						exporter.setConfiguration(reportConfig);
+						exporter.exportReport();
+						downloadfile = new File(reportPath + "//Pbr2.xlsx");
+					}
+					addLinkToFile(downloadfile);
+				} else {
+					Resource resource = new ClassPathResource("report/Annexures.jrxml");
+					InputStream employeeReportStream = resource.getInputStream();
+					JasperReport jasperReport = JasperCompileManager.compileReport(employeeReportStream);
+					List<VillageDetails> details = dbservice.getVillageDetails(selectedvillage, "");
+					JRBeanCollectionDataSource jrBeanCollectionDataSource = new JRBeanCollectionDataSource(details);
+					Map<String, Object> parameters = new HashMap<>();
+					List<VillageAnnexure1> annex1=dbservice.getAnnexure1Details(selectedvillage);
+					List<VillageAnnexure2> annex2=dbservice.getAnnexure2Details(selectedvillage);
+					List<VillageAnnexure3> annex3=dbservice.getAnnexure3Details(selectedvillage);
+					List<VillageAnnexure4> annex4=dbservice.getAnnexure4Details(selectedvillage);
+					List<VillageAnnexure5> annex5=dbservice.getAnnexure5Details(selectedvillage);
+					parameters.put("SUBREPORT_DIR", reportPath+"Annexures\\");
+					parameters.put("SUBREPORT_DATA1", annex1);
+					parameters.put("SUBREPORT_DATA2", annex2);
+					parameters.put("SUBREPORT_DATA3", annex3);
+					parameters.put("SUBREPORT_DATA4", annex4);
+					parameters.put("SUBREPORT_DATA5", annex5);
+					JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters,jrBeanCollectionDataSource);
+					JasperExportManager.exportReportToPdfFile(jasperPrint, reportPath + "//Annexures.pdf");
+
+					File downloadfile =null;
+					if (fileformat == "Pdf") {
+						JasperExportManager.exportReportToPdfFile(jasperPrint, reportPath + "//Annexures.pdf");
+						downloadfile = new File(reportPath + "//Annexures.pdf");
+					}else {
+						JRXlsxExporter exporter = new JRXlsxExporter();
+						exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+						exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(reportPath + "//Annexures.xlsx"));
+						SimpleXlsxReportConfiguration reportConfig  = new SimpleXlsxReportConfiguration();
+						reportConfig.setSheetNames(new String[] { "Annexures" });
+						exporter.setConfiguration(reportConfig);
+						exporter.exportReport();
+						downloadfile = new File(reportPath + "//Annexures.xlsx");
+					}
+					addLinkToFile(downloadfile);
+				}
+
+			}
+			Notification.show("Report Generated Succesfully. Click on the generated link to download")
+			.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+		}catch(NullPointerException npe) {
+			Notification.show("Error. Please Select a Village from the Table and Select the Report Type and Format")
+			.addThemeVariants(NotificationVariant.LUMO_ERROR);
+		}catch (Exception e) {
+			Notification.show("Error Encountered While Generating Report")
+					.addThemeVariants(NotificationVariant.LUMO_ERROR);
 		}
 
 	}
+
+	private void addLinkToFile(File file) {
+		if (link != null) {
+			reportpanel.remove(link);
+		}
+		StreamResource streamResource = new StreamResource(file.getName(), () -> getStream(file));
+		link = new Anchor(streamResource,
+				String.format("%s (%d KB)", file.getName(), (int) file.length() / 1024));
+		link.getElement().setAttribute("download", true);
+		
+		reportpanel.add(link);
+	}
+	private InputStream getStream(File file) {
+        FileInputStream stream = null;
+        try {
+            stream = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return stream;
+    }
 	
 	private void ConfigureCombo() {
 		state.setItems(dbservice.getStates());
@@ -450,6 +627,7 @@ public class VillageView extends Div{
 		if (crop == null) {
 			form.setVisible(false);
 			disableTabs();
+			reportbutton.setEnabled(false);
 		} else {
 			form.district.setValue(crop.getVillage().getBlock().getDistrict());
 			form.block.setValue(crop.getVillage().getBlock());
@@ -467,6 +645,7 @@ public class VillageView extends Div{
 			ConfigureGrid4(crop.getVillage());
 			ConfigureGrid5(crop.getVillage());
 			enableTabs();
+			reportbutton.setEnabled(true);
 		}
 	}
 	
@@ -734,10 +913,11 @@ public class VillageView extends Div{
 	
 	private Component getAnnexure1() { 
 		VerticalLayout vla=new VerticalLayout();
+		//Button test=new Button("Test");
 		Div annex1div=new Div(new
 			Text("Details of Biodiversity Management Committee (BMC) of the village (One elected Chairperson and six persons nominated by the local body; not less than one third to be women and not than 18% belonging to SC/ST)"
 					)); 
-		//ConfigureOtherGrids();
+		//test.addClickListener(e->test());
 		vla.setSizeFull();
 		vla.add(annex1div, ConfigureGrid1(currentvillage)); 
 		HorizontalLayout annex1 = new HorizontalLayout(); 
@@ -747,6 +927,11 @@ public class VillageView extends Div{
 		annex1.setSizeFull();
 		return annex1; 
 	} 
+	public void test() {
+		GridExporter
+		.newWithDefaults(this.annex1grid)
+		.open();
+	}
 	private Component getAnnexure2() { 
 		VerticalLayout vlb=new VerticalLayout();
 		Div annex2div=new Div(new

@@ -204,6 +204,9 @@ public class Dbservice {
 	public MasterFormat getFormat(int format){
 		return formatrepo.findBfindByformat(format);
 	}
+	public List<MasterFormat> getFormatByCategory(MasterCategory category){
+		return formatrepo.findByCategory(category);
+	}
 	public List<MasterCategory> getCategory(){
 		return mcatrepo.findAll();
 	}

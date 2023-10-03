@@ -110,12 +110,21 @@
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}+"Format1.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
-		<band height="25">
+		<band height="30">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<subreport>
-				<reportElement x="0" y="2" width="821" height="23" uuid="f95c39b3-cfa8-4fe4-8956-f27a546d7fd9">
+				<reportElement x="0" y="1" width="821" height="25" uuid="3866385e-6c6f-4284-bb2b-0b21d9d1f3c6">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
+				<subreportParameter name="village_param">
+					<subreportParameterExpression><![CDATA[$P{village_param}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="SUBREPORT_DATA2">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DATA2}]]></subreportParameterExpression>
+				</subreportParameter>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{SUBREPORT_DATA2})]]></dataSourceExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}+"Format2.jasper"]]></subreportExpression>
 			</subreport>
@@ -257,6 +266,18 @@
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}+"Format10.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
+		<band height="41">
+			<staticText>
+				<reportElement x="14" y="11" width="800" height="25" uuid="a9da985e-e277-45b0-b771-aa49415b5611">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="18"/>
+				</textElement>
+				<text><![CDATA[DOMESTICATED BIODIVERSITY]]></text>
+			</staticText>
+		</band>
 		<band height="24">
 			<subreport>
 				<reportElement x="2" y="3" width="819" height="17" uuid="e3322d81-44a4-4430-8a60-02ba266d7606"/>
@@ -368,6 +389,18 @@
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{SUBREPORT_DATA17})]]></dataSourceExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}+"Format17.jasper"]]></subreportExpression>
 			</subreport>
+		</band>
+		<band height="50">
+			<staticText>
+				<reportElement x="14" y="18" width="800" height="25" uuid="b92da8e5-5107-4ca5-bfd6-00ace7b0f7d2">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="18"/>
+				</textElement>
+				<text><![CDATA[WILD BIODIVERSITY]]></text>
+			</staticText>
 		</band>
 		<band height="24">
 			<subreport>

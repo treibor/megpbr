@@ -5,15 +5,17 @@
     <!-- Project from https://start.vaadin.com/project/74fd66dc-ead8-4db0-abad-724e1b9f2c03 -->
     <groupId>com.application.megpbr</groupId>
     <artifactId>megpbr</artifactId>
-    <name>megpbrtest</name>
+    <name>
+		megpbrtest</name>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
     <properties>
         <java.version>17</java.version>
-        <vaadin.version>24.1.3</vaadin.version>
+        <vaadin.version>
+			24.1.3</vaadin.version>
         <selenium.version>4.10.0</selenium.version>
-		
+
 	</properties>
 
     <parent>
@@ -48,27 +50,30 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
+	
     <dependencies>
+		
         <dependency>
             <groupId>
 				com.vaadin</groupId>
 			<!-- Replace artifactId with vaadin-core to use only free components -->
-            <artifactId>vaadin</artifactId>
+            <artifactId>vaadin-core</artifactId>
 		</dependency>
+        
         <dependency>
             <groupId>
 				com.vaadin</groupId>
             <artifactId>
 				vaadin-spring-boot-starter</artifactId>
 		</dependency>
+        
         <dependency>
             <groupId>
 				org.parttio</groupId>
             <artifactId>line-awesome</artifactId>
             <version>1.1.0</version>
 		</dependency>
-
+        
         <dependency>
             <groupId>
 				org.postgresql</groupId>
@@ -87,6 +92,7 @@
 				org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
+        
         <dependency>
             <groupId>
 				org.springframework.boot</groupId>
@@ -94,35 +100,27 @@
             <optional>
 				true</optional>
 		</dependency>
+        
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>
 				spring-boot-starter-test</artifactId>
             <scope>test</scope>
 		</dependency>
+        
         <dependency>
-            <groupId>
-				com.vaadin</groupId>
-            <artifactId>vaadin-testbench-junit5</artifactId>
-            <scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>
-				com.vaadin.componentfactory</groupId>
-			<artifactId>autocomplete</artifactId>
-			<version>
-				24.1.4</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
+				org.springframework.boot</groupId>
 			<artifactId>
 				spring-boot-starter-security</artifactId>
 		</dependency>
+		
 		<dependency>
 			<groupId>
 				org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		
 		<dependency>
 			<groupId>
 				org.springframework.boot</groupId>
@@ -130,6 +128,7 @@
 			<scope>
 				provided</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>
 				org.springframework.security</groupId>
@@ -137,13 +136,8 @@
 			<scope>
 				test</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/nl.captcha/simplecaptcha -->
-		<dependency>
-			<groupId>org.vaadin.addons</groupId>
-			<artifactId>
-				jcaptchafield</artifactId>
-			<version>1.0.1</version>
-		</dependency>
+		
+		
 		<dependency>
 			<groupId>
 				com.storedobject.chart</groupId>
@@ -151,21 +145,26 @@
 				so-charts</artifactId>
 			<version>3.2.4</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>
-				org.vaadin.addons.flowingcode</groupId>
-			<artifactId>extended-login</artifactId>
-			<version>1.0.1</version>
-		</dependency>
-		<dependency>
-			<groupId>net.sf.jasperreports</groupId>
-			<artifactId>jasperreports</artifactId>
+				net.sf.jasperreports</groupId>
+			<artifactId>
+				jasperreports</artifactId>
 			<version>6.20.6</version>
 		</dependency>
+		
 		<dependency>
-			<groupId>com.mpobjects.jasperreports.font</groupId>
-			<artifactId>jasperreports-fonts-liberation</artifactId>
+			<groupId>
+				com.mpobjects.jasperreports.font</groupId>
+			<artifactId>
+				jasperreports-fonts-liberation</artifactId>
 			<version>2.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.xdev-software</groupId>
+			<artifactId>vaadin-grid-exporter</artifactId>
+			<version>3.0.1</version>
 		</dependency>
 	</dependencies>
 

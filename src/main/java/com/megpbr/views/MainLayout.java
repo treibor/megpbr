@@ -14,6 +14,7 @@ import com.megpbr.security.SecurityService;
 import com.megpbr.views.agrobiodiversity.CropPlantsView;
 import com.megpbr.views.agrobiodiversity.FodderCropsView;
 import com.megpbr.views.agrobiodiversity.FruitTreesView;
+import com.megpbr.views.agrobiodiversity.FruitTreesView1;
 import com.megpbr.views.agrobiodiversity.MarketsView;
 import com.megpbr.views.agrobiodiversity.PeopleScapeView;
 import com.megpbr.views.agrobiodiversity.PestsCropsView;
@@ -149,6 +150,7 @@ public class MainLayout extends AppLayout {
     private SideNav createNavigation() {
         SideNav nav = new SideNav();
         nav.addItem(new SideNavItem("Dashboard", DashboardView.class, LineAwesomeIcon.ACCUSOFT.create()));
+        nav.addItem(new SideNavItem("Villages Details", VillageView.class, LineAwesomeIcon.AVIANEX.create()));
         //Agro Biodiversity -Category 1
         SideNavItem category1=new SideNavItem(dbservice.getCategory(1).getCategory());
 		category1.setPrefixComponent(LineAwesomeIcon.ACQUISITIONS_INCORPORATED.create());
@@ -219,8 +221,8 @@ public class MainLayout extends AppLayout {
 				LineAwesomeIcon.WOLF_PACK_BATTALION.create());
         category3.addItem(format18,format19,format20,format21,format22,format23,format24,format25,format26,format27);
         nav.addItem(category1, category2, category3);
-        nav.addItem(new SideNavItem("Villages Details", VillageView.class, LineAwesomeIcon.AVIANEX.create()));
-        nav.addItem(new SideNavItem("Report", ReportView.class, LineAwesomeIcon.ACCESSIBLE_ICON.create()));
+        
+        nav.addItem(new SideNavItem("Crowd Sourcing", CrowdView.class, LineAwesomeIcon.ACCESSIBLE_ICON.create()));
         return nav;
     }
 
