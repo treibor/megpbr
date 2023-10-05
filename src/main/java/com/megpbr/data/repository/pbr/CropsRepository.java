@@ -16,8 +16,8 @@ import java.util.List;
 
 
 public interface CropsRepository extends JpaRepository<Crops, Long>{
-	Crops findTopByScientificNameOrderByIdDesc(String scientificName);
-	Crops findTopByScientificName(String scientificName);
+	Crops findTopByScientificNameOrderByIdAsc(String scientificName);
+	//Crops findTopByScientificName(String scientificName);
 	List<Crops> findByFormatOrderByScientificName(MasterFormat format);
 	List<Crops> findByStateAndFormatAndMaster(State state,MasterFormat format, boolean master);
 	//List<Crops> findByDistrict(District district);

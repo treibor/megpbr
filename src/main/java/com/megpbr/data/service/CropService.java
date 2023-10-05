@@ -120,7 +120,7 @@ public class CropService {
 	
 	public Crops findCropBySientificName(String sname) {
 		//return crepo.findTopByScientificName(sname);
-		return crepo.findTopByScientificNameOrderByIdDesc(sname);
+		return crepo.findTopByScientificNameOrderByIdAsc(sname);
 	}
 	public void deleteCrop(Crops crop) {
 		crepo.delete(crop);

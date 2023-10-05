@@ -34,6 +34,8 @@ public class UserLogin {
 	@Column(unique=true)
 	private String userName;
 	private String name;
+	private String email;
+	private boolean enabled;
 	//@JsonIgnore
 	private String hashedPassword;
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
@@ -124,6 +126,18 @@ public class UserLogin {
 	}
 	public void setState(State state) {
 		this.state = state;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public boolean getEnabled() {
+		return enabled;
+	}
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 	
 	

@@ -27,7 +27,7 @@ public class AuthenticatedUser {
     public Optional<UserLogin> get() {
     	//System.out.println("Test2");
     	return authenticationContext.getAuthenticatedUser(UserDetails.class)
-                .map(userDetails -> userRepository.findByUserName(userDetails.getUsername()));
+                .map(userDetails -> userRepository.findByUserNameAndEnabled(userDetails.getUsername(), true));
         
     }
 

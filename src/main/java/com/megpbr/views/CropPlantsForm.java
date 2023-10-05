@@ -221,7 +221,7 @@ public class CropPlantsForm extends Div {
 			saveCropAfterValidation(true);
 		} else {
 			if (village.getValue() == null || village.getValue().equals(null)) {
-				Notification.show("Please Select The Village");
+				Notification.show("Error. Please Select a Village").addThemeVariants(NotificationVariant.LUMO_ERROR);
 			} else {
 				saveCropAfterValidation(false);
 			}
@@ -331,9 +331,12 @@ public class CropPlantsForm extends Div {
 		
 		if (scientificName.getValue() != null ) {
 			if (scientificCheck.getValue()) {
+				
 				Crops crops = cservice.findCropBySientificName(scientificName.getValue());
 				if (crops != null) {
+					removeFields();
 					populateFields(crops);
+					//setCrop(crops);
 				}
 			} else {
 				if (scientificCheck.isEnabled()) {
@@ -616,15 +619,6 @@ public class CropPlantsForm extends Div {
 		List<String> knowledge=cservice.findKnowledgeHolderAsString(format);
 		List<String> usess=cservice.findUsesAsString(format);
 		List<String> usedparts=cservice.findPartsUsedAsString(format);
-		/*
-		 * List<Crops> scrops = cservice.findCropsByFormat(format); List<String> snames
-		 * = scrops.stream().map(crops -> crops.getScientificName()).toList();
-		 * List<String> stypes = scrops.stream().map(crops ->
-		 * crops.getType()).filter(crops -> crops != null).toList(); List<Crops> hcrops
-		 * = cservice.findCropsOrderByHabitat(); List<String> shabitat =
-		 * hcrops.stream().map(crops -> crops.getHabitat()).filter(crops -> crops !=
-		 * null).toList();
-		 */
 		scientificName.setItems(snames);
 		localName.setItems(lnames);
 		type.setItems(types);
@@ -927,7 +921,8 @@ public class CropPlantsForm extends Div {
 		upload.setUploadButton(uploadButton);
 		//upload.setDropLabel(new Label("Drop Photo"));
 		upload.setAcceptedFileTypes("image/tiff", "image/jpeg", "image/jpg");
-		upload.addFileRejectedListener(e -> Notification.show("Invalid File: Please select only image files less than 1Mb",3000, Position.TOP_END));
+		upload.addFileRejectedListener(e -> Notification.show("Invalid File: Please select only image files less than 1Mb",3000, Position.TOP_END).addThemeVariants(NotificationVariant.LUMO_WARNING));
+		//Notification.show("Error. Please Check").addThemeVariants(NotificationVariant.LUMO_ERROR);
 		//upload.addSucceededListener(event -> showPicture());
 		
 		return upload;

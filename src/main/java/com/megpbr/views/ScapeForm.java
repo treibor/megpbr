@@ -250,7 +250,7 @@ public class ScapeForm extends Div {
 			}
 			fireEvent(new SaveEvent(this, scape));
 			clearForm(format);
-			Notification.show("Saved Successfully");
+			//Notification.show("Saved Successfully");
 			initMasterFields(format);
 			removeFields();
 			clearBuffer();

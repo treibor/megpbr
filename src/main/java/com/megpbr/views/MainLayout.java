@@ -29,6 +29,7 @@ import com.megpbr.views.domesticateddiversity.MarketsFairView;
 import com.megpbr.views.domesticateddiversity.MedicinalPlantsView;
 import com.megpbr.views.domesticateddiversity.OrnamentalPlantsView;
 import com.megpbr.views.domesticateddiversity.TimberPlantsView;
+import com.megpbr.views.master.MasterView;
 import com.megpbr.views.villages.VillageView;
 import com.megpbr.views.wilddiversity.AquaticBiodiversityView;
 import com.megpbr.views.wilddiversity.FumigateChewingView;
@@ -97,7 +98,14 @@ public class MainLayout extends AppLayout {
         addDrawerContent();
         addHeaderContent();
     }
-    
+    public boolean isAdmin() {
+    	String userLevel=userservice.getLoggedUserLevel();
+		if(userLevel.endsWith("ADMIN")) {
+			return true;
+		}else {
+			return false;
+		}
+    }
     private void addHeaderContent() {
     	Avatar avatarImage = new Avatar(userservice.getLoggedUserName());
     	//avatarImage.addThemeVariants(AvatarVariant.LUMO_SMALL);
@@ -108,7 +116,7 @@ public class MainLayout extends AppLayout {
 		SubMenu subMenu = item.getSubMenu();
 		subMenu.addItem("About");
 		subMenu.addItem("Change Password", e->changePassword());
-		subMenu.addItem("Create User",e->createUser());
+		subMenu.addItem("Create User",e->createUser()).setVisible(isAdmin());
 		subMenu.addItem("Logout", e -> securityService.logout());
         DrawerToggle toggle = new DrawerToggle();
         toggle.setAriaLabel("Menu toggle");
@@ -223,6 +231,7 @@ public class MainLayout extends AppLayout {
         nav.addItem(category1, category2, category3);
         
         nav.addItem(new SideNavItem("Crowd Sourcing", CrowdView.class, LineAwesomeIcon.ACCESSIBLE_ICON.create()));
+        nav.addItem(new SideNavItem("Master", MasterView.class, LineAwesomeIcon.ACCESSIBLE_ICON.create()));
         return nav;
     }
 

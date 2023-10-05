@@ -137,7 +137,7 @@ public class CropPlantsView extends HorizontalLayout{
 	private boolean isStateAdmin() {
 		//UserLogin user=uservice.getLoggedUser();
 		String userLevel=uservice.getLoggedUserLevel();
-		if(userLevel.startsWith("STATE")&&userLevel.endsWith("ADMIN")) {
+		if(userLevel.startsWith("STATE")) {
 			return true;
 		}else {
 			return false;
@@ -442,6 +442,7 @@ public class CropPlantsView extends HorizontalLayout{
 		form.initFields(format);
 		form.scientificCheck.setEnabled(false);
 		form.masterCheck.setEnabled(false);
+		form.scientificCheck.setValue(false);
 		if (crop == null) {
 			form.setVisible(false);
 		} else {
@@ -515,15 +516,20 @@ public class CropPlantsView extends HorizontalLayout{
 		ConfigureNewFormAccess();
 		form.setVisible(true);
 		form.save.setText("Save");
+		stateAdminCheck();
 	}
 	
 	public void stateAdminCheck() {
-		if(form.masterCheck.getValue() && !isStateAdmin()) {
+		if(!isStateAdmin()) {
+			form.masterCheck.setVisible(false);
+		}else if(form.masterCheck.getValue() && !isStateAdmin()) {
 			form.save.setEnabled(false);
 			form.delete.setEnabled(false);
+			form.masterCheck.setVisible(false);
 		}else {
 			form.save.setEnabled(true);
 			form.delete.setEnabled(true);
+			form.masterCheck.setVisible(true);
 		}
 	}
 	public void saveCrops(CropPlantsForm.SaveEvent event) {

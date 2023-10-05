@@ -39,7 +39,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     	//LoginView abc=new LoginView();
-        UserLogin user = userRepository.findByUserName(username);
+        UserLogin user = userRepository.findByUserNameAndEnabled(username, true);
         AuditTrail audit=new AuditTrail();
     	if (user == null) {
         	throw new UsernameNotFoundException("No user present with username: " + username);
