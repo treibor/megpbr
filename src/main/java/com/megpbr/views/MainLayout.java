@@ -88,6 +88,30 @@ public class MainLayout extends AppLayout {
 			return false;
 		}
     }
+    public boolean isStateAdmin() {
+    	String userLevel=userservice.getLoggedUserLevel();
+		if(userLevel.startsWith("STATEADMIN") || userLevel.endsWith("SUPERADMIN")) {
+			return true;
+		}else {
+			return false;
+		}
+    }
+    public boolean isStateUser() {
+    	String userLevel=userservice.getLoggedUserLevel();
+		if(userLevel.startsWith("STATE")||userLevel.startsWith("SUPER")) {
+			return true;
+		}else {
+			return false;
+		}
+    }
+    public boolean isVerifier() {
+    	String userLevel=userservice.getLoggedUserLevel();
+		if(userLevel.endsWith("VERIFIER")) {
+			return true;
+		}else {
+			return false;
+		}
+    }
     private void addHeaderContent() {
     	String user=userservice.getLoggedUserName();
     	Avatar avatarImage = new Avatar(user);
@@ -135,14 +159,15 @@ public class MainLayout extends AppLayout {
         appName.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
         //appName.add
         Header header = new Header(appName);
-        Scroller scroller = new Scroller(createNavigation());
-        addToDrawer(header, scroller, createFooter());
+        //Scroller scroller = new Scroller(createNavigation());
+        addToDrawer(header, createNavigation(), createFooter());
     }
 
     private SideNav createNavigation() {
         SideNav nav = new SideNav();
         nav.addItem(new SideNavItem("Dashboard", DashboardView.class, LineAwesomeIcon.ACCUSOFT.create()));
-        nav.addItem(new SideNavItem("Villages Details", VillageView.class, LineAwesomeIcon.AVIANEX.create()));
+        SideNavItem village=new SideNavItem("Villages Details", VillageView.class, LineAwesomeIcon.AVIANEX.create());
+        nav.addItem(village);
         //Agro Biodiversity -Category 1
         SideNavItem category1=new SideNavItem(dbservice.getCategory(1).getCategory());
 		category1.setPrefixComponent(LineAwesomeIcon.ACQUISITIONS_INCORPORATED.create());
@@ -167,7 +192,6 @@ public class MainLayout extends AppLayout {
 				LineAwesomeIcon.MAGENTO.create());
 		SideNavItem format10 = new SideNavItem(dbservice.getFormat(10).getFormatName(), SoilTypeView.class,
 				LineAwesomeIcon.MARS_SOLID.create());
-		
 		category1.addItem(format1,format2, format3,format4,format5,format6, format7, format8, format9, format10);
 		//Domesticated Biodiversity -Category 2
         SideNavItem category2=new SideNavItem(dbservice.getCategory(2).getCategory());
@@ -213,9 +237,22 @@ public class MainLayout extends AppLayout {
 				LineAwesomeIcon.WOLF_PACK_BATTALION.create());
         category3.addItem(format18,format19,format20,format21,format22,format23,format24,format25,format26,format27);
         nav.addItem(category1, category2, category3);
-        nav.addItem(new SideNavItem("Pre Crowd Sourcing", PreCrowdView.class, LineAwesomeIcon.ACCESSIBLE_ICON.create()));
-        nav.addItem(new SideNavItem("Crowd Sourcing", CrowdView.class, LineAwesomeIcon.ACCESSIBLE_ICON.create()));
-        nav.addItem(new SideNavItem("Master", MasterView.class, LineAwesomeIcon.ACCESSIBLE_ICON.create()));
+        SideNavItem crowd=new SideNavItem("Crowd Sourcing");
+        crowd.setPrefixComponent(LineAwesomeIcon.PEOPLE_CARRY_SOLID.create());
+        SideNavItem preverify=new SideNavItem("Verification", PreCrowdView.class, LineAwesomeIcon.ACCESSIBLE_ICON.create());
+        SideNavItem verify=new SideNavItem("Verification", CrowdView.class, LineAwesomeIcon.ACCESSIBLE_ICON.create());
+        crowd.addItem(preverify, verify);
+        nav.addItem(crowd);
+        SideNavItem master=new SideNavItem("Master", MasterView.class, LineAwesomeIcon.ACCESSIBLE_ICON.create());
+        nav.addItem(master);
+        
+        master.setVisible(isStateAdmin());
+        preverify.setVisible(isStateUser());
+        verify.setVisible(isVerifier());
+        category1.setVisible(!isVerifier());
+        category2.setVisible(!isVerifier());
+        category3.setVisible(!isVerifier());
+        village.setVisible(!isVerifier());
         return nav;
     }
 

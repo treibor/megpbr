@@ -162,7 +162,7 @@ public class UserView {
 		district.setVisible(false);
 		block.setVisible(false);
 		village.setVisible(false);
-		if(userLevel.startsWith("STATE")) {
+		if(userLevel.startsWith("STATE")||userLevel.startsWith("VERIFIER")) {
 			state.setVisible(true);
 		}else if(userLevel.startsWith("DISTRICT")) {
 			state.setVisible(true);
@@ -214,13 +214,22 @@ public class UserView {
 						newUser.setHashedPassword(passwordEncoder.encode(password.getValue().trim()));
 						userservice.update(newUser);
 						UserRole role = new UserRole();
-						if (userLevel.endsWith("ADMIN")) {
+						if (userLevel.startsWith("STATE") && userLevel.endsWith("ADMIN")) {
 							role.setRoleName("ADMIN");
+							role.setUser(newUser);
+							userservice.update(role);
+							createAdminRole(newUser);
 						} else {
-							role.setRoleName("USER");
+							if (userLevel.endsWith("VERIFIER")) {
+								role.setRoleName("VERIFIER");
+							} else if (userLevel.endsWith("ADMIN")) {
+								role.setRoleName("ADMIN");
+							} else {
+								role.setRoleName("USER");
+							}
+							role.setUser(newUser);
+							userservice.update(role);
 						}
-						role.setUser(newUser);
-						userservice.update(role);
 						Notification.show("User "+ name.getValue()+" Created Successfully")
 								.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 						clearFields();
@@ -237,7 +246,12 @@ public class UserView {
 			}
 		}
 	}
-
+	private void createAdminRole(UserLogin newUser){
+		UserRole rolex = new UserRole();
+		rolex.setRoleName("STATEADMIN");
+		rolex.setUser(newUser);
+		userservice.update(rolex);
+	}
 	private void clearFields() {
 		//userlevel.setValue();
 		name.setValue("");

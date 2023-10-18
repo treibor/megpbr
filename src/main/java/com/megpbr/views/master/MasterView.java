@@ -60,7 +60,7 @@ import com.vaadin.flow.router.Route;
 
 import jakarta.annotation.security.RolesAllowed;
 
-@RolesAllowed({"ADMIN"})
+@RolesAllowed({"STATEADMIN", "SUPERADMIN"})
 @PageTitle("Crowd Sourcing")
 @Route(value = "master", layout = MainLayout.class)
 public class MasterView extends HorizontalLayout{
@@ -429,11 +429,15 @@ public class MasterView extends HorizontalLayout{
 	}
 	public void deleteUser(UserForm.DeleteEvent event) {
 		try {
-			UserLogin user=event.getUserLogin();
-			service.deleteUser(user);
-			refreshUserGrid();
-			Notification.show("Deleted Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-			auditobject.saveAudit("Delete", "Master User:"+user.getId()+"-"+user.getUserName());
+			UserLogin user = event.getUserLogin();
+			if (uservice.getLoggedUser().getUserName().equals(user.getUserName())) {
+				Notification.show("You Are Logged In. You Cannot Delete Yourself").addThemeVariants(NotificationVariant.LUMO_ERROR);
+			}else {
+				service.deleteUser(user);
+				refreshUserGrid();
+				Notification.show("Deleted Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+				auditobject.saveAudit("Delete", "Master User:" + user.getId() + "-" + user.getUserName());
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			Notification.show("Failed. The Item is Linked with PBR Data").addThemeVariants(NotificationVariant.LUMO_ERROR);

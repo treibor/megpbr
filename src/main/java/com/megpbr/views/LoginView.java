@@ -1,4 +1,4 @@
-package com.megpbr.views.villages;
+package com.megpbr.views;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -14,6 +14,7 @@ import javax.swing.ImageIcon;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.megpbr.audit.Audit;
 import com.megpbr.audit.CaptchaCheck;
 import com.megpbr.data.entity.UserLogin;
 import com.megpbr.security.SecurityUtils;
@@ -61,11 +62,11 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 public class LoginView extends Div implements BeforeEnterObserver, ComponentEventListener<AbstractLogin.LoginEvent> {
 	@Autowired
-	UserDetailsServiceImpl users;
+	Audit audit;
 	FormLayout form=new FormLayout();
     //private LoginForm login = new LoginForm();
     private TextField username=new TextField("User Name");
-    public TextField captchatext=new TextField("CAPTCHA");
+    public TextField captchatext=new TextField();
     private PasswordField password=new PasswordField("Password");
     private Button loginbutton=new Button("Login");
     //public Button captchabutton=new Button("");
@@ -73,12 +74,14 @@ public class LoginView extends Div implements BeforeEnterObserver, ComponentEven
     private static final String LOGIN_SUCCESS_URL = "/";
     TextField code = new TextField("");
     LoginOverlay loginOverlay = new LoginOverlay();
-    CaptchaCheck captcha;
+    //private static CaptchaCheck captcha;
 	public LoginView() {
 		refreshCaptcha();
 		captchatext.setEnabled(false);
 		captchatext.addThemeVariants(TextFieldVariant.LUMO_ALIGN_CENTER);
 		captchatext.setWidthFull();
+		captchatext.getStyle().set("font-size", "15px");
+		captchatext.getStyle().set("font-style", "oblique");
 		Button captchabutton = new Button(new Icon(VaadinIcon.REFRESH));
 		captchabutton.addClickListener(e-> refreshCaptcha());
 		var captchapanel=new HorizontalLayout(captchatext, captchabutton);
@@ -101,7 +104,7 @@ public class LoginView extends Div implements BeforeEnterObserver, ComponentEven
 	}
     
 	public void refreshCaptcha() {
-		captchatext.setValue(captcha.generateCaptcha(5));
+		captchatext.setValue(CaptchaCheck.generateCaptcha(5));
     }
 
    
@@ -114,14 +117,17 @@ public class LoginView extends Div implements BeforeEnterObserver, ComponentEven
 			boolean authenticated = SecurityUtils.authentication(loginEvent.getUsername(), loginEvent.getPassword());
 			if (authenticated) {
 				UI.getCurrent().getPage().setLocation(LOGIN_SUCCESS_URL);
+				audit.saveAudit("Login Successfull", loginEvent.getUsername());
 			} else {
+				audit.saveLoginAudit("Login Failure", loginEvent.getUsername());
 				loginOverlay.setError(true);
+				refreshCaptcha();
 			}
 		} else {
-			//System.out.println(code.getValue()+"-"+captchatext.getValue());
-			//Notification.show("Wrong Captcha");
-			loginOverlay.setEnabled(true);
+			Notification.show("Invalid Captcha Text");
 			loginOverlay.setError(true);
+			refreshCaptcha();
+			loginOverlay.setEnabled(true);
 		}
 	}
     

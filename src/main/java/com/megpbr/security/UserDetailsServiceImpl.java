@@ -23,31 +23,25 @@ import com.megpbr.data.entity.AuditTrail;
 import com.megpbr.data.entity.UserLogin;
 import com.megpbr.data.repository.AuditRepository;
 import com.megpbr.data.repository.UserRepository;
-import com.megpbr.views.villages.LoginView;
+import com.megpbr.views.LoginView;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-	private final LoginView loginobject=new LoginView();
-    private final UserRepository userRepository;
-    private final AuditRepository auditrepo;
-    //private final Audit;
-    public UserDetailsServiceImpl(UserRepository userRepository, AuditRepository auditrepo) {
+	private final UserRepository userRepository;
+    
+	public UserDetailsServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.auditrepo=auditrepo;
-        //loginobject=
     }
 
     @Override
     @Transactional
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		//System.out.println("Load User" + loginobject.code.getValue());
 		UserLogin user = userRepository.findByUserNameAndEnabled(username, true);
-		// AuditTrail audit=new AuditTrail();
 		if (user == null) {
 			throw new UsernameNotFoundException("No user present with username: " + username);
 
 		} else {
-			System.out.println("User:" + username);
+			//System.out.println("User:" + username);
 			return new User(user.getUserName(), user.getHashedPassword(), getAuthorities(user));
 			
 		}
@@ -55,7 +49,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	}
 
     private static List<GrantedAuthority> getAuthorities(UserLogin user) {
-    	System.out.println("Get Roles");
+    	//System.out.println("Get Roles");
        return user.getRoles().stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRoleName()))
     	        .collect(Collectors.toList());
       

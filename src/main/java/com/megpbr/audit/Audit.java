@@ -81,4 +81,14 @@ public class Audit {
 		audit.setIpAddress(ipAddress);
 		auditservice.updateAudit(audit);
 	}
+	public void saveLoginAudit(String action, String details) {
+		audit=new AuditTrail();
+		audit.setAction(action);
+		//audit.setActionBy(uservice.getLoggedUserName());
+		audit.setActionOn(LocalDateTime.now());
+		audit.setDetails(details);
+		String ipAddress = VaadinSession.getCurrent().getBrowser().getAddress() ;
+		audit.setIpAddress(ipAddress);
+		auditservice.updateAudit(audit);
+	}
 }
