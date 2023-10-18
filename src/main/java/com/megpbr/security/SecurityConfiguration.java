@@ -29,26 +29,21 @@ import com.vaadin.flow.spring.security.VaadinWebSecurity;
 @EnableWebSecurity
 @Configuration
 public class SecurityConfiguration extends VaadinWebSecurity {
-
+//public class SecurityConfiguration extends VaadinWebSecurity {
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
+    	System.out.println("A");
         http.authorizeHttpRequests(
                 authorize -> authorize.requestMatchers(new AntPathRequestMatcher("/images/*.png")).permitAll());
-
-        // Icons from the line-awesome addon
         http.authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(new AntPathRequestMatcher("/line-awesome/**/*.svg")).permitAll());
-
         super.configure(http);
         setLoginView(http, LoginView.class);
-        //setLoginView(http, MyLoginForm.class);
-        //setLoginView(http, TestLogin.class);
     }
     
 

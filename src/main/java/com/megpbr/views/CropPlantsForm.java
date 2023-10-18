@@ -176,7 +176,7 @@ public class CropPlantsForm extends Div {
 		topaccordion = accordion.add("Basic Info",
 				new Div(createCheckPanel(), createMasterForm(), createBasicForm()));
 		bottomaccordion = accordion.add("Other Info",  new Div(createCommonForm()));
-		bottomaccordion = accordion.add("Images & Photos",  new Div(createImageForm()));
+		imageaccordion = accordion.add("Images & Photos",  new Div(createImageForm()));
 		accordion.setSizeFull();
 		masterCheck.addClickListener(e -> hideFields());
 		VerticalLayout vl = new VerticalLayout();
@@ -821,7 +821,7 @@ public class CropPlantsForm extends Div {
 			break;
 		case 23:
 			type.setLabel("Associated Crop");
-			variety.setVisible(false);
+			variety.setVisible(true);
 			fruitSeason.setVisible(false);
 			fruitSeasons.setVisible(false);
 			otherDetails.setLabel("Other Details(Mode of Use)");
@@ -966,12 +966,15 @@ public class CropPlantsForm extends Div {
 			return null;
 		}
 	}
+
 	BufferedImage resizeImage(BufferedImage originalImage) throws IOException {
-		BufferedImage resizedImage = new BufferedImage(200, 200, BufferedImage.TYPE_INT_RGB);
+
+		BufferedImage resizedImage = new BufferedImage(600,600, BufferedImage.TYPE_INT_RGB);
 		Graphics2D graphics2D = resizedImage.createGraphics();
-		graphics2D.drawImage(originalImage, 0, 0, 200, 200, null);
+		graphics2D.drawImage(originalImage, 0, 0, 600,600, null);
 		graphics2D.dispose();
 		return resizedImage;
+
 	}
 	
 	public void addImage(HorizontalLayout imagelayout, Image image, Div imagecontainer) {

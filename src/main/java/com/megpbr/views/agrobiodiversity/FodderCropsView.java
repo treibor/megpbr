@@ -40,11 +40,14 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.Uses;
+import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.H6;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
@@ -68,6 +71,7 @@ import com.vaadin.flow.server.VaadinSession;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
+import software.xdev.vaadin.grid_exporter.GridExporter;
 
 @RolesAllowed({"ADMIN", "USER"})
 @PageTitle("Fodder Crops")
@@ -100,8 +104,10 @@ public class FodderCropsView extends HorizontalLayout{
 	Grid.Column<Crops> latitudeColumn;
 	Grid.Column<Crops> longitudeColumn;
 	HeaderRow headerRow;
-	Button getDataButton=new Button("Get Data");
+	Button getDataButton=new Button("Search");
+	Button expButton=new Button("Export ");
 	VerticalLayout vlx=new VerticalLayout();
+	H6 totallabel=new H6();
 	@Autowired
 	private Audit auditobject;
 	public FodderCropsView(Dbservice service, CropService cservice, UserService uservice) {
@@ -128,19 +134,34 @@ public class FodderCropsView extends HorizontalLayout{
 			return false;
 		}
 	}
+	private boolean isStateAdmin() {
+		//UserLogin user=uservice.getLoggedUser();
+		String userLevel=uservice.getLoggedUserLevel();
+		if(userLevel.startsWith("STATE")||userLevel.startsWith("SUPER")) {
+			return true;
+		}else {
+			return false;
+		}
+	}
 	private void ConfigureAccess() {
 		UserLogin user=uservice.getLoggedUser();
 		String userLevel=uservice.getLoggedUserLevel();
-		if(userLevel.startsWith("STATE")) {
+		if(userLevel.startsWith("SUPER")) {
+			state.setValue(user.getState());
+			stateColumn.setVisible(true);
+			state.setVisible(true);
+		}else if(userLevel.startsWith("STATE")) {
 			//System.out.println("C");
 			state.setValue(user.getState());
 			stateColumn.setVisible(false);
+			state.setVisible(false);
 		}else if(userLevel.startsWith("DISTRICT")) {
 			//System.out.println("C");
 			state.setValue(user.getState());
 			district.setValue(user.getDistrict());
 			stateColumn.setVisible(false);
 			districtColumn.setVisible(false);
+			district.setVisible(false);
 		}else if(userLevel.startsWith("BLOCK")) {
 			state.setValue(user.getState());
 			district.setValue(user.getDistrict());
@@ -148,6 +169,9 @@ public class FodderCropsView extends HorizontalLayout{
 			stateColumn.setVisible(false);
 			districtColumn.setVisible(false);
 			blockColumn.setVisible(false);
+			state.setVisible(false);
+			district.setVisible(false);
+			block.setVisible(false);
 		}else if(userLevel.startsWith("VILLAGE")) {
 			state.setValue(user.getState());
 			district.setValue(user.getDistrict());
@@ -158,6 +182,10 @@ public class FodderCropsView extends HorizontalLayout{
 			blockColumn.setVisible(false);
 			villageColumn.setVisible(false);
 			getDataButton.setVisible(false);
+			state.setVisible(false);
+			district.setVisible(false);
+			block.setVisible(false);
+			village.setVisible(false);
 		}
 	}
 	
@@ -170,15 +198,19 @@ public class FodderCropsView extends HorizontalLayout{
 			villageColumn.setVisible(false);
 			getDataButton.setVisible(false);
 			approvalColumn.setVisible(false);
+			district.setVisible(false);
+			block.setVisible(false);
+			village.setVisible(false);
 			updateGrid();
 		}else {
-			stateColumn.setVisible(true);
 			districtColumn.setVisible(true);
 			blockColumn.setVisible(true);
 			villageColumn.setVisible(true);
 			getDataButton.setVisible(true);
 			approvalColumn.setVisible(true);
-			headerRow.getCell(scientificColumn).setComponent(getDataButton);
+			district.setVisible(true);
+			block.setVisible(true);
+			village.setVisible(true);
 			ConfigureAccess();
 			updateGrid();
 		}
@@ -186,7 +218,7 @@ public class FodderCropsView extends HorizontalLayout{
 	
 	private Component getMainContent() {
 		
-		vlx.add(getToolbar(), grid);
+		vlx.add(getToolbar(), getToolBar2(), grid, getToolBar3());
 		grid.setSizeFull();
 		vlx.setSizeFull();
 		return vlx;
@@ -201,23 +233,50 @@ public class FodderCropsView extends HorizontalLayout{
 		return content;
 	}
 	private Component getToolbar() {
+		state.setVisible(false);
+		district.setVisible(false);
+		block.setVisible(false);
+		village.setVisible(false);
+		getDataButton.setVisible(false);
 		filterText.setPlaceholder("Search by Scientific/Local Name/Type ");
 		filterText.setClearButtonVisible(true);
 		filterText.setValueChangeMode(ValueChangeMode.LAZY);
 		filterText.addValueChangeListener(e -> updateGrid());
+		filterText.setWidth("400px");
 		Button addButton=new Button("New");
 		addButton.setPrefixComponent(LineAwesomeIcon.PLUS_CIRCLE_SOLID.create());
 		String tempformatName=format.getFormatName();
-		String formatName;
 		var label=new H3("Format-"+format.getFormat()+" - "+tempformatName);
 		addButton.addClickListener(e->addCrops(new Crops()));
-		HorizontalLayout topvl=new HorizontalLayout(radioGroup,filterText,addButton,label  );
+		HorizontalLayout topvl=new HorizontalLayout(radioGroup,filterText,label, addButton  );
 		topvl.setAlignItems(FlexComponent.Alignment.BASELINE);
 		label.getStyle().set("margin-left", "auto");
 		label.getStyle().set("font-size", "12px");
 		rejectedData.getStyle().set("font-size", "12px");
 		topvl.setWidthFull();
 		return topvl; 
+	}
+	public Component getToolBar2() {
+		FormLayout formx=new FormLayout();
+		formx.add(state, 2);
+		formx.add(district, 2);
+		formx.add(block, 2);
+		formx.add(village, 2);
+		formx.add(getDataButton, 1);
+		//formx.add(expButton, 1);
+		formx.setResponsiveSteps(new ResponsiveStep("0", 4),
+				// Use two columns, if layout's width exceeds 500px
+				new ResponsiveStep("800px", 10));
+		//VerticalLayout abc=new VerticalLayout(formx);
+		return formx;
+	}
+	public Component getToolBar3() {
+		HorizontalLayout bottom =new HorizontalLayout();
+		bottom.add( totallabel, expButton);
+		bottom.setAlignItems(FlexComponent.Alignment.BASELINE);
+		expButton.getStyle().set("margin-left", "auto");
+		bottom.setWidthFull();
+		return bottom;
 	}
 	private void ConfigureCombo() {
 		state.setItems(dbservice.getStates());
@@ -242,10 +301,13 @@ public class FodderCropsView extends HorizontalLayout{
 		//Text text1=new Text("Village Data");
 		radioGroup.setItems("Master Data", "Village Data");
 		radioGroup.setValue("Master Data");
-		radioGroup.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
+		//radioGroup.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
 		radioGroup.addValueChangeListener(e->updateList());
-		filterText.setWidth("20%");
-		//System.out.println("Village Exist");
+		
+		expButton.addClickListener(e->GridExporter
+				.newWithDefaults(grid)
+				.open());
+		
 	}
 	
 	private void ConfigureForm() {
@@ -254,16 +316,14 @@ public class FodderCropsView extends HorizontalLayout{
 		form.setWidth("50%");
 		form.addListener(CropPlantsForm.SaveEvent.class, this::saveCrops);
 		form.addListener(CropPlantsForm.DeleteEvent.class, this::deleteCrops);
-		//form.addListener(CropPlantsForm.CloseEvent.class, e -> closeEditor());
+		
 	}
-	
-	
 	
 	public void initGrid() {
 		try {
 			List<Crops> crops=cservice.findCropsByFormatAndMaster(format, true);
 			grid.setItems(crops);
-			localColumn.setFooter("Total : "+crops.size());
+			totallabel.setText("Total : "+crops.size());
 			grid.setSizeFull();
 		} catch (Exception e) {
 			localColumn.setFooter("Total : 0");
@@ -276,11 +336,11 @@ public class FodderCropsView extends HorizontalLayout{
 		String data = radioGroup.getValue().trim();
 		if (data != "Master Data") {
 			if (district.getValue() == null) {
-				grid.setItems(Collections.EMPTY_LIST);
-				localColumn.setFooter("Total : 0");
+				grid.setItems(Collections.emptyList());
+				totallabel.setText("Total : 0");
 			} else if (village.getValue() == null && block.getValue() == null) {
-				grid.setItems(Collections.EMPTY_LIST);
-				localColumn.setFooter("Total : 0");
+				grid.setItems(Collections.emptyList());
+				totallabel.setText("Total : 0");
 			} else if (village.getValue() == null && block.getValue() != null) {
 				updateBlockList();
 			} else {
@@ -289,13 +349,12 @@ public class FodderCropsView extends HorizontalLayout{
 		}else {
 			try {
 				String search =filterText.getValue();
-				//List<Crops> crops=cservice.findCropsByFormatAndMaster(format, true);
 				List<Crops> crops=cservice.searchCropsFilter(search, format);
 				grid.setItems(crops);
-				localColumn.setFooter("Total : "+crops.size());
+				totallabel.setText("Total : " + crops.size());
 				grid.setSizeFull();
 			} catch (Exception e) {
-				localColumn.setFooter("Total : 0");
+				totallabel.setText("Total : 0");
 				e.printStackTrace();
 			}
 		}
@@ -305,10 +364,10 @@ public class FodderCropsView extends HorizontalLayout{
 		List<Crops> villagesList=cservice.searchCropsFilter(district.getValue(), search, format);
 		grid.setItems(villagesList);
 		if(villagesList.size()==0) {
-			//Notification.show("No Data Found in the District"+villagesList.get(0).getVillage().getBlock().getDistrict()).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-			localColumn.setFooter("Total : 0");
+			Notification.show("No Data Found in the District"+villagesList.get(0).getVillage().getBlock().getDistrict()).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+			totallabel.setText("Total : 0");
 		}else {
-			localColumn.setFooter("Total : " + villagesList.size());
+			totallabel.setText("Total : " + villagesList.size());
 		}
 	}
 	public void updateBlockList() {
@@ -317,9 +376,9 @@ public class FodderCropsView extends HorizontalLayout{
 		grid.setItems(villagesList);
 		if(villagesList.size()==0) {
 			//Notification.show("No Data Found in the Selected Block +"+block.getValue().getBlockName()).addThemeVariants(NotificationVariant.LUMO_WARNING);
-			localColumn.setFooter("Total : 0");
+			totallabel.setText("Total : 0");
 		}else {
-			localColumn.setFooter("Total : " + villagesList.size());
+			totallabel.setText("Total : " + villagesList.size());
 		}
 	}
 	public void updateVillageList() {
@@ -328,9 +387,9 @@ public class FodderCropsView extends HorizontalLayout{
 		grid.setItems(villagesList);
 		if(villagesList.size()==0) {
 			Notification.show("No Data Found in the Selected Village :"+village.getValue().getVillageName()).addThemeVariants(NotificationVariant.LUMO_WARNING);
-			localColumn.setFooter("Total : 0");
+			totallabel.setText("Total : 0");
 		}else {
-			localColumn.setFooter("Total : " + villagesList.size());
+			totallabel.setText("Total : " + villagesList.size());
 		}
 	}
 	
@@ -387,6 +446,7 @@ public class FodderCropsView extends HorizontalLayout{
 		form.initFields(format);
 		form.scientificCheck.setEnabled(false);
 		form.masterCheck.setEnabled(false);
+		form.scientificCheck.setValue(false);
 		if (crop == null) {
 			form.setVisible(false);
 		} else {
@@ -438,6 +498,7 @@ public class FodderCropsView extends HorizontalLayout{
 			}
 			form.save.setText("Update");
 			form.delete.setVisible(isAdmin());
+			stateAdminCheck();
 			form.setVisible(true);
 		}
 	}
@@ -453,11 +514,27 @@ public class FodderCropsView extends HorizontalLayout{
 		form.masterCheck.setEnabled(true);
 		form.frommaster.setVisible(true);
 		form.masterCheck.setValue(false);
+		form.masterCheck.addClickListener(e->stateAdminCheck());
 		MasterApproval abc=dbservice.getMasterApprovalApproved();
 		form.approved.setValue(abc);
 		ConfigureNewFormAccess();
 		form.setVisible(true);
 		form.save.setText("Save");
+		stateAdminCheck();
+	}
+	
+	public void stateAdminCheck() {
+		if(!isStateAdmin()) {
+			form.masterCheck.setVisible(false);
+		}else if(form.masterCheck.getValue() && !isStateAdmin()) {
+			form.save.setEnabled(false);
+			form.delete.setEnabled(false);
+			form.masterCheck.setVisible(false);
+		}else {
+			form.save.setEnabled(true);
+			form.delete.setEnabled(true);
+			form.masterCheck.setVisible(true);
+		}
 	}
 	public void saveCrops(CropPlantsForm.SaveEvent event) {
 		try {
@@ -534,14 +611,8 @@ public class FodderCropsView extends HorizontalLayout{
 			approvalColumn.setVisible(false);
 			latitudeColumn.setVisible(false);
 			longitudeColumn.setVisible(false);
-			grid.getHeaderRows().clear();
-			headerRow = grid.appendHeaderRow();
-			headerRow.getCell(stateColumn).setComponent(state);
-			headerRow.getCell(districtColumn).setComponent(district);
-			headerRow.getCell(blockColumn).setComponent(block);
-			headerRow.getCell(villageColumn).setComponent(village);
-			grid.asSingleSelect().addValueChangeListener(e -> editCrops(e.getValue()));
 			
+			grid.asSingleSelect().addValueChangeListener(e -> editCrops(e.getValue()));
 			return grid;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

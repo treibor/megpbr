@@ -46,6 +46,7 @@ public class UserView {
 	public ComboBox<Block> block = new ComboBox("Block");
 	public ComboBox<Village> village = new ComboBox("Village");
 	final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+	
 	public UserView(Dbservice dbservice, UserService userservice) {
 		this.dbservice = dbservice;
 		this.userservice = userservice;
@@ -209,6 +210,7 @@ public class UserView {
 						newUser.setDistrict(district.getValue());
 						newUser.setBlock(block.getValue());
 						newUser.setVillage(village.getValue());
+						newUser.setEnabled(true);
 						newUser.setHashedPassword(passwordEncoder.encode(password.getValue().trim()));
 						userservice.update(newUser);
 						UserRole role = new UserRole();

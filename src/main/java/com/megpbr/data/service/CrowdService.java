@@ -40,6 +40,12 @@ public class CrowdService {
 	public List<Crowd> getCrowd(){
 		return crepo.findAll();
 	}
+	public List<Crowd> getVerifiedCrowd(){
+		return crepo.findByPreverifiedAndVerified(true, false);
+	}
+	public List<Crowd> getPreVerifiedCrowd(){
+		return crepo.findByPreverified(false);
+	}
 	public void deleteCrowd(Crowd crowd) {
 		crepo.delete(crowd);
 	}

@@ -17,13 +17,14 @@ public class CaptchaCheck {
 		Random rand = new Random(62);
 
 		// Characters to be included
-		String chrs = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
+		//String chrs = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		String chrs = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 		// Generate n characters from above set and
 		// add these characters to captcha.
 		String captcha = "";
 		while (n-- > 0) {
-			int index = (int) (Math.random() * 62);
+			//int index = (int) (Math.random() * 62);
+			int index = (int) (Math.random() * 36);
 			captcha += chrs.charAt(index);
 		}
 

@@ -21,6 +21,7 @@ import com.megpbr.data.entity.MasterFormat;
 import com.megpbr.data.entity.State;
 import com.megpbr.data.entity.UserLogin;
 import com.megpbr.data.entity.Village;
+import com.megpbr.data.entity.pbr.Crops;
 import com.megpbr.data.entity.pbr.Scapes;
 import com.megpbr.data.entity.villages.VillageDetails;
 import com.megpbr.data.repository.AuditRepository;
@@ -42,11 +43,14 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.Uses;
+import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.H6;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
@@ -102,8 +106,10 @@ public class ScapeView extends HorizontalLayout{
 	Grid.Column<Scapes> latitudeColumn;
 	Grid.Column<Scapes> longitudeColumn;
 	HeaderRow headerRow;
-	Button getDataButton=new Button("Get Data");
-	VerticalLayout vlx=new VerticalLayout();
+	Button getDataButton=new Button("Search");
+	Button expButton = new Button("Export ");
+	VerticalLayout vlx = new VerticalLayout();
+	H6 totallabel = new H6();
 	@Autowired
 	private Audit auditobject;
 	public ScapeView(Dbservice service, ScapeService cservice, UserService uservice) {
@@ -130,10 +136,23 @@ public class ScapeView extends HorizontalLayout{
 			return false;
 		}
 	}
+	private boolean isStateAdmin() {
+		// UserLogin user=uservice.getLoggedUser();
+		String userLevel = uservice.getLoggedUserLevel();
+		if (userLevel.startsWith("STATE") || userLevel.startsWith("SUPER")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	private void ConfigureAccess() {
 		UserLogin user=uservice.getLoggedUser();
 		String userLevel=uservice.getLoggedUserLevel();
-		if(userLevel.startsWith("STATE")) {
+		if (userLevel.startsWith("SUPER")) {
+			state.setValue(user.getState());
+			stateColumn.setVisible(true);
+			state.setVisible(true);
+		} else if(userLevel.startsWith("STATE")) {
 			//System.out.println("C");
 			state.setValue(user.getState());
 			stateColumn.setVisible(false);
@@ -164,62 +183,97 @@ public class ScapeView extends HorizontalLayout{
 	}
 	
 	public void updateList() {
-		String data=radioGroup.getValue().trim();
-		if(data=="Master Data") {
-			//stateC
+		String data = radioGroup.getValue().trim();
+		if (data == "Master Data") {
+			// stateC
 			districtColumn.setVisible(false);
 			blockColumn.setVisible(false);
 			villageColumn.setVisible(false);
 			getDataButton.setVisible(false);
 			approvalColumn.setVisible(false);
+			district.setVisible(false);
+			block.setVisible(false);
+			village.setVisible(false);
 			updateGrid();
-		}else {
-			stateColumn.setVisible(true);
+		} else {
 			districtColumn.setVisible(true);
 			blockColumn.setVisible(true);
 			villageColumn.setVisible(true);
 			getDataButton.setVisible(true);
 			approvalColumn.setVisible(true);
-			headerRow.getCell(localColumn).setComponent(getDataButton);
+			district.setVisible(true);
+			block.setVisible(true);
+			village.setVisible(true);
 			ConfigureAccess();
 			updateGrid();
 		}
 	}
 	
 	private Component getMainContent() {
-		
-		vlx.add(getToolbar(), grid);
+
+		vlx.add(getToolbar(), getToolBar2(), grid, getToolBar3());
 		grid.setSizeFull();
 		vlx.setSizeFull();
 		return vlx;
 	}
+
 	private Component getContent() {
 		HorizontalLayout content = new HorizontalLayout(getMainContent(), form);
-		//Div content = new Div(getMainContent(), form);
+		// Div content = new Div(getMainContent(), form);
 		content.setFlexGrow(1, vlx);
 		content.setFlexGrow(1, form);
 		content.addClassName("content");
 		content.setSizeFull();
 		return content;
 	}
+
 	private Component getToolbar() {
-		filterText.setPlaceholder("Search by Flora /Fauna");
+		state.setVisible(false);
+		district.setVisible(false);
+		block.setVisible(false);
+		village.setVisible(false);
+		getDataButton.setVisible(false);
+		filterText.setPlaceholder("Search by Scientific/Local Name/Type ");
 		filterText.setClearButtonVisible(true);
 		filterText.setValueChangeMode(ValueChangeMode.LAZY);
 		filterText.addValueChangeListener(e -> updateGrid());
-		Button addButton=new Button("New");
+		filterText.setWidth("400px");
+		Button addButton = new Button("New");
 		addButton.setPrefixComponent(LineAwesomeIcon.PLUS_CIRCLE_SOLID.create());
-		String tempformatName=format.getFormatName();
-		String formatName;
-		var label=new H3("Format-"+format.getFormat()+" - "+tempformatName);
-		addButton.addClickListener(e->addScape(new Scapes()));
-		HorizontalLayout topvl=new HorizontalLayout(radioGroup,filterText,addButton,label  );
+		String tempformatName = format.getFormatName();
+		var label = new H3("Format-" + format.getFormat() + " - " + tempformatName);
+		addButton.addClickListener(e -> addScape(new Scapes()));
+		HorizontalLayout topvl = new HorizontalLayout(radioGroup, filterText, label, addButton);
 		topvl.setAlignItems(FlexComponent.Alignment.BASELINE);
 		label.getStyle().set("margin-left", "auto");
 		label.getStyle().set("font-size", "12px");
 		rejectedData.getStyle().set("font-size", "12px");
 		topvl.setWidthFull();
-		return topvl; 
+		return topvl;
+	}
+
+	public Component getToolBar2() {
+		FormLayout formx = new FormLayout();
+		formx.add(state, 2);
+		formx.add(district, 2);
+		formx.add(block, 2);
+		formx.add(village, 2);
+		formx.add(getDataButton, 1);
+		// formx.add(expButton, 1);
+		formx.setResponsiveSteps(new ResponsiveStep("0", 4),
+				// Use two columns, if layout's width exceeds 500px
+				new ResponsiveStep("800px", 10));
+		// VerticalLayout abc=new VerticalLayout(formx);
+		return formx;
+	}
+
+	public Component getToolBar3() {
+		HorizontalLayout bottom = new HorizontalLayout();
+		bottom.add(totallabel, expButton);
+		bottom.setAlignItems(FlexComponent.Alignment.BASELINE);
+		expButton.getStyle().set("margin-left", "auto");
+		bottom.setWidthFull();
+		return bottom;
 	}
 	private void ConfigureCombo() {
 		state.setItems(dbservice.getStates());
@@ -244,7 +298,7 @@ public class ScapeView extends HorizontalLayout{
 		//Text text1=new Text("Village Data");
 		radioGroup.setItems("Master Data", "Village Data");
 		radioGroup.setValue("Master Data");
-		radioGroup.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
+		//radioGroup.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
 		radioGroup.addValueChangeListener(e->updateList());
 		filterText.setWidth("20%");
 		//System.out.println("Village Exist");
@@ -265,10 +319,10 @@ public class ScapeView extends HorizontalLayout{
 		try {
 			List<Scapes> scapes=cservice.getScapesByFormatAndMaster(format, true);
 			grid.setItems(scapes);
-			localColumn.setFooter("Total : "+scapes.size());
+			totallabel.setText("Total : "+scapes.size());
 			grid.setSizeFull();
 		} catch (Exception e) {
-			localColumn.setFooter("Total : 0");
+			totallabel.setText("Total : 0");
 			e.printStackTrace();
 		}
 	}
@@ -279,10 +333,10 @@ public class ScapeView extends HorizontalLayout{
 		if (data != "Master Data") {
 			if (district.getValue() == null) {
 				grid.setItems(Collections.EMPTY_LIST);
-				localColumn.setFooter("Total : 0");
+				totallabel.setText("Total : 0");
 			} else if (village.getValue() == null && block.getValue() == null) {
 				grid.setItems(Collections.EMPTY_LIST);
-				localColumn.setFooter("Total : 0");
+				totallabel.setText("Total : 0");
 			} else if (village.getValue() == null && block.getValue() != null) {
 				updateBlockList();
 			} else {
@@ -294,10 +348,10 @@ public class ScapeView extends HorizontalLayout{
 				//List<Scape> scapes=cservice.findScapeByFormatAndMaster(format, true);
 				List<Scapes> scapes=cservice.searchScapeFilter(search, format);
 				grid.setItems(scapes);
-				localColumn.setFooter("Total : "+scapes.size());
+				totallabel.setText("Total : "+scapes.size());
 				grid.setSizeFull();
 			} catch (Exception e) {
-				localColumn.setFooter("Total : 0");
+				totallabel.setText("Total : 0");
 				e.printStackTrace();
 			}
 		}
@@ -308,9 +362,9 @@ public class ScapeView extends HorizontalLayout{
 		grid.setItems(villagesList);
 		if(villagesList.size()==0) {
 			//Notification.show("No Data Found in the District"+villagesList.get(0).getVillage().getBlock().getDistrict()).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-			localColumn.setFooter("Total : 0");
+			totallabel.setText("Total : 0");
 		}else {
-			localColumn.setFooter("Total : " + villagesList.size());
+			totallabel.setText("Total : " + villagesList.size());
 		}
 	}
 	public void updateBlockList() {
@@ -319,9 +373,9 @@ public class ScapeView extends HorizontalLayout{
 		grid.setItems(villagesList);
 		if(villagesList.size()==0) {
 			//Notification.show("No Data Found in the Selected Block +"+block.getValue().getBlockName()).addThemeVariants(NotificationVariant.LUMO_WARNING);
-			localColumn.setFooter("Total : 0");
+			totallabel.setText("Total : 0");
 		}else {
-			localColumn.setFooter("Total : " + villagesList.size());
+			totallabel.setText("Total : " + villagesList.size());
 		}
 	}
 	public void updateVillageList() {
@@ -330,9 +384,9 @@ public class ScapeView extends HorizontalLayout{
 		grid.setItems(villagesList);
 		if(villagesList.size()==0) {
 			Notification.show("No Data Found in the Selected Village :"+village.getValue().getVillageName()).addThemeVariants(NotificationVariant.LUMO_WARNING);
-			localColumn.setFooter("Total : 0");
+			totallabel.setText("Total : 0");
 		}else {
-			localColumn.setFooter("Total : " + villagesList.size());
+			totallabel.setText("Total : " + villagesList.size());
 		}
 	}
 	
@@ -440,6 +494,7 @@ public class ScapeView extends HorizontalLayout{
 			}
 			form.save.setText("Update");
 			form.delete.setVisible(isAdmin());
+			stateAdminCheck();
 			form.setVisible(true);
 		}
 	}
@@ -460,6 +515,20 @@ public class ScapeView extends HorizontalLayout{
 		ConfigureNewFormAccess();
 		form.setVisible(true);
 		form.save.setText("Save");
+		stateAdminCheck();
+	}
+	public void stateAdminCheck() {
+		if (!isStateAdmin()) {
+			form.masterCheck.setVisible(false);
+		} else if (form.masterCheck.getValue() && !isStateAdmin()) {
+			form.save.setEnabled(false);
+			form.delete.setEnabled(false);
+			form.masterCheck.setVisible(false);
+		} else {
+			form.save.setEnabled(true);
+			form.delete.setEnabled(true);
+			form.masterCheck.setVisible(true);
+		}
 	}
 	public void saveScape(ScapeForm.SaveEvent event) {
 		try {
@@ -538,14 +607,7 @@ public class ScapeView extends HorizontalLayout{
 			approvalColumn.setVisible(false);
 			latitudeColumn.setVisible(false);
 			longitudeColumn.setVisible(false);
-			grid.getHeaderRows().clear();
-			headerRow = grid.appendHeaderRow();
-			headerRow.getCell(stateColumn).setComponent(state);
-			headerRow.getCell(districtColumn).setComponent(district);
-			headerRow.getCell(blockColumn).setComponent(block);
-			headerRow.getCell(villageColumn).setComponent(village);
 			grid.asSingleSelect().addValueChangeListener(e -> editScape(e.getValue()));
-			
 			return grid;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

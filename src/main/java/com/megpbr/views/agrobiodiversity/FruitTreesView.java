@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
 import com.megpbr.audit.Audit;
@@ -22,20 +21,13 @@ import com.megpbr.data.entity.State;
 import com.megpbr.data.entity.UserLogin;
 import com.megpbr.data.entity.Village;
 import com.megpbr.data.entity.pbr.Crops;
-import com.megpbr.data.entity.villages.VillageDetails;
-import com.megpbr.data.repository.AuditRepository;
-import com.megpbr.data.service.AuditService;
 import com.megpbr.data.service.CropService;
 import com.megpbr.data.service.Dbservice;
 import com.megpbr.data.service.UserService;
 import com.megpbr.views.CropPlantsForm;
 import com.megpbr.views.MainLayout;
-import com.megpbr.views.CropPlantsForm.DeleteEvent;
-import com.megpbr.views.CropPlantsForm.SaveEvent;
 //import com.application.megpbr.views.wilddiversity.WildDiversityView;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.Text;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -43,13 +35,10 @@ import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.H6;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -57,19 +46,12 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
-import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
-import com.vaadin.flow.component.shared.ThemeVariant;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.binder.BeanValidationBinder;
-import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
-import com.vaadin.flow.server.VaadinSession;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import software.xdev.vaadin.grid_exporter.GridExporter;
 
@@ -137,7 +119,7 @@ public class FruitTreesView extends HorizontalLayout{
 	private boolean isStateAdmin() {
 		//UserLogin user=uservice.getLoggedUser();
 		String userLevel=uservice.getLoggedUserLevel();
-		if(userLevel.startsWith("STATE")&&userLevel.endsWith("ADMIN")) {
+		if(userLevel.startsWith("STATE")||userLevel.startsWith("SUPER")) {
 			return true;
 		}else {
 			return false;
@@ -146,7 +128,11 @@ public class FruitTreesView extends HorizontalLayout{
 	private void ConfigureAccess() {
 		UserLogin user=uservice.getLoggedUser();
 		String userLevel=uservice.getLoggedUserLevel();
-		if(userLevel.startsWith("STATE")) {
+		if(userLevel.startsWith("SUPER")) {
+			state.setValue(user.getState());
+			stateColumn.setVisible(true);
+			state.setVisible(true);
+		}else if(userLevel.startsWith("STATE")) {
 			//System.out.println("C");
 			state.setValue(user.getState());
 			stateColumn.setVisible(false);
@@ -442,6 +428,7 @@ public class FruitTreesView extends HorizontalLayout{
 		form.initFields(format);
 		form.scientificCheck.setEnabled(false);
 		form.masterCheck.setEnabled(false);
+		form.scientificCheck.setValue(false);
 		if (crop == null) {
 			form.setVisible(false);
 		} else {
@@ -515,15 +502,20 @@ public class FruitTreesView extends HorizontalLayout{
 		ConfigureNewFormAccess();
 		form.setVisible(true);
 		form.save.setText("Save");
+		stateAdminCheck();
 	}
 	
 	public void stateAdminCheck() {
-		if(form.masterCheck.getValue() && !isStateAdmin()) {
+		if(!isStateAdmin()) {
+			form.masterCheck.setVisible(false);
+		}else if(form.masterCheck.getValue() && !isStateAdmin()) {
 			form.save.setEnabled(false);
 			form.delete.setEnabled(false);
+			form.masterCheck.setVisible(false);
 		}else {
 			form.save.setEnabled(true);
 			form.delete.setEnabled(true);
+			form.masterCheck.setVisible(true);
 		}
 	}
 	public void saveCrops(CropPlantsForm.SaveEvent event) {
@@ -561,8 +553,7 @@ public class FruitTreesView extends HorizontalLayout{
 	
 	public Component ConfigureGrid() {
 		try {
-			grid.setSizeFull();
-			grid.removeAllColumns();
+
 			grid.setSizeFull();
 			grid.removeAllColumns();
 			stateColumn= grid.addColumn(crop -> crop.getVillage() == null ? "": crop.getVillage().getBlock().getDistrict().getState().getStateName())
@@ -595,7 +586,9 @@ public class FruitTreesView extends HorizontalLayout{
 			approvalColumn=grid.addColumn(crop-> crop.getApproved()==null ? "":crop.getApproved().getApproval()).setHeader("Approval Status").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn(crop-> crop.getEnteredBy()==null ? "":crop.getEnteredBy().getName()).setHeader("Entered/Updated By").setAutoWidth(true).setResizable(true).setSortable(true);
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-			grid.addColumn(crop->crop.getEnteredOn()==null ? "": crop.getEnteredOn().format(formatter)).setHeader("Entered/Updated On").setAutoWidth(true).setResizable(true).setSortable(true);stateColumn.setVisible(false);
+			grid.addColumn(crop->crop.getEnteredOn()==null ? "": crop.getEnteredOn().format(formatter)).setHeader("Entered/Updated On").setAutoWidth(true).setResizable(true).setSortable(true);
+			grid.asSingleSelect().addValueChangeListener(e -> editCrops(e.getValue()));
+			stateColumn.setVisible(false);
 			districtColumn.setVisible(false);
 			blockColumn.setVisible(false);
 			villageColumn.setVisible(false);
@@ -603,13 +596,6 @@ public class FruitTreesView extends HorizontalLayout{
 			latitudeColumn.setVisible(false);
 			longitudeColumn.setVisible(false);
 			grid.getHeaderRows().clear();
-			//headerRow = grid.appendHeaderRow();
-			//headerRow.getCell(stateColumn).setComponent(state);
-			//headerRow.getCell(districtColumn).setComponent(district);
-			//headerRow.getCell(blockColumn).setComponent(block);
-			//headerRow.getCell(villageColumn).setComponent(village);
-			grid.asSingleSelect().addValueChangeListener(e -> editCrops(e.getValue()));
-			
 			return grid;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

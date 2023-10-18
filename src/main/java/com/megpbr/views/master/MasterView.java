@@ -185,8 +185,8 @@ public class MasterView extends HorizontalLayout{
 	}
 	public Component getPositionTab() {
 		positiongrid.removeAllColumns();
-		positiongrid.addColumn(position->position.getPosition()).setHeader("Id");
-		positiongrid.addColumn(position->position.getPositionName()).setHeader("Name");
+		positiongrid.addColumn(position->position.getPosition()).setHeader("Short Name");
+		positiongrid.addColumn(position->position.getPositionName()).setHeader("Position Name");
 		positiongrid.setItems(service.getPositions());
 		positiongrid.asSingleSelect().addValueChangeListener(e -> editPosition(e.getValue()));
 		positiongrid.setSizeFull();
@@ -317,8 +317,9 @@ public class MasterView extends HorizontalLayout{
 	}
 	public Component getRegimeTab() {
 		regimegrid.removeAllColumns();
-		regimegrid.addColumn(regime->regime.getManagementregime()).setHeader("Name");
-		regimegrid.addColumn(regime->regime.getManagerregime()).setHeader("Code");
+		
+		regimegrid.addColumn(regime->regime.getManagerregime()).setHeader("Regime Code");
+		regimegrid.addColumn(regime->regime.getManagementregime()).setHeader("Management Regime");
 		regimegrid.setItems(service.getMasterManagementRegime());
 		regimegrid.setSizeFull();
 		regimegrid.asSingleSelect().addValueChangeListener(e -> editRegime(e.getValue()));

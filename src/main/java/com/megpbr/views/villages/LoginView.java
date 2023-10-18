@@ -12,26 +12,39 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.megpbr.audit.CaptchaCheck;
-import com.megpbr.security.AuthenticatedUser;
+import com.megpbr.data.entity.UserLogin;
+import com.megpbr.security.SecurityUtils;
+import com.megpbr.security.UserDetailsServiceImpl;
 import com.megpbr.views.dashboard.DashboardView;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.login.AbstractLogin;
 import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.component.login.LoginOverlay;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.shared.ThemeVariant;
+import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -45,110 +58,94 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 @Route("login")
 @PageTitle("Login")
 @AnonymousAllowed
-public class LoginView extends LoginOverlay implements BeforeEnterObserver {
+
+public class LoginView extends Div implements BeforeEnterObserver, ComponentEventListener<AbstractLogin.LoginEvent> {
+	@Autowired
+	UserDetailsServiceImpl users;
 	FormLayout form=new FormLayout();
     //private LoginForm login = new LoginForm();
     private TextField username=new TextField("User Name");
-    public TextField captchatext=new TextField("Enter The Captcha Text Above");
+    public TextField captchatext=new TextField("CAPTCHA");
     private PasswordField password=new PasswordField("Password");
     private Button loginbutton=new Button("Login");
-    public Button captchabutton=new Button("Login");
+    //public Button captchabutton=new Button("");
     //private final AuthenticatedUser authenticatedUser;
-    //MyLoginForm login=new MyLoginForm();
+    private static final String LOGIN_SUCCESS_URL = "/";
+    TextField code = new TextField("");
+    LoginOverlay loginOverlay = new LoginOverlay();
+    CaptchaCheck captcha;
 	public LoginView() {
-		// addClassName("login");
-		//this.authenticatedUser = authenticatedUser;
-		
-		  LoginI18n i18n = LoginI18n.createDefault(); i18n.setHeader(new
-		  LoginI18n.Header()); i18n.getHeader().setTitle("MEGPBR");
-		  i18n.getHeader().setDescription(""); i18n.setAdditionalInformation(null);
-		  setI18n(i18n); 
-		  addCaptchaText(); 
-		  //addCustomComponent(captchatext);
-		  //addCaptcha();
-		  setForgotPasswordButtonVisible(false); 
-		  setOpened(true);
-		  
-		 setAction("login");
-		//login.setAction("logincheck");
-		//add(login);
+		refreshCaptcha();
+		captchatext.setEnabled(false);
+		captchatext.addThemeVariants(TextFieldVariant.LUMO_ALIGN_CENTER);
+		captchatext.setWidthFull();
+		Button captchabutton = new Button(new Icon(VaadinIcon.REFRESH));
+		captchabutton.addClickListener(e-> refreshCaptcha());
+		var captchapanel=new HorizontalLayout(captchatext, captchabutton);
+		captchapanel.setAlignItems(Alignment.BASELINE);
+		captchapanel.setWidthFull();
+		code.setPlaceholder("Enter Captcha Text");
+		code.getElement().setAttribute("name", "code");
+		code.setErrorMessage("Required");
+		code.setRequired(true);
+		loginOverlay.getCustomFormArea().add(captchapanel);
+		loginOverlay.getCustomFormArea().add(code);
+		add(loginOverlay);
+		loginOverlay.setTitle("Meghalaya Biodiversity Board");
+		loginOverlay.setDescription("People's Biodiversity Register");
+		loginOverlay.setForgotPasswordButtonVisible(false);
+		loginOverlay.setOpened(true);
+		//loginOverlay.setError(true);
+		loginOverlay.addLoginListener(this);
+		loginOverlay.getElement().setAttribute("no-autofocus", "");
 	}
     
-
-    public void addCaptcha() {
-    	CaptchaCheck captcha = new CaptchaCheck();
-		String a=captcha.generateCaptcha(5);
-		captchabutton=new Button(a);
-		captchabutton.setEnabled(false);
-		captchabutton.setHeight("50px");
-        captchabutton.getElement().setAttribute("name", "remember-me");
-        //TextField captchaText=new TextField("Enter Captcha");
-        Element loginFormElement = getElement();
-        Element element = captchabutton.getElement();
-        //Element element2 = captchaText.getElement();
-        loginFormElement.appendChild(element);
-        //loginFormElement.appendChild(element2);
-        
-        String executeJsForFieldString = "const field = document.getElementById($0);" +
-              "if(field) {" +"   field.after($1)" +"} else {" +"   console.error('could not find field', $0);" +"}";
-        getElement().executeJs(executeJsForFieldString, "vaadinLoginPassword", element);
+	public void refreshCaptcha() {
+		captchatext.setValue(captcha.generateCaptcha(5));
     }
-    public void addCaptchaText() {
-    	TextField captchaText=new TextField("Enter Captcha");
-    	captchaText.setRequired(true);
-        Element loginFormElement = getElement();
-        //Element element = captchabutton.getElement();
-        Element element = captchaText.getElement();
-        //loginFormElement.appendChild(element);
-        loginFormElement.appendChild(element);
-        
-        String executeJsForFieldString = "const field = document.getElementById($0);" +
-                "if(field) {" +
-                "   field.after($1)" +
-                "} else {" +
-                "   console.error('could not find field', $0);" +
-                "}";
-        getElement().executeJs(executeJsForFieldString, "vaadinLoginPassword", element);
-    }
-    public void addCustomComponent(Component... pComponents) {
-        Element loginFormElement = getElement();
-        
-        Element[] elements = Arrays.stream(pComponents).map(Component::getElement).toArray(Element[]::new);
-        loginFormElement.appendChild(elements); // to have them in the DOM
 
-        String executeJsForFieldString = "let fields = this.getElementsByTagName($0);" +
-                "if(fields && fields[0] && fields[0].id === $1) {" +
-                "   fields[0].after($2)" +
-                "} else {" +
-                "   console.error('could not find field', $0, $1);" +
-                "}";
-
-        // adding them in reverse to simply reuse the same execution string. you could also reuse the previously added element for the "after" call
-        for (int i = elements.length - 1; i >= 0; i--) {
-            loginFormElement.executeJs(executeJsForFieldString, "vaadin-password-field", "vaadinLoginPassword", elements[i]);
-        }
-    }
+   
+   
+	@Override
+	public void onComponentEvent(AbstractLogin.LoginEvent loginEvent) {
+		String codevalue=code.getValue().trim();
+		String captchavalue=captchatext.getValue().trim();
+		if (codevalue.equals(captchavalue)) {
+			boolean authenticated = SecurityUtils.authentication(loginEvent.getUsername(), loginEvent.getPassword());
+			if (authenticated) {
+				UI.getCurrent().getPage().setLocation(LOGIN_SUCCESS_URL);
+			} else {
+				loginOverlay.setError(true);
+			}
+		} else {
+			//System.out.println(code.getValue()+"-"+captchatext.getValue());
+			//Notification.show("Wrong Captcha");
+			loginOverlay.setEnabled(true);
+			loginOverlay.setError(true);
+		}
+	}
     
-    @Override
+	
+	@Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
         if(beforeEnterEvent.getLocation()
             .getQueryParameters()
             .getParameters()
             .containsKey("error")) {
-            //login.setError(true);
+            loginOverlay.setError(true);
         }
     }
-    /*
-    @Override
-    public void beforeEnter(BeforeEnterEvent event) {
-        if (authenticatedUser.get().isPresent()) {
-            // Already logged in
-            setOpened(false);
-            event.forwardTo("");
-        }
-
-        setError(event.getLocation().getQueryParameters().getParameters().containsKey("error"));
-    }*/
+    
+//    @Override
+//    public void beforeEnter(BeforeEnterEvent event) {
+//        if (authenticatedUser.get().isPresent()) {
+//            // Already logged in
+//            setOpened(false);
+//            event.forwardTo("");
+//        }
+//
+//        setError(event.getLocation().getQueryParameters().getParameters().containsKey("error"));
+//    }
     
    
 }

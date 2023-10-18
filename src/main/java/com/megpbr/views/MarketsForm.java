@@ -684,9 +684,9 @@ public class MarketsForm extends Div {
 		}
 	}
 	BufferedImage resizeImage(BufferedImage originalImage) throws IOException {
-		BufferedImage resizedImage = new BufferedImage(200, 200, BufferedImage.TYPE_INT_RGB);
+		BufferedImage resizedImage = new BufferedImage(600, 600, BufferedImage.TYPE_INT_RGB);
 		Graphics2D graphics2D = resizedImage.createGraphics();
-		graphics2D.drawImage(originalImage, 0, 0, 200, 200, null);
+		graphics2D.drawImage(originalImage, 0, 0, 600, 600, null);
 		graphics2D.dispose();
 		return resizedImage;
 	}

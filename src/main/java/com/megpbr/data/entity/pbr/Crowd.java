@@ -41,6 +41,7 @@ public class Crowd {
 	private byte[] photo2;
 	private byte[] photo3;
 	private byte[] photo4;
+	private boolean preverified;
 	private boolean verified;
 	private LocalDateTime enteredOn;
 	private String latitude;
@@ -49,7 +50,7 @@ public class Crowd {
 	private String userAddress;
 	private String userPhone;
 	private String userEmail;
-	@NotNull
+	
 	@ManyToOne
 	@JoinColumn(name = "crowdformat", referencedColumnName = "id")
 	private CrowdFormat crowdformat;
@@ -181,6 +182,12 @@ public class Crowd {
 	}
 	public void setType(CrowdType type) {
 		this.type = type;
+	}
+	public boolean isPreverified() {
+		return preverified;
+	}
+	public void setPreverified(boolean preverified) {
+		this.preverified = preverified;
 	}
 	
 	

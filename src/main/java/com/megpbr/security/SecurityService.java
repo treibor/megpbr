@@ -13,32 +13,38 @@ import com.megpbr.data.repository.AuditRepository;
 import com.megpbr.views.villages.LoginView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.VaadinServletRequest;
+import com.vaadin.flow.spring.security.AuthenticationContext;
 
 @Component
 public class SecurityService {
 	private static final String LOGOUT_SUCCESS_URL = "/";
 	@Autowired
 	AuditRepository arepo;
+	private final AuthenticationContext authenticationContext;
 
+    
+	public SecurityService(AuthenticationContext authenticationContext) {
+        this.authenticationContext = authenticationContext;
+    }
+	
 	public UserDetails getAuthenticatedUser() {
-		
-			SecurityContext context = SecurityContextHolder.getContext();
-			Object principal = context.getAuthentication().getPrincipal();
-			if (principal instanceof UserDetails) {
-				return (UserDetails) context.getAuthentication().getPrincipal();
-			}
-			// Anonymous or no authentication.
-			return null;
-		
+		//System.out.println("Authenticated User");
+		SecurityContext context = SecurityContextHolder.getContext();
+		Object principal = context.getAuthentication().getPrincipal();
+		if (principal instanceof UserDetails) {
+			return (UserDetails) context.getAuthentication().getPrincipal();
+		}
+		// Anonymous or no authentication.
+		return null;
+
 	}
 
 	public void logout() {
-		UI.getCurrent().getPage().setLocation(LOGOUT_SUCCESS_URL);
-		//AuditTrail au=new AuditTrail();
-    	//au.setAction("HAHAHAHAHA");
-    	//arepo.save(au);
-		SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
-		logoutHandler.logout(VaadinServletRequest.getCurrent().getHttpServletRequest(), null, null);
+		//System.out.println("Logout");
+		//UI.getCurrent().getPage().setLocation(LOGOUT_SUCCESS_URL);
+		//SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+		//logoutHandler.logout(VaadinServletRequest.getCurrent().getHttpServletRequest(), null, null);
+		authenticationContext.logout();
 	}
 	
 	

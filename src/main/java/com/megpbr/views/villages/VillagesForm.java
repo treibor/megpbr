@@ -185,18 +185,24 @@ public class VillagesForm extends Div {
 	
 	
 	private void saveVillageDetails() {
-		try {
-			binder.writeBean(villagedetails);
-			fireEvent(new SaveEvent(this, villagedetails));
-			Village village=villagedetails.getVillage();
-			village.setInUse(true);
-			dbservice.updateVillage(village);
-			this.setVillageDetails(new VillageDetails());
-			Notification.show("Saved Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-			initFields();
-		} catch (Exception e) {
-			Notification.show("Failure: Contact Your Administrator").addThemeVariants(NotificationVariant.LUMO_ERROR);
-			//e.printStackTrace();
+		if (managementregime.getValue() == null) {
+			Notification.show("Please Select The Management regime")
+					.addThemeVariants(NotificationVariant.LUMO_WARNING);
+		} else {
+			try {
+				binder.writeBean(villagedetails);
+				fireEvent(new SaveEvent(this, villagedetails));
+				Village village = villagedetails.getVillage();
+				village.setInUse(true);
+				dbservice.updateVillage(village);
+				this.setVillageDetails(new VillageDetails());
+				Notification.show("Saved Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+				initFields();
+			} catch (Exception e) {
+				Notification.show("Failure: Contact Your Administrator")
+						.addThemeVariants(NotificationVariant.LUMO_ERROR);
+				// e.printStackTrace();
+			}
 		}
 	}
 

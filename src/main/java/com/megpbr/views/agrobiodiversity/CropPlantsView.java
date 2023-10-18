@@ -1,7 +1,5 @@
 package com.megpbr.views.agrobiodiversity;
 
-
-
 import java.io.ByteArrayInputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -73,22 +71,22 @@ import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import software.xdev.vaadin.grid_exporter.GridExporter;
 
-@RolesAllowed({"ADMIN", "USER"})
+@RolesAllowed({ "ADMIN", "USER" })
 @PageTitle("Crop Plants")
 @Route(value = "format-1", layout = MainLayout.class)
 @Uses(Icon.class)
-public class CropPlantsView extends HorizontalLayout{
+public class CropPlantsView extends HorizontalLayout {
 	private Dbservice dbservice;
 	private CropService cservice;
 	private UserService uservice;
-	
+
 	Crops crop;
 	AuditTrail audit;
-	Grid<Crops> grid=new Grid<>(Crops.class);
+	Grid<Crops> grid = new Grid<>(Crops.class);
 	CropPlantsForm form;
 	MasterFormat format;
-	TextField filterText=new TextField("");
-	Checkbox rejectedData=new Checkbox("Show Rejected Data");
+	TextField filterText = new TextField("");
+	Checkbox rejectedData = new Checkbox("Show Rejected Data");
 	ComboBox<State> state = new ComboBox("");
 	ComboBox<District> district = new ComboBox("");
 	ComboBox<Block> block = new ComboBox("");
@@ -104,18 +102,19 @@ public class CropPlantsView extends HorizontalLayout{
 	Grid.Column<Crops> latitudeColumn;
 	Grid.Column<Crops> longitudeColumn;
 	HeaderRow headerRow;
-	Button getDataButton=new Button("Search");
-	Button expButton=new Button("Export ");
-	VerticalLayout vlx=new VerticalLayout();
-	H6 totallabel=new H6();
+	Button getDataButton = new Button("Search");
+	Button expButton = new Button("Export");
+	VerticalLayout vlx = new VerticalLayout();
+	H6 totallabel = new H6();
 	@Autowired
 	private Audit auditobject;
+
 	public CropPlantsView(Dbservice service, CropService cservice, UserService uservice) {
-		this.dbservice=service;
-		this.cservice=cservice;
-		this.uservice=uservice;
-		//this.auditservice=auditservice;
-		format=dbservice.getFormat(1);
+		this.dbservice = service;
+		this.cservice = cservice;
+		this.uservice = uservice;
+		// this.auditservice=auditservice;
+		format = dbservice.getFormat(1);
 		setSizeFull();
 		ConfigureGrid();
 		ConfigureForm();
@@ -123,42 +122,48 @@ public class CropPlantsView extends HorizontalLayout{
 		ConfigureAccess();
 		initGrid();
 		add(getContent());
-		
+
 	}
+
 	private boolean isAdmin() {
-		//UserLogin user=uservice.getLoggedUser();
-		String userLevel=uservice.getLoggedUserLevel();
-		if(userLevel.endsWith("ADMIN")) {
+		// UserLogin user=uservice.getLoggedUser();
+		String userLevel = uservice.getLoggedUserLevel();
+		if (userLevel.endsWith("ADMIN")) {
 			return true;
-		}else {
+		} else {
 			return false;
 		}
 	}
+
 	private boolean isStateAdmin() {
-		//UserLogin user=uservice.getLoggedUser();
-		String userLevel=uservice.getLoggedUserLevel();
-		if(userLevel.startsWith("STATE")) {
+		// UserLogin user=uservice.getLoggedUser();
+		String userLevel = uservice.getLoggedUserLevel();
+		if (userLevel.startsWith("STATE") || userLevel.startsWith("SUPER")) {
 			return true;
-		}else {
+		} else {
 			return false;
 		}
 	}
+
 	private void ConfigureAccess() {
-		UserLogin user=uservice.getLoggedUser();
-		String userLevel=uservice.getLoggedUserLevel();
-		if(userLevel.startsWith("STATE")) {
-			//System.out.println("C");
+		UserLogin user = uservice.getLoggedUser();
+		String userLevel = uservice.getLoggedUserLevel();
+		if (userLevel.startsWith("SUPER")) {
+			state.setValue(user.getState());
+			stateColumn.setVisible(true);
+			state.setVisible(true);
+		} else if (userLevel.startsWith("STATE")) {
 			state.setValue(user.getState());
 			stateColumn.setVisible(false);
 			state.setVisible(false);
-		}else if(userLevel.startsWith("DISTRICT")) {
-			//System.out.println("C");
+		} else if (userLevel.startsWith("DISTRICT")) {
+			// System.out.println("C");
 			state.setValue(user.getState());
 			district.setValue(user.getDistrict());
 			stateColumn.setVisible(false);
 			districtColumn.setVisible(false);
 			district.setVisible(false);
-		}else if(userLevel.startsWith("BLOCK")) {
+		} else if (userLevel.startsWith("BLOCK")) {
 			state.setValue(user.getState());
 			district.setValue(user.getDistrict());
 			block.setValue(user.getBlock());
@@ -168,7 +173,7 @@ public class CropPlantsView extends HorizontalLayout{
 			state.setVisible(false);
 			district.setVisible(false);
 			block.setVisible(false);
-		}else if(userLevel.startsWith("VILLAGE")) {
+		} else if (userLevel.startsWith("VILLAGE")) {
 			state.setValue(user.getState());
 			district.setValue(user.getDistrict());
 			block.setValue(user.getBlock());
@@ -184,11 +189,11 @@ public class CropPlantsView extends HorizontalLayout{
 			village.setVisible(false);
 		}
 	}
-	
+
 	public void updateList() {
-		String data=radioGroup.getValue().trim();
-		if(data=="Master Data") {
-			//stateC
+		String data = radioGroup.getValue().trim();
+		if (data == "Master Data") {
+			// stateC
 			districtColumn.setVisible(false);
 			blockColumn.setVisible(false);
 			villageColumn.setVisible(false);
@@ -198,7 +203,7 @@ public class CropPlantsView extends HorizontalLayout{
 			block.setVisible(false);
 			village.setVisible(false);
 			updateGrid();
-		}else {
+		} else {
 			districtColumn.setVisible(true);
 			blockColumn.setVisible(true);
 			villageColumn.setVisible(true);
@@ -211,23 +216,25 @@ public class CropPlantsView extends HorizontalLayout{
 			updateGrid();
 		}
 	}
-	
+
 	private Component getMainContent() {
-		
+
 		vlx.add(getToolbar(), getToolBar2(), grid, getToolBar3());
 		grid.setSizeFull();
 		vlx.setSizeFull();
 		return vlx;
 	}
+
 	private Component getContent() {
 		HorizontalLayout content = new HorizontalLayout(getMainContent(), form);
-		//Div content = new Div(getMainContent(), form);
+		// Div content = new Div(getMainContent(), form);
 		content.setFlexGrow(1, vlx);
 		content.setFlexGrow(1, form);
 		content.addClassName("content");
 		content.setSizeFull();
 		return content;
 	}
+
 	private Component getToolbar() {
 		state.setVisible(false);
 		district.setVisible(false);
@@ -239,48 +246,51 @@ public class CropPlantsView extends HorizontalLayout{
 		filterText.setValueChangeMode(ValueChangeMode.LAZY);
 		filterText.addValueChangeListener(e -> updateGrid());
 		filterText.setWidth("400px");
-		Button addButton=new Button("New");
+		Button addButton = new Button("New");
 		addButton.setPrefixComponent(LineAwesomeIcon.PLUS_CIRCLE_SOLID.create());
-		String tempformatName=format.getFormatName();
-		var label=new H3("Format-"+format.getFormat()+" - "+tempformatName);
-		addButton.addClickListener(e->addCrops(new Crops()));
-		HorizontalLayout topvl=new HorizontalLayout(radioGroup,filterText,label, addButton  );
+		String tempformatName = format.getFormatName();
+		var label = new H3("Format-" + format.getFormat() + " - " + tempformatName);
+		addButton.addClickListener(e -> addCrops(new Crops()));
+		HorizontalLayout topvl = new HorizontalLayout(radioGroup, filterText, label, addButton);
 		topvl.setAlignItems(FlexComponent.Alignment.BASELINE);
 		label.getStyle().set("margin-left", "auto");
 		label.getStyle().set("font-size", "12px");
 		rejectedData.getStyle().set("font-size", "12px");
 		topvl.setWidthFull();
-		return topvl; 
+		return topvl;
 	}
+
 	public Component getToolBar2() {
-		FormLayout formx=new FormLayout();
+		FormLayout formx = new FormLayout();
 		formx.add(state, 2);
 		formx.add(district, 2);
 		formx.add(block, 2);
 		formx.add(village, 2);
 		formx.add(getDataButton, 1);
-		//formx.add(expButton, 1);
+		// formx.add(expButton, 1);
 		formx.setResponsiveSteps(new ResponsiveStep("0", 4),
 				// Use two columns, if layout's width exceeds 500px
 				new ResponsiveStep("800px", 10));
-		//VerticalLayout abc=new VerticalLayout(formx);
+		// VerticalLayout abc=new VerticalLayout(formx);
 		return formx;
 	}
+
 	public Component getToolBar3() {
-		HorizontalLayout bottom =new HorizontalLayout();
-		bottom.add( totallabel, expButton);
+		HorizontalLayout bottom = new HorizontalLayout();
+		bottom.add(totallabel, expButton);
 		bottom.setAlignItems(FlexComponent.Alignment.BASELINE);
 		expButton.getStyle().set("margin-left", "auto");
 		bottom.setWidthFull();
 		return bottom;
 	}
+
 	private void ConfigureCombo() {
 		state.setItems(dbservice.getStates());
-		state.setItemLabelGenerator(state->state.getStateName());
-		state.addValueChangeListener(e->district.setItems(dbservice.getDistricts(e.getValue())));
+		state.setItemLabelGenerator(state -> state.getStateName());
+		state.addValueChangeListener(e -> district.setItems(dbservice.getDistricts(e.getValue())));
 		state.setPlaceholder("State");
 		district.setItemLabelGenerator(district -> district.getDistrictName());
-		//System.out.println("B");
+		// System.out.println("B");
 		district.setPlaceholder("District");
 		district.addValueChangeListener(e -> block.setItems(dbservice.getBlocks(e.getValue())));
 		block.setItemLabelGenerator(block -> block.getBlockName());
@@ -289,45 +299,42 @@ public class CropPlantsView extends HorizontalLayout{
 		village.setItems(dbservice.getVillages(block.getValue(), true));
 		village.setItemLabelGenerator(Village::getVillageName);
 		village.setPlaceholder("Village");
-		getDataButton.addClickListener(e-> updateGrid());
+		getDataButton.addClickListener(e -> updateGrid());
 		state.setClearButtonVisible(true);
 		district.setClearButtonVisible(true);
 		block.setClearButtonVisible(true);
 		village.setClearButtonVisible(true);
-		//Text text1=new Text("Village Data");
+		// Text text1=new Text("Village Data");
 		radioGroup.setItems("Master Data", "Village Data");
 		radioGroup.setValue("Master Data");
-		//radioGroup.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
-		radioGroup.addValueChangeListener(e->updateList());
-		
-		expButton.addClickListener(e->GridExporter
-				.newWithDefaults(grid)
-				.open());
-		
+		// radioGroup.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
+		radioGroup.addValueChangeListener(e -> updateList());
+
+		expButton.addClickListener(e -> GridExporter.newWithDefaults(grid).open());
+
 	}
-	
+
 	private void ConfigureForm() {
-		form= new CropPlantsForm(dbservice, cservice);
+		form = new CropPlantsForm(dbservice, cservice);
 		form.setVisible(false);
 		form.setWidth("50%");
 		form.addListener(CropPlantsForm.SaveEvent.class, this::saveCrops);
 		form.addListener(CropPlantsForm.DeleteEvent.class, this::deleteCrops);
-		
+
 	}
-	
+
 	public void initGrid() {
 		try {
-			List<Crops> crops=cservice.findCropsByFormatAndMaster(format, true);
+			List<Crops> crops = cservice.findCropsByFormatAndMaster(format, true);
 			grid.setItems(crops);
-			totallabel.setText("Total : "+crops.size());
+			totallabel.setText("Total : " + crops.size());
 			grid.setSizeFull();
 		} catch (Exception e) {
 			localColumn.setFooter("Total : 0");
 			e.printStackTrace();
 		}
 	}
-	
-	
+
 	public void updateGrid() {
 		String data = radioGroup.getValue().trim();
 		if (data != "Master Data") {
@@ -342,10 +349,10 @@ public class CropPlantsView extends HorizontalLayout{
 			} else {
 				updateVillageList();
 			}
-		}else {
+		} else {
 			try {
-				String search =filterText.getValue();
-				List<Crops> crops=cservice.searchCropsFilter(search, format);
+				String search = filterText.getValue();
+				List<Crops> crops = cservice.searchCropsFilter(search, format);
 				grid.setItems(crops);
 				totallabel.setText("Total : " + crops.size());
 				grid.setSizeFull();
@@ -355,79 +362,87 @@ public class CropPlantsView extends HorizontalLayout{
 			}
 		}
 	}
+
 	public void updateDistrictList() {
-		String search =filterText.getValue();
-		List<Crops> villagesList=cservice.searchCropsFilter(district.getValue(), search, format);
+		String search = filterText.getValue();
+		List<Crops> villagesList = cservice.searchCropsFilter(district.getValue(), search, format);
 		grid.setItems(villagesList);
-		if(villagesList.size()==0) {
-			Notification.show("No Data Found in the District"+villagesList.get(0).getVillage().getBlock().getDistrict()).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+		if (villagesList.size() == 0) {
+			Notification
+					.show("No Data Found in the District" + villagesList.get(0).getVillage().getBlock().getDistrict())
+					.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 			totallabel.setText("Total : 0");
-		}else {
+		} else {
 			totallabel.setText("Total : " + villagesList.size());
 		}
 	}
+
 	public void updateBlockList() {
-		String search =filterText.getValue();
-		List<Crops> villagesList=cservice.searchCropsFilter(block.getValue(), search, format);
+		String search = filterText.getValue();
+		List<Crops> villagesList = cservice.searchCropsFilter(block.getValue(), search, format);
 		grid.setItems(villagesList);
-		if(villagesList.size()==0) {
-			//Notification.show("No Data Found in the Selected Block +"+block.getValue().getBlockName()).addThemeVariants(NotificationVariant.LUMO_WARNING);
+		if (villagesList.size() == 0) {
+			// Notification.show("No Data Found in the Selected Block
+			// +"+block.getValue().getBlockName()).addThemeVariants(NotificationVariant.LUMO_WARNING);
 			totallabel.setText("Total : 0");
-		}else {
+		} else {
 			totallabel.setText("Total : " + villagesList.size());
 		}
 	}
+
 	public void updateVillageList() {
-		String search =filterText.getValue();
-		List<Crops> villagesList=cservice.searchCropsFilter(village.getValue(), search, format);
+		String search = filterText.getValue();
+		List<Crops> villagesList = cservice.searchCropsFilter(village.getValue(), search, format);
 		grid.setItems(villagesList);
-		if(villagesList.size()==0) {
-			Notification.show("No Data Found in the Selected Village :"+village.getValue().getVillageName()).addThemeVariants(NotificationVariant.LUMO_WARNING);
+		if (villagesList.size() == 0) {
+			Notification.show("No Data Found in the Selected Village :" + village.getValue().getVillageName())
+					.addThemeVariants(NotificationVariant.LUMO_WARNING);
 			totallabel.setText("Total : 0");
-		}else {
+		} else {
 			totallabel.setText("Total : " + villagesList.size());
 		}
 	}
-	
+
 	private void ConfigureFormAccess() {
-		UserLogin user=uservice.getLoggedUser();
-		String userLevel=uservice.getLoggedUserLevel();
-		if(userLevel.startsWith("STATE")) {
+		UserLogin user = uservice.getLoggedUser();
+		String userLevel = uservice.getLoggedUserLevel();
+		if (userLevel.startsWith("STATE")) {
 			form.state.setVisible(false);
-		}else if(userLevel.startsWith("DISTRICT")) {
+		} else if (userLevel.startsWith("DISTRICT")) {
 			form.state.setVisible(false);
 			form.district.setVisible(false);
-		}else if(userLevel.startsWith("BLOCK")) {
+		} else if (userLevel.startsWith("BLOCK")) {
 			form.state.setVisible(false);
 			form.district.setVisible(false);
 			form.block.setVisible(false);
-		}else if(userLevel.startsWith("VILLAGE")) {
+		} else if (userLevel.startsWith("VILLAGE")) {
 			form.state.setVisible(false);
 			form.district.setVisible(false);
 			form.block.setVisible(false);
 			form.village.setVisible(false);
 		}
 	}
+
 	private void ConfigureNewFormAccess() {
-		UserLogin user=uservice.getLoggedUser();
-		String userLevel=uservice.getLoggedUserLevel();
-		if(userLevel.startsWith("STATE")) {
+		UserLogin user = uservice.getLoggedUser();
+		String userLevel = uservice.getLoggedUserLevel();
+		if (userLevel.startsWith("STATE")) {
 			form.state.setValue(user.getState());
 			form.state.setVisible(false);
-		}else if(userLevel.startsWith("DISTRICT")) {
+		} else if (userLevel.startsWith("DISTRICT")) {
 			//
 			form.state.setValue(user.getState());
 			form.district.setValue(user.getDistrict());
 			form.state.setVisible(false);
 			form.district.setVisible(false);
-		}else if(userLevel.startsWith("BLOCK")) {
+		} else if (userLevel.startsWith("BLOCK")) {
 			form.state.setValue(user.getState());
 			form.district.setValue(user.getDistrict());
 			form.block.setValue(user.getBlock());
 			form.state.setVisible(false);
 			form.district.setVisible(false);
 			form.block.setVisible(false);
-		}else if(userLevel.startsWith("VILLAGE")) {
+		} else if (userLevel.startsWith("VILLAGE")) {
 			state.setValue(user.getState());
 			district.setValue(user.getDistrict());
 			block.setValue(user.getBlock());
@@ -438,6 +453,7 @@ public class CropPlantsView extends HorizontalLayout{
 			form.village.setVisible(false);
 		}
 	}
+
 	public void editCrops(Crops crop) {
 		form.initFields(format);
 		form.scientificCheck.setEnabled(false);
@@ -467,7 +483,7 @@ public class CropPlantsView extends HorizontalLayout{
 				StreamResource resource = new StreamResource("image.jpg", () -> new ByteArrayInputStream(picture1));
 				Image image = new Image(resource, "No Image");
 				form.addImage(form.imageLayout1, image, form.imageContainer1);
-			}else {
+			} else {
 				form.removeImage(form.imageLayout1, form.imageContainer1);
 			}
 
@@ -475,21 +491,21 @@ public class CropPlantsView extends HorizontalLayout{
 				StreamResource resource2 = new StreamResource("image.jpg", () -> new ByteArrayInputStream(picture2));
 				Image image2 = new Image(resource2, "No Image");
 				form.addImage(form.imageLayout2, image2, form.imageContainer2);
-			}else {
+			} else {
 				form.removeImage(form.imageLayout2, form.imageContainer2);
 			}
 			if (picture3 != null) {
 				StreamResource resource3 = new StreamResource("image.jpg", () -> new ByteArrayInputStream(picture3));
 				Image image3 = new Image(resource3, "No Image");
 				form.addImage(form.imageLayout3, image3, form.imageContainer3);
-			}else {
+			} else {
 				form.removeImage(form.imageLayout3, form.imageContainer3);
 			}
 			if (picture4 != null) {
 				StreamResource resource4 = new StreamResource("image.jpg", () -> new ByteArrayInputStream(picture4));
 				Image image4 = new Image(resource4, "No Image");
 				form.addImage(form.imageLayout4, image4, form.imageContainer4);
-			}else {
+			} else {
 				form.removeImage(form.imageLayout4, form.imageContainer4);
 			}
 			form.save.setText("Update");
@@ -500,7 +516,7 @@ public class CropPlantsView extends HorizontalLayout{
 	}
 
 	public void addCrops(Crops crop) {
-		//form.format=format;
+		// form.format=format;
 		form.initFields(format);
 		grid.asSingleSelect().clear();
 		form.setCrop(crop);
@@ -510,31 +526,32 @@ public class CropPlantsView extends HorizontalLayout{
 		form.masterCheck.setEnabled(true);
 		form.frommaster.setVisible(true);
 		form.masterCheck.setValue(false);
-		form.masterCheck.addClickListener(e->stateAdminCheck());
-		MasterApproval abc=dbservice.getMasterApprovalApproved();
+		form.masterCheck.addClickListener(e -> stateAdminCheck());
+		MasterApproval abc = dbservice.getMasterApprovalApproved();
 		form.approved.setValue(abc);
 		ConfigureNewFormAccess();
 		form.setVisible(true);
 		form.save.setText("Save");
 		stateAdminCheck();
 	}
-	
+
 	public void stateAdminCheck() {
-		if(!isStateAdmin()) {
+		if (!isStateAdmin()) {
 			form.masterCheck.setVisible(false);
-		}else if(form.masterCheck.getValue() && !isStateAdmin()) {
+		} else if (form.masterCheck.getValue() && !isStateAdmin()) {
 			form.save.setEnabled(false);
 			form.delete.setEnabled(false);
 			form.masterCheck.setVisible(false);
-		}else {
+		} else {
 			form.save.setEnabled(true);
 			form.delete.setEnabled(true);
 			form.masterCheck.setVisible(true);
 		}
 	}
+
 	public void saveCrops(CropPlantsForm.SaveEvent event) {
 		try {
-			Crops crop=event.getCrops();
+			Crops crop = event.getCrops();
 			crop.setEnteredBy(uservice.getLoggedUser());
 			crop.setEnteredOn(LocalDateTime.now());
 			dbservice.updateCrop(crop);
@@ -544,63 +561,76 @@ public class CropPlantsView extends HorizontalLayout{
 			addCrops(new Crops());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			Notification.show("Error Encountered :"+e);		
+			Notification.show("Error Encountered :" + e);
 		}
 	}
-	
-	
+
 	public void deleteCrops(CropPlantsForm.DeleteEvent event) {
-		
+
 		try {
-			Crops crop=event.getCrops();
+			Crops crop = event.getCrops();
 			auditobject.saveAudit(crop, "Delete");
 			cservice.deleteCrop(crop);
 			Notification.show("Deleted Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 			updateGrid();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			Notification.show("Error Encountered :"+e);
+			Notification.show("Error Encountered :" + e);
 		}
 	}
-	
-	
-	
+
 	public Component ConfigureGrid() {
 		try {
 			grid.setSizeFull();
 			grid.removeAllColumns();
-			//grid.set
-			stateColumn= grid.addColumn(crop -> crop.getVillage() == null ? "": crop.getVillage().getBlock().getDistrict().getState().getStateName())
+			// grid.set
+			stateColumn = grid
+					.addColumn(crop -> crop.getVillage() == null ? ""
+							: crop.getVillage().getBlock().getDistrict().getState().getStateName())
 					.setHeader("State").setSortable(true).setAutoWidth(true).setResizable(true);
-			districtColumn = grid.addColumn(crop -> crop.getVillage() == null ? "": crop.getVillage().getBlock().getDistrict().getDistrictName())
+			districtColumn = grid
+					.addColumn(crop -> crop.getVillage() == null ? ""
+							: crop.getVillage().getBlock().getDistrict().getDistrictName())
 					.setHeader("District").setSortable(true).setAutoWidth(true).setResizable(true);
-			blockColumn = grid.addColumn(crop -> crop.getVillage() == null ? "" : crop.getVillage().getBlock().getBlockName())
+			blockColumn = grid
+					.addColumn(crop -> crop.getVillage() == null ? "" : crop.getVillage().getBlock().getBlockName())
 					.setHeader("Block").setSortable(true).setAutoWidth(true).setResizable(true);
 			villageColumn = grid.addColumn(crop -> crop.getVillage() == null ? "" : crop.getVillage().getVillageName())
 					.setHeader("Village").setSortable(true).setAutoWidth(true).setResizable(true);
-			grid.addColumn("type").setAutoWidth(true).setHeader("Plant Type").setAutoWidth(true).setResizable(true).setSortable(true);
-			scientificColumn=grid.addColumn("scientificName").setAutoWidth(true).setResizable(true).setSortable(true);
-			localColumn=grid.addColumn("localName").setHeader("Local Name").setAutoWidth(true).setResizable(true).setSortable(true);
+			grid.addColumn("type").setAutoWidth(true).setHeader("Plant Type").setAutoWidth(true).setResizable(true)
+					.setSortable(true);
+			scientificColumn = grid.addColumn("scientificName").setAutoWidth(true).setResizable(true).setSortable(true);
+			localColumn = grid.addColumn("localName").setHeader("Local Name").setAutoWidth(true).setResizable(true)
+					.setSortable(true);
 			grid.addColumn("localLanguage").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn("habitat").setHeader("Habitat").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn("variety").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn("area").setHeader("Area Sown").setAutoWidth(true).setResizable(true).setSortable(true);
-			grid.addColumn(crop-> crop.getPresentStatus()==null ? "":crop.getPresentStatus().getStatus()).setHeader("Past Status").setAutoWidth(true).setResizable(true).setSortable(true);
-			grid.addColumn(crop-> crop.getPastStatus()==null ? "":crop.getPastStatus().getStatus()).setHeader("Present Status").setAutoWidth(true).setResizable(true).setSortable(true);
-			grid.addColumn("fruitSeason").setHeader("Cropping Season").setAutoWidth(true).setResizable(true).setSortable(true);
-			grid.addColumn("source").setHeader("Plant/Seed Source").setAutoWidth(true).setResizable(true).setSortable(true);
+			grid.addColumn(crop -> crop.getPresentStatus() == null ? "" : crop.getPresentStatus().getStatus())
+					.setHeader("Past Status").setAutoWidth(true).setResizable(true).setSortable(true);
+			grid.addColumn(crop -> crop.getPastStatus() == null ? "" : crop.getPastStatus().getStatus())
+					.setHeader("Present Status").setAutoWidth(true).setResizable(true).setSortable(true);
+			grid.addColumn("fruitSeason").setHeader("Cropping Season").setAutoWidth(true).setResizable(true)
+					.setSortable(true);
+			grid.addColumn("source").setHeader("Plant/Seed Source").setAutoWidth(true).setResizable(true)
+					.setSortable(true);
 			grid.addColumn("uses").setHeader("Uses").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn("otherDetails").setAutoWidth(true).setResizable(true).setSortable(true);
-			
+
 			grid.addColumn("specialFeatures").setAutoWidth(true).setResizable(true).setSortable(true);
-			grid.addColumn("associatedTk").setHeader("Associated TK").setAutoWidth(true).setResizable(true).setSortable(true);
-			grid.addColumn("knowledgeHolder").setHeader("Knowledge Holder").setAutoWidth(true).setResizable(true).setSortable(true);
-			latitudeColumn=grid.addColumn("latitude");
-			longitudeColumn=grid.addColumn("longitude");
-			approvalColumn=grid.addColumn(crop-> crop.getApproved()==null ? "":crop.getApproved().getApproval()).setHeader("Approval Status").setAutoWidth(true).setResizable(true).setSortable(true);
-			grid.addColumn(crop-> crop.getEnteredBy()==null ? "":crop.getEnteredBy().getName()).setHeader("Entered/Updated By").setAutoWidth(true).setResizable(true).setSortable(true);
+			grid.addColumn("associatedTk").setHeader("Associated TK").setAutoWidth(true).setResizable(true)
+					.setSortable(true);
+			grid.addColumn("knowledgeHolder").setHeader("Knowledge Holder").setAutoWidth(true).setResizable(true)
+					.setSortable(true);
+			latitudeColumn = grid.addColumn("latitude");
+			longitudeColumn = grid.addColumn("longitude");
+			approvalColumn = grid.addColumn(crop -> crop.getApproved() == null ? "" : crop.getApproved().getApproval())
+					.setHeader("Approval Status").setAutoWidth(true).setResizable(true).setSortable(true);
+			grid.addColumn(crop -> crop.getEnteredBy() == null ? "" : crop.getEnteredBy().getName())
+					.setHeader("Entered/Updated By").setAutoWidth(true).setResizable(true).setSortable(true);
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-			grid.addColumn(crop->crop.getEnteredOn()==null ? "": crop.getEnteredOn().format(formatter)).setHeader("Entered/Updated On").setAutoWidth(true).setResizable(true).setSortable(true);
+			grid.addColumn(crop -> crop.getEnteredOn() == null ? "" : crop.getEnteredOn().format(formatter))
+					.setHeader("Entered/Updated On").setAutoWidth(true).setResizable(true).setSortable(true);
 			stateColumn.setVisible(false);
 			districtColumn.setVisible(false);
 			blockColumn.setVisible(false);
@@ -609,22 +639,20 @@ public class CropPlantsView extends HorizontalLayout{
 			latitudeColumn.setVisible(false);
 			longitudeColumn.setVisible(false);
 			grid.getHeaderRows().clear();
-			//headerRow = grid.appendHeaderRow();
-			//headerRow.getCell(stateColumn).setComponent(state);
-			//headerRow.getCell(districtColumn).setComponent(district);
-			//headerRow.getCell(blockColumn).setComponent(block);
-			//headerRow.getCell(villageColumn).setComponent(village);
+			// headerRow = grid.appendHeaderRow();
+			// headerRow.getCell(stateColumn).setComponent(state);
+			// headerRow.getCell(districtColumn).setComponent(district);
+			// headerRow.getCell(blockColumn).setComponent(block);
+			// headerRow.getCell(villageColumn).setComponent(village);
 			grid.asSingleSelect().addValueChangeListener(e -> editCrops(e.getValue()));
-			
+
 			return grid;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			
-			//e.printStackTrace();
+
+			// e.printStackTrace();
 			return null;
 		}
 	}
-
-	
 
 }

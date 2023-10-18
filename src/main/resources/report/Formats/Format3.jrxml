@@ -589,6 +589,10 @@
 		</band>
 	</detail>
 	<summary>
-		<band splitType="Stretch"/>
+		<band height="11" splitType="Stretch">
+			<break>
+				<reportElement x="0" y="3" width="100" height="1" uuid="aa02f44c-b69d-4741-b416-ce28aece6651"/>
+			</break>
+		</band>
 	</summary>
 </jasperReport>

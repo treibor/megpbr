@@ -54,6 +54,8 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.Uses;
+import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
@@ -186,12 +188,15 @@ public class VillageView extends Div{
 			//System.out.println("C");
 			state.setValue(user.getState());
 			stateColumn.setVisible(false);
+			state.setVisible(false);
 		}else if(userLevel.startsWith("DISTRICT")) {
 			//System.out.println("C");
 			state.setValue(user.getState());
 			district.setValue(user.getDistrict());
 			stateColumn.setVisible(false);
 			districtColumn.setVisible(false);
+			state.setVisible(false);
+			district.setVisible(false);
 		}else if(userLevel.startsWith("BLOCK")) {
 			state.setValue(user.getState());
 			district.setValue(user.getDistrict());
@@ -199,6 +204,9 @@ public class VillageView extends Div{
 			stateColumn.setVisible(false);
 			districtColumn.setVisible(false);
 			blockColumn.setVisible(false);
+			state.setVisible(false);
+			district.setVisible(false);
+			block.setVisible(false);
 		}else if(userLevel.startsWith("VILLAGE")) {
 			state.setValue(user.getState());
 			district.setValue(user.getDistrict());
@@ -208,6 +216,10 @@ public class VillageView extends Div{
 			districtColumn.setVisible(false);
 			blockColumn.setVisible(false);
 			villageColumn.setVisible(false);
+			state.setVisible(false);
+			district.setVisible(false);
+			block.setVisible(false);
+			village.setVisible(false);
 		}
 	}
 	private void ConfigureFormAccess() {
@@ -297,17 +309,27 @@ public class VillageView extends Div{
 		district.addValueChangeListener(e->updateList());
 		block.addValueChangeListener(e->updateList());
 		village.addValueChangeListener(e->updateList());
-		//village.add
 		Button addButton=new Button("New");
 		addButton.setPrefixComponent(LineAwesomeIcon.PLUS_CIRCLE_SOLID.create());
-		//String tempformatName=format.getFormatName();
 		addButton.addClickListener(e->addVillageDetails(new VillageDetails()));
+		FormLayout formx = new FormLayout();
+		formx.add(state, 2);
+		formx.add(district, 2);
+		formx.add(block, 2);
+		formx.add(village, 2);
+		formx.add(filterText, 2);
+		formx.add(addButton, 1);
+		// formx.add(expButton, 1);
+		formx.setResponsiveSteps(new ResponsiveStep("0", 4),
+				// Use two columns, if layout's width exceeds 500px
+				new ResponsiveStep("800px", 11));
+		// VerticalLayout abc=new VerticalLayout(formx);
+		return formx;
 		
-		//pbreport2.addClickListener(e->generatePbr2Report());
-		HorizontalLayout topvl=new HorizontalLayout(filterText,addButton);
-		topvl.setAlignItems(FlexComponent.Alignment.BASELINE);
-		topvl.setWidthFull();
-		return topvl; 
+//		HorizontalLayout topvl=new HorizontalLayout(state, district, block, village, filterText,addButton);
+//		topvl.setAlignItems(FlexComponent.Alignment.BASELINE);
+//		topvl.setWidthFull();
+//		return topvl; 
 	}
 	private Component getReportBar() {
 		reporttype.setItems("Pbr1", "Pbr2", "Annexures");
@@ -913,10 +935,11 @@ public class VillageView extends Div{
 	
 	private Component getAnnexure1() { 
 		VerticalLayout vla=new VerticalLayout();
-		//Button test=new Button("Test");
+		Button exp1Button=new Button("Export");
+		exp1Button.addClickListener(e -> GridExporter.newWithDefaults(annex1grid).open());
 		Div annex1div=new Div(new
-			Text("Details of Biodiversity Management Committee (BMC) of the village (One elected Chairperson and six persons nominated by the local body; not less than one third to be women and not than 18% belonging to SC/ST)"
-					)); 
+			Text("Details of Biodiversity Management Committee (BMC) of the village (One elected Chairperson and six persons nominated by the local body, not less than one third to be women and not less than 18% belonging to SC/ST) "
+					), exp1Button); 
 		//test.addClickListener(e->test());
 		vla.setSizeFull();
 		vla.add(annex1div, ConfigureGrid1(currentvillage)); 
@@ -934,9 +957,11 @@ public class VillageView extends Div{
 	}
 	private Component getAnnexure2() { 
 		VerticalLayout vlb=new VerticalLayout();
+		Button exp2Button=new Button("Export");
+		exp2Button.addClickListener(e -> GridExporter.newWithDefaults(annex2grid).open());
 		Div annex2div=new Div(new
-			Text("List of Vaids, hakims and traditional health care (human and livestock) practitioners residing and or using biological resources occurring within the jurisdiction of the village."
-					)); 
+			Text("List of Vaids, hakims and traditional health care (human and livestock) practitioners residing and or using biological resources occurring within the jurisdiction of the village. "
+					), exp2Button); 
 		//ConfigureOtherGrids();
 		vlb.setSizeFull();
 		vlb.add(annex2div, ConfigureGrid2(currentvillage)); 
@@ -949,10 +974,10 @@ public class VillageView extends Div{
 	} 
 	private Component getAnnexure3() { 
 		VerticalLayout vlc=new VerticalLayout();
+		Button exp3Button=new Button("Export");
+		exp3Button.addClickListener(e -> GridExporter.newWithDefaults(annex3grid).open());
 		Div annex3div=new Div(new
-			Text("List of individuals perceived by the villagers to possess Traditional Knowledge (TK) related to biodiversity in agriculture, fisheries and forestry."
-					)); 
-		//ConfigureOtherGrids();
+				Text("List of individuals perceived by the villagers to possess Traditional Knowledge (TK) related to biodiversity in agriculture, fisheries and forestry.  "), exp3Button); 
 		vlc.setSizeFull();
 		vlc.add(annex3div, ConfigureGrid3(currentvillage)); 
 		HorizontalLayout annex3 = new HorizontalLayout(); 
@@ -964,9 +989,11 @@ public class VillageView extends Div{
 	} 
 	private Component getAnnexure4() { 
 		VerticalLayout vld=new VerticalLayout();
+		Button exp4Button=new Button("Export");
+		exp4Button.addClickListener(e -> GridExporter.newWithDefaults(annex4grid).open());
 		Div annex4div=new Div(new
-			Text("Details of schools, colleges, departments, universities, government institutions, non-goyernmental organization and individuals involved in the preparation of the PBR."
-					)); 
+			Text("Details of schools, colleges, departments, universities, government institutions, non-goyernmental organization and individuals involved in the preparation of the PBR. "
+					), exp4Button); 
 		//ConfigureOtherGrids();
 		vld.setSizeFull();
 		vld.add(annex4div, ConfigureGrid4(currentvillage)); 
@@ -979,9 +1006,11 @@ public class VillageView extends Div{
 	} 
 	private Component getAnnexure5() { 
 		VerticalLayout vle=new VerticalLayout();
+		Button exp5Button=new Button("Export");
+		exp5Button.addClickListener(e -> GridExporter.newWithDefaults(annex5grid).open());
 		Div annex5div=new Div(new
-			Text("Details of access to biological resources and traditional knowledge granted, details of collection fee imposed and details of the benefits derived and the mode of sharing."
-					)); 
+			Text("Details of access to biological resources and traditional knowledge granted, details of collection fee imposed and details of the benefits derived and the mode of sharing. "
+					), exp5Button); 
 		//ConfigureOtherGrids();
 		vle.setSizeFull();
 		vle.add(annex5div, ConfigureGrid5(currentvillage)); 
@@ -1023,13 +1052,15 @@ public class VillageView extends Div{
 			grid.addColumn("fallowArea").setHeader("Fallow Land(Ha)").setAutoWidth(true).setResizable(true);
 			grid.addColumn("currentFallowArea").setHeader("Current Fallow Land(Ha)").setAutoWidth(true).setResizable(true);
 			grid.addColumn("sownArea").setHeader("Net Sown Area").setAutoWidth(true).setResizable(true);
-			grid.addColumn(villagedetails->villagedetails.getManagementregime().getManagementregime()).setHeader("Management Regime").setAutoWidth(true).setResizable(true);
+			grid.addColumn(villagedetails->villagedetails.getManagementregime()==null?"":villagedetails.getManagementregime().getManagementregime()).setHeader("Management Regime").setAutoWidth(true).setResizable(true);
+			grid.addColumn(villagedetails->villagedetails.getEnteredBy()==null? "":villagedetails.getEnteredBy().getUserName()).setHeader("Entered/Updated By").setAutoWidth(true).setResizable(true);
+			grid.addColumn("enteredOn").setHeader("Entered/Updated On").setAutoWidth(true).setResizable(true);
 			grid.asSingleSelect().addValueChangeListener(e -> editVillageDetails(e.getValue()));
-			HeaderRow headerRow = grid.appendHeaderRow();
-			headerRow.getCell(stateColumn).setComponent(state);
-			headerRow.getCell(districtColumn).setComponent(district);
-			headerRow.getCell(blockColumn).setComponent(block);
-			headerRow.getCell(villageColumn).setComponent(village);
+//			HeaderRow headerRow = grid.appendHeaderRow();
+//			headerRow.getCell(stateColumn).setComponent(state);
+//			headerRow.getCell(districtColumn).setComponent(district);
+//			headerRow.getCell(blockColumn).setComponent(block);
+//			headerRow.getCell(villageColumn).setComponent(village);
 			return grid;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

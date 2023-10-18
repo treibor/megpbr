@@ -183,6 +183,7 @@ public class UserForm extends Div {
 		
 	}
 	public Component createBasicForm() {
+		userName.setEnabled(false);
 		form.add(name, 2);
 		form.add(userName, 2);
 		form.add(email, 2);

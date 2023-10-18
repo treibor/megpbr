@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,35 +27,35 @@ import com.megpbr.views.villages.LoginView;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-	
+	private final LoginView loginobject=new LoginView();
     private final UserRepository userRepository;
     private final AuditRepository auditrepo;
     //private final Audit;
     public UserDetailsServiceImpl(UserRepository userRepository, AuditRepository auditrepo) {
         this.userRepository = userRepository;
         this.auditrepo=auditrepo;
+        //loginobject=
     }
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    	//LoginView abc=new LoginView();
-        UserLogin user = userRepository.findByUserNameAndEnabled(username, true);
-        AuditTrail audit=new AuditTrail();
-    	if (user == null) {
-        	throw new UsernameNotFoundException("No user present with username: " + username);
-        	
-        } else {
-        	//System.out.println("Test1");
-        	return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getHashedPassword(),
-                    getAuthorities(user));
-        	
-        }
-    }
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		//System.out.println("Load User" + loginobject.code.getValue());
+		UserLogin user = userRepository.findByUserNameAndEnabled(username, true);
+		// AuditTrail audit=new AuditTrail();
+		if (user == null) {
+			throw new UsernameNotFoundException("No user present with username: " + username);
+
+		} else {
+			System.out.println("User:" + username);
+			return new User(user.getUserName(), user.getHashedPassword(), getAuthorities(user));
+			
+		}
+
+	}
 
     private static List<GrantedAuthority> getAuthorities(UserLogin user) {
-    	 //System.out.println("Role"+user.getRoles().get(0).getRoleName());
-    	
+    	System.out.println("Get Roles");
        return user.getRoles().stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRoleName()))
     	        .collect(Collectors.toList());
       

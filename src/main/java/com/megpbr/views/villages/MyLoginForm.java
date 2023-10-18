@@ -13,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.megpbr.audit.CaptchaCheck;
 import com.megpbr.data.entity.UserLogin;
 import com.megpbr.data.repository.UserRepository;
-import com.megpbr.security.AuthenticatedUser;
 import com.megpbr.security.SecurityService;
 import com.megpbr.security.UserDetailsServiceImpl;
 import com.megpbr.views.dashboard.DashboardView;
@@ -48,19 +47,25 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 
 @Tag("form")
 public class MyLoginForm extends HtmlContainer implements BeforeEnterObserver{
-
-    public MyLoginForm() {
-        addClassNames(LumoUtility.Display.FLEX,
-                LumoUtility.FlexDirection.COLUMN, LumoUtility.AlignItems.START);
-        TextField user = new TextField("Username");
-        PasswordField pass = new PasswordField("Password");
-        Button login = new Button("Login");
-        login.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        login.getElement().setAttribute("on-click", "submit");
-        getElement().setAttribute("method", "POST");
-        getElement().setAttribute("action", "login");
-        add(user, pass, login);
-        //login.addClickListener(e->doSome());
+	TextField captcha = new TextField("Captcha");
+   
+    	public MyLoginForm() {
+            addClassNames(LumoUtility.Display.FLEX,
+                    LumoUtility.FlexDirection.COLUMN, LumoUtility.AlignItems.START);
+            TextField username = new TextField("Username");
+            PasswordField password = new PasswordField("Password");
+            Button login = new Button("Login");
+            login.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+            login.getElement().setAttribute("on-click", "submit");
+            getElement().setAttribute("method", "POST");
+            getElement().setAttribute("action", "login");
+           login.addClickListener(e->login());
+            add(username, password, login);
+        }
+       
+    
+    public void login() {
+    	 
     }
 
 	private void doSome() {

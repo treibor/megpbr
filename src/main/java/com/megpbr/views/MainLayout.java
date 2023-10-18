@@ -1,29 +1,26 @@
 package com.megpbr.views;
 
+import org.vaadin.lineawesome.LineAwesomeIcon;
+
 import com.megpbr.audit.Audit;
-import com.megpbr.data.entity.Block;
-import com.megpbr.data.entity.District;
-import com.megpbr.data.entity.State;
-import com.megpbr.data.entity.UserLogin;
-import com.megpbr.data.entity.UserLoginLevel;
-import com.megpbr.data.entity.UserRole;
-import com.megpbr.data.entity.Village;
 import com.megpbr.data.service.Dbservice;
 import com.megpbr.data.service.UserService;
 import com.megpbr.security.SecurityService;
 import com.megpbr.views.agrobiodiversity.CropPlantsView;
 import com.megpbr.views.agrobiodiversity.FodderCropsView;
 import com.megpbr.views.agrobiodiversity.FruitTreesView;
-import com.megpbr.views.agrobiodiversity.FruitTreesView1;
 import com.megpbr.views.agrobiodiversity.MarketsView;
 import com.megpbr.views.agrobiodiversity.PeopleScapeView;
-import com.megpbr.views.agrobiodiversity.PestsCropsView;
+import com.megpbr.views.agrobiodiversity.PestCropsView;
 import com.megpbr.views.agrobiodiversity.ScapeView;
 import com.megpbr.views.agrobiodiversity.SoilTypeView;
 import com.megpbr.views.agrobiodiversity.WaterScapeView;
 import com.megpbr.views.agrobiodiversity.WeedsView;
+import com.megpbr.views.crowd.CrowdView;
+import com.megpbr.views.crowd.PreCrowdView;
 import com.megpbr.views.dashboard.DashboardView;
 import com.megpbr.views.domesticateddiversity.CultureFisheriesView;
+import com.megpbr.views.domesticateddiversity.DomFruitTreesView;
 import com.megpbr.views.domesticateddiversity.DomesticatedAnimalsView;
 import com.megpbr.views.domesticateddiversity.MarketsFairView;
 import com.megpbr.views.domesticateddiversity.MedicinalPlantsView;
@@ -36,21 +33,16 @@ import com.megpbr.views.wilddiversity.FumigateChewingView;
 import com.megpbr.views.wilddiversity.TreeShrubView;
 import com.megpbr.views.wilddiversity.WildAnimalsView;
 import com.megpbr.views.wilddiversity.WildAquaticPlantsView;
+import com.megpbr.views.wilddiversity.WildOrnamentalPlantsView;
 import com.megpbr.views.wilddiversity.WildPlantSpeciesView;
 import com.megpbr.views.wilddiversity.WildPlantsMedicinalView;
 import com.megpbr.views.wilddiversity.WildRelativesView;
+import com.megpbr.views.wilddiversity.WildTimberPlantsView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
-import com.vaadin.flow.component.avatar.AvatarVariant;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
-import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
@@ -59,27 +51,17 @@ import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.menubar.MenuBarVariant;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
-import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
-import com.vaadin.flow.component.textfield.PasswordField;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
 import com.vaadin.flow.theme.lumo.LumoUtility.Padding;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.vaadin.lineawesome.LineAwesomeIcon;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -107,9 +89,11 @@ public class MainLayout extends AppLayout {
 		}
     }
     private void addHeaderContent() {
-    	Avatar avatarImage = new Avatar(userservice.getLoggedUserName());
+    	String user=userservice.getLoggedUserName();
+    	Avatar avatarImage = new Avatar(user);
     	//avatarImage.addThemeVariants(AvatarVariant.LUMO_SMALL);
-		avatarImage.setColorIndex(2);
+		avatarImage.setColorIndex(5);
+		avatarImage.setTooltipEnabled(true);
 		MenuBar menuBar = new MenuBar();
 		menuBar.addThemeVariants(MenuBarVariant.LUMO_TERTIARY_INLINE);
 		MenuItem item = menuBar.addItem(avatarImage);
@@ -170,7 +154,7 @@ public class MainLayout extends AppLayout {
 				LineAwesomeIcon.ALIPAY.create());
 		SideNavItem format4 = new SideNavItem(dbservice.getFormat(4).getFormatName(), WeedsView.class,
 				LineAwesomeIcon.AUDIBLE.create());
-		SideNavItem format5 = new SideNavItem(dbservice.getFormat(5).getFormatName(), PestsCropsView.class,
+		SideNavItem format5 = new SideNavItem(dbservice.getFormat(5).getFormatName(), PestCropsView.class,
 				LineAwesomeIcon.ANGULAR.create());
 		
 		SideNavItem format6 = new SideNavItem(dbservice.getFormat(6).getFormatName(), MarketsView.class,
@@ -188,7 +172,7 @@ public class MainLayout extends AppLayout {
 		//Domesticated Biodiversity -Category 2
         SideNavItem category2=new SideNavItem(dbservice.getCategory(2).getCategory());
         category2.setPrefixComponent(LineAwesomeIcon.AIRBNB.create());
-        SideNavItem format11 = new SideNavItem(dbservice.getFormat(11).getFormatName(), com.megpbr.views.domesticateddiversity.FruitTreesView.class,
+        SideNavItem format11 = new SideNavItem(dbservice.getFormat(11).getFormatName(), DomFruitTreesView.class,
 				LineAwesomeIcon.ZHIHU.create());
         SideNavItem format12 = new SideNavItem(dbservice.getFormat(12).getFormatName(), MedicinalPlantsView.class,
 				LineAwesomeIcon.YOAST.create());
@@ -219,17 +203,17 @@ public class MainLayout extends AppLayout {
 				LineAwesomeIcon.BELL.create());
 		SideNavItem format23 = new SideNavItem(dbservice.getFormat(23).getFormatName(), WildRelativesView.class,
 				LineAwesomeIcon.BEZIER_CURVE_SOLID.create());
-		SideNavItem format24 = new SideNavItem(dbservice.getFormat(24).getFormatName(), com.megpbr.views.wilddiversity.OrnamentalPlantsView.class,
+		SideNavItem format24 = new SideNavItem(dbservice.getFormat(24).getFormatName(), WildOrnamentalPlantsView.class,
 				LineAwesomeIcon.BLACKBERRY.create());
 		SideNavItem format25 = new SideNavItem(dbservice.getFormat(25).getFormatName(), FumigateChewingView.class,
 				LineAwesomeIcon.FEATHER_ALT_SOLID.create());
-		SideNavItem format26 = new SideNavItem(dbservice.getFormat(26).getFormatName(), TimberPlantsView.class,
+		SideNavItem format26 = new SideNavItem(dbservice.getFormat(26).getFormatName(), WildTimberPlantsView.class,
 				LineAwesomeIcon.CAMPGROUND_SOLID.create());
 		SideNavItem format27 = new SideNavItem(dbservice.getFormat(27).getFormatName(), WildAnimalsView.class,
 				LineAwesomeIcon.WOLF_PACK_BATTALION.create());
         category3.addItem(format18,format19,format20,format21,format22,format23,format24,format25,format26,format27);
         nav.addItem(category1, category2, category3);
-        
+        nav.addItem(new SideNavItem("Pre Crowd Sourcing", PreCrowdView.class, LineAwesomeIcon.ACCESSIBLE_ICON.create()));
         nav.addItem(new SideNavItem("Crowd Sourcing", CrowdView.class, LineAwesomeIcon.ACCESSIBLE_ICON.create()));
         nav.addItem(new SideNavItem("Master", MasterView.class, LineAwesomeIcon.ACCESSIBLE_ICON.create()));
         return nav;

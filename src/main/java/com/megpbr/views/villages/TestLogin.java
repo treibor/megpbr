@@ -10,7 +10,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.megpbr.audit.CaptchaCheck;
 import com.megpbr.data.entity.UserLogin;
 import com.megpbr.data.repository.UserRepository;
-import com.megpbr.security.AuthenticatedUser;
 import com.megpbr.security.SecurityService;
 import com.megpbr.security.UserDetailsServiceImpl;
 import com.megpbr.views.dashboard.DashboardView;

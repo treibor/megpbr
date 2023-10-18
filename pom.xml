@@ -13,7 +13,7 @@
     <properties>
         <java.version>17</java.version>
         <vaadin.version>
-			24.1.10</vaadin.version>
+			24.2.0.rc2</vaadin.version>
         <selenium.version>4.10.0</selenium.version>
 
 	</properties>
@@ -26,17 +26,32 @@
 			3.1.0</version>
 	</parent>
 
-    <repositories>
-        <repository>
-            <id>Vaadin Directory</id>
-            <url>
+	<repositories>
+		<repository>
+			<id>vaadin-prereleases</id>
+			<url>
+				https://maven.vaadin.com/vaadin-prereleases/
+			</url>
+		</repository>
+		<repository>
+			<id>Vaadin Directory</id>
+			<url>
 				https://maven.vaadin.com/vaadin-addons</url>
-            <snapshots>
-                <enabled>false</enabled>
+			<snapshots>
+				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+		
 	</repositories>
-
+	<pluginRepositories>
+		<pluginRepository>
+			<id>
+				vaadin-prereleases</id>
+			<url>
+				https://maven.vaadin.com/vaadin-prereleases/
+			</url>
+		</pluginRepository>
+	</pluginRepositories>
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -162,9 +177,11 @@
 			<version>2.1.2</version>
 		</dependency>
 		<dependency>
-			<groupId>com.xdev-software</groupId>
+			<groupId>
+				com.xdev-software</groupId>
 			<artifactId>vaadin-grid-exporter</artifactId>
-			<version>3.0.1</version>
+			<version>
+				3.0.1</version>
 		</dependency>
 	</dependencies>
 

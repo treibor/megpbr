@@ -220,7 +220,7 @@
 				<text><![CDATA[Geographical Area of the Village:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="247" y="118" width="81" height="20" uuid="1523e569-60fb-4700-a2ee-57abbb0c68be"/>
+				<reportElement x="268" y="118" width="81" height="20" uuid="1523e569-60fb-4700-a2ee-57abbb0c68be"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10"/>
 				</textElement>
@@ -233,8 +233,8 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{village.block.district.state.stateName}]]></textFieldExpression>
 			</textField>
-			<textField textAdjust="StretchHeight">
-				<reportElement x="208" y="118" width="38" height="20" uuid="b6f2036f-44d5-4a68-a604-4492058ce0c0"/>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement x="208" y="118" width="60" height="20" uuid="b6f2036f-44d5-4a68-a604-4492058ce0c0"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10"/>
 				</textElement>
@@ -248,42 +248,42 @@
 				<text><![CDATA[Population under the Village:]]></text>
 			</staticText>
 			<textField textAdjust="StretchHeight">
-				<reportElement x="42" y="165" width="74" height="20" uuid="6e5c0157-2cae-4291-893a-4f31a94d8bd0"/>
+				<reportElement x="82" y="165" width="74" height="20" uuid="6e5c0157-2cae-4291-893a-4f31a94d8bd0"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{malePopn}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="8" y="165" width="34" height="20" uuid="09fcf166-720c-4f7b-a926-a681c7c3e937"/>
+				<reportElement x="48" y="165" width="34" height="20" uuid="09fcf166-720c-4f7b-a926-a681c7c3e937"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Male:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="116" y="165" width="58" height="20" uuid="88049488-eb39-492f-9514-dc52f9734a29"/>
+				<reportElement x="156" y="165" width="58" height="20" uuid="88049488-eb39-492f-9514-dc52f9734a29"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Female:]]></text>
 			</staticText>
 			<textField textAdjust="StretchHeight">
-				<reportElement x="174" y="165" width="75" height="20" uuid="7eab96f2-eb24-4590-ba30-f4318fcd617d"/>
+				<reportElement x="214" y="165" width="75" height="20" uuid="7eab96f2-eb24-4590-ba30-f4318fcd617d"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{femalePopn}]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight">
-				<reportElement x="283" y="165" width="100" height="20" uuid="1db02f21-aa18-4f75-a094-b24c0ce50d97"/>
+				<reportElement x="323" y="165" width="100" height="20" uuid="1db02f21-aa18-4f75-a094-b24c0ce50d97"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{femalePopn}+$F{malePopn}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="249" y="165" width="34" height="20" uuid="19cfdda7-5fc4-4e82-adc5-48e1e4356972"/>
+				<reportElement x="289" y="165" width="34" height="20" uuid="19cfdda7-5fc4-4e82-adc5-48e1e4356972"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isBold="false"/>
 				</textElement>
@@ -380,7 +380,7 @@
 				</textElement>
 				<text><![CDATA[Area under non-agricultural uses:]]></text>
 			</staticText>
-			<textField textAdjust="StretchHeight">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement x="258" y="287" width="64" height="20" uuid="fd3fac14-b204-4847-9e04-6c77c5e25993"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10"/>
@@ -401,7 +401,7 @@
 				</textElement>
 				<text><![CDATA[hectares]]></text>
 			</staticText>
-			<textField textAdjust="StretchHeight">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement x="258" y="307" width="75" height="20" uuid="84267930-c0a7-4a59-9f38-e899a5fc058b"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10"/>
@@ -415,7 +415,7 @@
 				</textElement>
 				<text><![CDATA[Barren and uncultivatable land:]]></text>
 			</staticText>
-			<textField textAdjust="StretchHeight">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement x="259" y="327" width="74" height="20" uuid="068ef2c5-0c2b-4f42-8e3d-c521fb836636"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10"/>
@@ -436,7 +436,7 @@
 				</textElement>
 				<text><![CDATA[hectares]]></text>
 			</staticText>
-			<textField textAdjust="StretchHeight">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement x="259" y="347" width="74" height="20" uuid="f6ee0aa0-8f6e-4209-b349-65898924db80"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10"/>
@@ -457,7 +457,7 @@
 				</textElement>
 				<text><![CDATA[Land under miscellaneous tree crops:]]></text>
 			</staticText>
-			<textField textAdjust="StretchHeight">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement x="258" y="367" width="75" height="20" uuid="946239c0-4a64-423e-8963-d8c25745442a"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10"/>
@@ -478,7 +478,7 @@
 				</textElement>
 				<text><![CDATA[hectares]]></text>
 			</staticText>
-			<textField textAdjust="StretchHeight">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement x="258" y="387" width="75" height="20" uuid="1876b917-c86c-4e65-b599-2503162b4219"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10"/>
@@ -490,7 +490,7 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Cultivable waste land:]]></text>
+				<text><![CDATA[Cultivatable waste land:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="11" y="416" width="223" height="20" uuid="e3f2ac8f-6858-498a-9219-cca65d0764df"/>
@@ -506,8 +506,8 @@
 				</textElement>
 				<text><![CDATA[Fallows lands:]]></text>
 			</staticText>
-			<textField textAdjust="StretchHeight">
-				<reportElement x="98" y="436" width="68" height="20" uuid="09f75613-f51f-48c9-b087-e3015be26721"/>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement x="99" y="436" width="67" height="20" uuid="09f75613-f51f-48c9-b087-e3015be26721"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10"/>
 				</textElement>
@@ -527,7 +527,7 @@
 				</textElement>
 				<text><![CDATA[Current Fallows:]]></text>
 			</staticText>
-			<textField textAdjust="StretchHeight">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement x="322" y="436" width="68" height="20" uuid="e79e7b7b-aca1-42b9-af48-9410d3b3a5ce"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10"/>
@@ -541,8 +541,8 @@
 				</textElement>
 				<text><![CDATA[hectares]]></text>
 			</staticText>
-			<textField textAdjust="StretchHeight">
-				<reportElement x="98" y="456" width="64" height="20" uuid="be71a6ad-2cbf-46d5-85ea-68c0efef93f0"/>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement x="99" y="457" width="64" height="20" uuid="be71a6ad-2cbf-46d5-85ea-68c0efef93f0"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10"/>
 				</textElement>

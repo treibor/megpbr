@@ -620,7 +620,4 @@
 			</frame>
 		</band>
 	</detail>
-	<summary>
-		<band splitType="Stretch"/>
-	</summary>
 </jasperReport>
