@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.megpbr.audit.Audit;
 import com.megpbr.data.entity.Block;
 import com.megpbr.data.entity.CrowdCategory;
 import com.megpbr.data.entity.CrowdFormat;
@@ -56,6 +57,8 @@ import software.xdev.vaadin.grid_exporter.GridExporter;
 @PageTitle("Crowd Sourcing Verify")
 @Route(value = "crowdsourcingverify", layout = MainLayout.class)
 public class CrowdView extends HorizontalLayout{
+	@Autowired
+	Audit audit;
 	CrowdService service;
 	Dbservice dbservice;
 	CropService cservice;
@@ -125,12 +128,11 @@ public class CrowdView extends HorizontalLayout{
 			Crops crop = event.getCrops();
 			crop.setEnteredOn(LocalDateTime.now());
 			crop.setFormat(masterformat.getValue());
-			//crop.setApproved(true);
 			crop.setEnteredBy(dbservice.getLoggedUser());
 			dbservice.updateCrop(crop);
 			crowd.setVerified(true);
 			service.saveCrowd(crowd);
-			//auditobject.saveAudit(crop, "Save/Update");
+			audit.saveAudit("Crowd Data - Verify", "Id-"+crowd.getId()+"-Village"+crowd.getVillage().getVillageName());
 			Notification.show("Saved Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 			updateGrid();
 			cropform.setVisible(false);
@@ -147,7 +149,7 @@ public class CrowdView extends HorizontalLayout{
 
 		try {
 			Crops crop = event.getCrops();
-			//auditobject.saveAudit(crop, "Delete");
+			audit.saveAudit("Crowd Data - Delete", "Id-"+crowd.getId()+"-Village"+crowd.getVillage().getVillageName());
 			cservice.deleteCrop(crop);
 			Notification.show("Deleted Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 			//updateGrid();

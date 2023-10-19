@@ -112,6 +112,14 @@ public class MainLayout extends AppLayout {
 			return false;
 		}
     }
+    public boolean isVerifiers() {
+    	String userLevel=userservice.getLoggedUserLevel();
+		if(userLevel.endsWith("VERIFIER")||userLevel.startsWith("SUPER")||userLevel.startsWith("STATE")) {
+			return true;
+		}else {
+			return false;
+		}
+    }
     private void addHeaderContent() {
     	String user=userservice.getLoggedUserName();
     	Avatar avatarImage = new Avatar(user);
@@ -245,7 +253,7 @@ public class MainLayout extends AppLayout {
         nav.addItem(crowd);
         SideNavItem master=new SideNavItem("Master", MasterView.class, LineAwesomeIcon.ACCESSIBLE_ICON.create());
         nav.addItem(master);
-        
+        crowd.setVisible(isVerifiers());
         master.setVisible(isStateAdmin());
         preverify.setVisible(isStateUser());
         verify.setVisible(isVerifier());

@@ -41,10 +41,10 @@ public class SecurityService {
 
 	public void logout() {
 		//System.out.println("Logout");
-		//UI.getCurrent().getPage().setLocation(LOGOUT_SUCCESS_URL);
-		//SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
-		//logoutHandler.logout(VaadinServletRequest.getCurrent().getHttpServletRequest(), null, null);
-		authenticationContext.logout();
+		UI.getCurrent().getPage().setLocation(LOGOUT_SUCCESS_URL);
+		SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+		logoutHandler.logout(VaadinServletRequest.getCurrent().getHttpServletRequest(), null, null);
+		//authenticationContext.logout();
 	}
 	
 	

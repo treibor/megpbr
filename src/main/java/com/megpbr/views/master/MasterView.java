@@ -129,13 +129,13 @@ public class MasterView extends HorizontalLayout{
 	public Component getTabs() {
 		//Tab tab1=new Tab("Users");
 		TabSheet tabSheet = new TabSheet();
-		tabSheet.add("Audit Trail",getAuditTab()).setVisible(isStateAdmin());;
 		tabSheet.add("Position",getPositionTab());
 		tabSheet.add("Season",getSeasonTab());
 		tabSheet.add("Status",getStatusTab());
 		tabSheet.add("Management Regime",getRegimeTab());
 		tabSheet.add("Local Language",getLanguageTab());
 		tabSheet.add("Users",getUserTab()).setVisible(isStateAdmin());;
+		tabSheet.add("Audit Trail",getAuditTab()).setVisible(isStateAdmin());;
 		tabSheet.setSizeFull();
 		return tabSheet;
 	}

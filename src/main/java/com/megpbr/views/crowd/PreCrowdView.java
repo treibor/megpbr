@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.megpbr.audit.Audit;
 import com.megpbr.data.entity.Block;
 import com.megpbr.data.entity.CrowdCategory;
 import com.megpbr.data.entity.CrowdFormat;
@@ -56,6 +57,8 @@ import software.xdev.vaadin.grid_exporter.GridExporter;
 @PageTitle("Crowd Sourcing Verify")
 @Route(value = "preverify", layout = MainLayout.class)
 public class PreCrowdView extends HorizontalLayout{
+	@Autowired
+	Audit audit;
 	CrowdService service;
 	Dbservice dbservice;
 	CropService cservice;
@@ -122,6 +125,7 @@ public class PreCrowdView extends HorizontalLayout{
 			Crowd crowd = event.getCrowd();
 			crowd.setPreverified(true);
 			service.saveCrowd(crowd);
+			audit.saveAudit("Crowd Data - Pre Verify", "Id-"+crowd.getId()+"-Village"+crowd.getVillage().getVillageName());
 			Notification.show("Saved Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 			updateGrid();
 			cropform.setVisible(false);
@@ -138,6 +142,7 @@ public class PreCrowdView extends HorizontalLayout{
 
 		try {
 			Crowd crowd = event.getCrowd();
+			audit.saveAudit("Crowd Data - Delete", "Id-"+crowd.getId()+"-Village"+crowd.getVillage().getVillageName());
 			service.deleteCrowd(crowd);
 			Notification.show("Deleted Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 			updateGrid();

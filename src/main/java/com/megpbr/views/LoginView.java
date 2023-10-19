@@ -13,6 +13,7 @@ import javax.swing.ImageIcon;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
 import com.megpbr.audit.Audit;
 import com.megpbr.audit.CaptchaCheck;
@@ -53,6 +54,7 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
+import com.vaadin.flow.server.VaadinServletRequest;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 
@@ -116,6 +118,7 @@ public class LoginView extends Div implements BeforeEnterObserver, ComponentEven
 		if (codevalue.equals(captchavalue)) {
 			boolean authenticated = SecurityUtils.authentication(loginEvent.getUsername(), loginEvent.getPassword());
 			if (authenticated) {
+				inValidateSession();
 				UI.getCurrent().getPage().setLocation(LOGIN_SUCCESS_URL);
 				audit.saveAudit("Login Successfull", loginEvent.getUsername());
 			} else {
@@ -130,7 +133,10 @@ public class LoginView extends Div implements BeforeEnterObserver, ComponentEven
 			loginOverlay.setEnabled(true);
 		}
 	}
-    
+    public void inValidateSession(){
+    	SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+		logoutHandler.logout(VaadinServletRequest.getCurrent().getHttpServletRequest(), null, null);
+    }
 	
 	@Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
