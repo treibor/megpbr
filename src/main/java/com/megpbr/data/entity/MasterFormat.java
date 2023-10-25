@@ -42,9 +42,6 @@ public class MasterFormat {
 		this.id = id;
 	}
 
-	
-	
-
 	public int getFormat() {
 		return format;
 	}

@@ -126,7 +126,7 @@ public class PreCrowdView extends HorizontalLayout{
 			crowd.setPreverified(true);
 			service.saveCrowd(crowd);
 			audit.saveAudit("Crowd Data - Pre Verify", "Id-"+crowd.getId()+"-Village"+crowd.getVillage().getVillageName());
-			Notification.show("Saved Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+			Notification.show("Verified Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 			updateGrid();
 			cropform.setVisible(false);
 			//addCrops(new Crops());
@@ -228,7 +228,7 @@ public class PreCrowdView extends HorizontalLayout{
 	
 	public Component createForm2() {
 		FormLayout form1=new FormLayout();
-		form1.add(deleteButton, 1);
+		//form1.add(deleteButton, 1);
 		form1.add(expButton, 1);
 		form1.setResponsiveSteps(new ResponsiveStep("0", 3),
 				// Use two columns, if layout's width exceeds 500px

@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 
@@ -12,16 +13,24 @@ import org.apache.commons.io.IOUtils;
 
 import com.megpbr.audit.CaptchaCheck;
 import com.megpbr.data.entity.District;
+import com.megpbr.data.entity.MasterFormat;
 import com.megpbr.data.service.DashboardService;
 import com.megpbr.views.MainLayout;
 import com.storedobject.chart.BarChart;
 import com.storedobject.chart.CategoryData;
+import com.storedobject.chart.Chart;
+import com.storedobject.chart.Color;
 import com.storedobject.chart.Data;
+import com.storedobject.chart.DataMatrix;
 import com.storedobject.chart.DataType;
+import com.storedobject.chart.LineChart;
 import com.storedobject.chart.NightingaleRoseChart;
 import com.storedobject.chart.Position;
 import com.storedobject.chart.RectangularCoordinate;
+import com.storedobject.chart.RichTextStyle;
 import com.storedobject.chart.SOChart;
+import com.storedobject.chart.Size;
+import com.storedobject.chart.TextStyle;
 import com.storedobject.chart.Title;
 import com.storedobject.chart.Toolbox;
 import com.storedobject.chart.XAxis;
@@ -52,7 +61,7 @@ public class DashboardView extends VerticalLayout {
     public DashboardView(DashboardService dservice) {
     	this.dservice=dservice;
     	
-        add(getCharts());
+        add(getCharts(), getCharts2());
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
@@ -78,6 +87,7 @@ public class DashboardView extends VerticalLayout {
         Toolbox toolbox = new Toolbox();
         toolbox.addButton(new Toolbox.Download(), new Toolbox.Zoom());
         Title title = new Title("District Wise PBR");
+        
         NightingaleRoseChart nc = new NightingaleRoseChart(labels, data);
         nc.setName("PBR Entered");
         nc.setPosition(p); // Position it leaving 50% space at the top
@@ -91,7 +101,36 @@ public class DashboardView extends VerticalLayout {
         getCharts.add(soChart2, soChart);
         return getCharts;
     }
-    
-    
+    public Component getCharts2() {
+    	//SOChart soChart = new SOChart();
+    	SOChart soChart2 = new SOChart();
+    	CategoryData labels = new CategoryData();
+    	Data data = new Data();
+        int i=dservice.getFormats().size();
+        for(int index=0; index<i; index++) {
+        	labels.add(dservice.getFormats().get(index).getFormatName());
+			MasterFormat dist = dservice.getFormats().get(index);
+			if (index == 5 || index == 16) {
+				data.add(dservice.getMarketsCount(dist));
+			} else if (index ==6 || index == 7 || index == 8 || index == 9) {
+				data.add(dservice.getScapesCount(dist));
+			} else {
+				data.add(dservice.getCropsCount(dist));
+			}
+        }
+        BarChart bc = new BarChart(labels, data);
+        RectangularCoordinate rc;
+        
+        rc  = new RectangularCoordinate(new XAxis(DataType.CATEGORY), new YAxis(DataType.NUMBER));
+        Position p = new Position();
+        bc.plotOn(rc); // Bar chart needs to be plotted on a coordinate system
+        bc.setName("PBR Entered");
+        Toolbox toolbox = new Toolbox();
+        toolbox.addButton(new Toolbox.Download(), new Toolbox.Zoom());
+        Title title = new Title("PBR Data");
+        soChart2.add(bc, toolbox, title);
+        soChart2.setWidthFull();
+        return soChart2;
+    }    
 	
 }

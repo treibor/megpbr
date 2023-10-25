@@ -115,6 +115,7 @@ public class CrowdView extends HorizontalLayout{
 		binder.readBean(crowd);
 	}
 	private void ConfigureForm() {
+		
 		cropform = new CropForm(dbservice, cservice);
 		cropform.setVisible(false);
 		cropform.setWidth("40%");
@@ -133,7 +134,7 @@ public class CrowdView extends HorizontalLayout{
 			crowd.setVerified(true);
 			service.saveCrowd(crowd);
 			audit.saveAudit("Crowd Data - Verify", "Id-"+crowd.getId()+"-Village"+crowd.getVillage().getVillageName());
-			Notification.show("Saved Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+			Notification.show("Verified Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 			updateGrid();
 			cropform.setVisible(false);
 			//addCrops(new Crops());
@@ -179,7 +180,7 @@ public class CrowdView extends HorizontalLayout{
 		block.setClearButtonVisible(true);
 		mastercategory.setItems(dbservice.getCategory());
 		mastercategory.addValueChangeListener(e->
-		masterformat.setItems(dbservice.getFormatByCategory(e.getValue())));
+		masterformat.setItems(dbservice.getSelectedFormatByCategory(e.getValue())));
 		mastercategory.setItemLabelGenerator(mastercategory->mastercategory.getCategory());
 		masterformat.setItemLabelGenerator(masterformat->masterformat.getFormatName());
 	}
@@ -289,6 +290,7 @@ public class CrowdView extends HorizontalLayout{
 		}else if (mastercategory.getValue()==null|| masterformat.getValue()==null){
 			Notification.show("Please Select the Category and Format").addThemeVariants(NotificationVariant.LUMO_ERROR);
 		}else {
+			cropform.crowd=crowd;
 			cropform.setCrop(new Crops());
 			cropform.initFields(masterformat.getValue());
 			cropform.state.setValue(crowd.getVillage().getBlock().getDistrict().getState());

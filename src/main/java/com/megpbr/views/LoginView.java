@@ -82,8 +82,8 @@ public class LoginView extends Div implements BeforeEnterObserver, ComponentEven
 		captchatext.setEnabled(false);
 		captchatext.addThemeVariants(TextFieldVariant.LUMO_ALIGN_CENTER);
 		captchatext.setWidthFull();
-		captchatext.getStyle().set("font-size", "15px");
-		captchatext.getStyle().set("font-style", "oblique");
+		captchatext.getStyle().set("font-size", "18px").set("font-weight", "bold");
+		//captchatext.getStyle().set("font-style", "oblique");
 		Button captchabutton = new Button(new Icon(VaadinIcon.REFRESH));
 		captchabutton.addClickListener(e-> refreshCaptcha());
 		var captchapanel=new HorizontalLayout(captchatext, captchabutton);
@@ -103,6 +103,9 @@ public class LoginView extends Div implements BeforeEnterObserver, ComponentEven
 		//loginOverlay.setError(true);
 		loginOverlay.addLoginListener(this);
 		loginOverlay.getElement().setAttribute("no-autofocus", "");
+		if(SecurityUtils.isAuthenticated()) {
+			UI.getCurrent().getPage().setLocation(LOGIN_SUCCESS_URL);
+		}
 	}
     
 	public void refreshCaptcha() {
@@ -113,10 +116,10 @@ public class LoginView extends Div implements BeforeEnterObserver, ComponentEven
    
 	@Override
 	public void onComponentEvent(AbstractLogin.LoginEvent loginEvent) {
+		//inValidateSession();
 		String codevalue=code.getValue().trim();
 		String captchavalue=captchatext.getValue().trim();
 		if (codevalue.equals(captchavalue)) {
-			inValidateSession();
 			boolean authenticated = SecurityUtils.authentication(loginEvent.getUsername(), loginEvent.getPassword());
 			if (authenticated) {
 				UI.getCurrent().getPage().setLocation(LOGIN_SUCCESS_URL);
@@ -124,11 +127,12 @@ public class LoginView extends Div implements BeforeEnterObserver, ComponentEven
 			} else {
 				audit.saveLoginAudit("Login Failure", loginEvent.getUsername());
 				loginOverlay.setError(true);
-				refreshCaptcha();
+				loginOverlay.setEnabled(true);
+				//refreshCaptcha();
 			}
 		} else {
 			Notification.show("Invalid Captcha Text");
-			loginOverlay.setError(true);
+			//loginOverlay.setError(true);
 			refreshCaptcha();
 			loginOverlay.setEnabled(true);
 		}

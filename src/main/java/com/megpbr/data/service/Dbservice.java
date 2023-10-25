@@ -207,6 +207,9 @@ public class Dbservice {
 	public List<MasterFormat> getFormatByCategory(MasterCategory category){
 		return formatrepo.findByCategory(category);
 	}
+	public List<MasterFormat> getSelectedFormatByCategory(MasterCategory category){
+		return formatrepo.findSelectiveByCategory(category);
+	}
 	public List<MasterCategory> getCategory(){
 		return mcatrepo.findAll();
 	}

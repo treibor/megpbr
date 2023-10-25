@@ -143,5 +143,16 @@ public class DashboardService {
 		return getCropsCount(district, master)+getMarketsCount(district, master)+getScapesCount(district, master);
 	}
 	
-	
+	public List<MasterFormat> getFormats() {
+		return formatrepo.findAllByOrderByFormat();
+	}
+	public long getCropsCount(MasterFormat format) {
+		return crepo.findByFormat(format).size();
+	}
+	public long getMarketsCount(MasterFormat format) {
+		return mrepo.findByFormatOrderByName(format).size();
+	}
+	public long getScapesCount(MasterFormat format) {
+		return srepo.findByFormatOrderByFaunaPopulation(format).size();
+	}
 }

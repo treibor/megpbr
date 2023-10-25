@@ -28,7 +28,7 @@ public interface CropsRepository extends JpaRepository<Crops, Long>{
 	List<Crops> findByVillage(Village village);
 	List<Crops> findByVillageAndApproved(Village village, MasterApproval approved);
 	List<Crops> findDistinctByFormat(MasterFormat format);
-	
+	//List<Crops> findByFormat(MasterFormat format);
 	//MasterData
 	@Query("select c from Crops c where c.state=:state and c.master=true and c.format= :format and (lower(c.scientificName) like lower(concat('%', :searchTerm, '%'))or lower(c.localName) like lower(concat('%', :searchTerm, '%'))or lower(c.type) like lower(concat('%', :searchTerm, '%'))) order by c.id Desc")
 	List<Crops> search(@Param("state") State state,@Param("searchTerm") String searchTerm, @Param("format") MasterFormat format);

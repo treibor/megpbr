@@ -672,6 +672,7 @@ public class MarketsForm extends Div {
 			if (inputImageoriginal == null) {
 				return null;
 			} else {
+				
 				BufferedImage inputImage = resizeImage(inputImageoriginal);
 				ByteArrayOutputStream pngContent = new ByteArrayOutputStream();
 				ImageIO.write(inputImage, "jpg", pngContent);

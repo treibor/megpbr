@@ -33,6 +33,7 @@ import com.megpbr.data.entity.MasterWildhome;
 import com.megpbr.data.entity.State;
 import com.megpbr.data.entity.Village;
 import com.megpbr.data.entity.pbr.Crops;
+import com.megpbr.data.entity.pbr.Crowd;
 import com.megpbr.data.service.CropService;
 import com.megpbr.data.service.Dbservice;
 
@@ -86,7 +87,7 @@ public class CropForm extends Div {
 	CropService cservice;
 	Crops crops;
 	MasterStatus status;
-	//CropPlantsView cropsview;
+	Crowd crowd;
 	Binder<Crops> binder = new BeanValidationBinder<>(Crops.class);
 	//public Checkbox masterCheck = new Checkbox("Enter Master Data");
 	public Checkbox scientificCheck = new Checkbox("Autofill");
@@ -221,27 +222,31 @@ public class CropForm extends Div {
 			crops.setMaster(master);
 			if (getImageAsByteArray(buffer1) != null) {
 				crops.setPhoto1(getImageAsByteArray(buffer1));
+			}else if (crowd.getPhoto1()!=null){
+				crops.setPhoto1(crowd.getPhoto1());
 			}
 			if (getImageAsByteArray(buffer2) != null) {
 				crops.setPhoto2(getImageAsByteArray(buffer2));
+			}else if (crowd.getPhoto2()!=null){
+				crops.setPhoto2(crowd.getPhoto2());
 			}
 			if (getImageAsByteArray(buffer3) != null) {
 				crops.setPhoto3(getImageAsByteArray(buffer3));
+			}else if (crowd.getPhoto3()!=null){
+				crops.setPhoto3(crowd.getPhoto3());
 			}
-			
 			if (getImageAsByteArray(buffer4) != null) {
 				crops.setPhoto4(getImageAsByteArray(buffer4));
+			}else if (crowd.getPhoto4()!=null){
+				crops.setPhoto4(crowd.getPhoto4());
 			}
 			fireEvent(new SaveEvent(this, crops));
-			//System.out.println(crops.getScientificName());
-			//clearForm(format);
-			//Notification.show("Saved Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);;
 			initMasterFields(format);
 			removeFields();
 			
 		} catch (ValidationException e) {
 			// TODO Auto-generated catch block
-			Notification.show("Error. Please Check").addThemeVariants(NotificationVariant.LUMO_ERROR);
+			Notification.show("Error. Please Check: Scientific Name May not have been Entered").addThemeVariants(NotificationVariant.LUMO_ERROR);
 		}
 	}
 	public void deleteCrop(Crops crop) {
@@ -279,6 +284,12 @@ public class CropForm extends Div {
 	}
 	
 	private void initForm() {
+		state.setVisible(false);
+		district.setVisible(false);
+		block.setVisible(false);
+		village.setVisible(false);
+		latitude.setVisible(false);
+		longitude.setVisible(false);
 		binder.setBean(new Crops());
 	}
 
