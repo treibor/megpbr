@@ -235,6 +235,7 @@ public class ScapeForm extends Div {
 			format = scape.getFormat();
 			binder.writeBean(scape);
 			scape.setMaster(master);
+			scape.setCrowdData(false);
 			if (getImageAsByteArray(buffer1) != null) {
 				scape.setPhoto1(getImageAsByteArray(buffer1));
 			}

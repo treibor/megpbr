@@ -54,7 +54,7 @@ public class Markets {
 	private byte[] photo4;
 	private String photo4Source;
 	private boolean master;
-	private boolean verified;
+	private boolean crowdData;
 	@ManyToOne
 	@JoinColumn(name = "enteredBy", referencedColumnName = "id")
 	private UserLogin enteredBy;
@@ -206,15 +206,16 @@ public class Markets {
 	public void setMaster(boolean master) {
 		this.master = master;
 	}
-	public boolean isVerified() {
-		return verified;
+	
+	
+	
+	
+	public boolean isCrowdData() {
+		return crowdData;
 	}
-	public void setVerified(boolean verified) {
-		this.verified = verified;
+	public void setCrowdData(boolean crowdData) {
+		this.crowdData = crowdData;
 	}
-	
-	
-	
 	public UserLogin getEnteredBy() {
 		return enteredBy;
 	}

@@ -220,6 +220,7 @@ public class CropForm extends Div {
 			format=crops.getFormat();
 			binder.writeBean(crops);
 			crops.setMaster(master);
+			crops.setCrowdData(true);
 			if (getImageAsByteArray(buffer1) != null) {
 				crops.setPhoto1(getImageAsByteArray(buffer1));
 			}else if (crowd.getPhoto1()!=null){

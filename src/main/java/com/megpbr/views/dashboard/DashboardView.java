@@ -61,7 +61,7 @@ public class DashboardView extends VerticalLayout {
     public DashboardView(DashboardService dservice) {
     	this.dservice=dservice;
     	
-        add(getCharts(), getCharts2());
+        add(getCharts());
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);

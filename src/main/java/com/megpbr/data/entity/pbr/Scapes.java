@@ -70,7 +70,7 @@ public class Scapes {
 	private byte[] photo4;
 	private String photo4Source;
 	private boolean master;
-	private boolean verified;
+	private boolean crowdData;
 	@ManyToOne
 	@JoinColumn(name = "enteredBy", referencedColumnName = "id")
 	private UserLogin enteredBy;
@@ -314,15 +314,17 @@ public class Scapes {
 		this.master = master;
 	}
 
-	public boolean isVerified() {
-		return verified;
-	}
-
-	public void setVerified(boolean verified) {
-		this.verified = verified;
-	}
+	
 
 	
+
+	public boolean isCrowdData() {
+		return crowdData;
+	}
+
+	public void setCrowdData(boolean crowdData) {
+		this.crowdData = crowdData;
+	}
 
 	public UserLogin getEnteredBy() {
 		return enteredBy;

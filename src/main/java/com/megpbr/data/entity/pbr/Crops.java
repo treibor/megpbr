@@ -60,7 +60,7 @@ public class Crops {
 	private byte[] photo4;
 	private String photo4Source;
 	private boolean master;
-	private boolean verified;
+	private boolean crowdData;
 	//private String enteredBy;
 	private LocalDateTime enteredOn;
 	private String latitude;
@@ -193,6 +193,13 @@ public class Crops {
 	public void setSource(String source) {
 		this.source = source;
 	}
+	
+	public boolean isCrowdData() {
+		return crowdData;
+	}
+	public void setCrowdData(boolean crowdData) {
+		this.crowdData = crowdData;
+	}
 	public byte[] getPhoto1() {
 		return photo1;
 	}
@@ -247,12 +254,7 @@ public class Crops {
 	public void setMaster(boolean master) {
 		this.master = master;
 	}
-	public boolean isVerified() {
-		return verified;
-	}
-	public void setVerified(boolean verified) {
-		this.verified = verified;
-	}
+	
 	public LocalDateTime getEnteredOn() {
 		return enteredOn;
 	}

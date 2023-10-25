@@ -220,6 +220,7 @@ public class MarketsForm extends Div {
 			format = market.getFormat();
 			binder.writeBean(market);
 			market.setMaster(master);
+			market.setCrowdData(false);
 			if (getImageAsByteArray(buffer1) != null) {
 				market.setPhoto1(getImageAsByteArray(buffer1));
 			}

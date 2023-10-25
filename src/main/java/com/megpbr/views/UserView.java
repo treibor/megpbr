@@ -19,6 +19,8 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -52,7 +54,24 @@ public class UserView {
 		this.userservice = userservice;
 		//this.securityService = securityService;
 	}
-
+	public void createAbout() {
+		Dialog aboutdialog=new Dialog();
+		H2 headline = new H2("About");
+		H3 header=new H3("Meghalaya Biodiversity Board");
+		H3 header2=new H3("People's Biodiversity Register (PBR)");
+		H5 body=new H5("Designed & Developed By National Informatics Centre, Meghalaya");
+		headline.getStyle().set("margin", "var(--lumo-space-m) 0 0 0").set("font-size", "1.5em").set("font-weight",
+				"bold").set("text-decoration", "underline");
+		cancelButton.addClickListener(e -> aboutdialog.close());
+		HorizontalLayout buttonLayout1 = new HorizontalLayout(cancelButton);
+		buttonLayout1.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+		VerticalLayout dialogLayout1 = new VerticalLayout(headline, header, header2, body,   buttonLayout1);
+		dialogLayout1.setPadding(false);
+		dialogLayout1.setAlignItems(FlexComponent.Alignment.STRETCH);
+		dialogLayout1.getStyle().set("width", "300px").set("max-width", "100%");
+		aboutdialog.add(dialogLayout1);
+		aboutdialog.open();
+	}
 	public void createUser() {
 		Dialog userdialog=new Dialog();
 		H2 headline = new H2("Create User");

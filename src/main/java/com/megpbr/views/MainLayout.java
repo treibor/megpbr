@@ -130,7 +130,7 @@ public class MainLayout extends AppLayout {
 		menuBar.addThemeVariants(MenuBarVariant.LUMO_TERTIARY_INLINE);
 		MenuItem item = menuBar.addItem(avatarImage);
 		SubMenu subMenu = item.getSubMenu();
-		subMenu.addItem("About");
+		subMenu.addItem("About", e->createAboutSection());
 		subMenu.addItem("Change Password", e->changePassword());
 		subMenu.addItem("Create User",e->createUser()).setVisible(isAdmin());
 		subMenu.addItem("Logout", e -> securityService.logout());
@@ -162,7 +162,8 @@ public class MainLayout extends AppLayout {
         addToNavbar(true, toggle,header);
     }
    
-    private void addDrawerContent() {
+   
+	private void addDrawerContent() {
         H1 appName = new H1("Hi, "+ userservice.getLoggedUserName());
         appName.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
         //appName.add
@@ -279,7 +280,11 @@ public class MainLayout extends AppLayout {
         PageTitle title = getContent().getClass().getAnnotation(PageTitle.class);
         return title == null ? "" : title.value();
     }
-    
+    private void createAboutSection() {
+		// TODO Auto-generated method stub
+    	final UserView user=new UserView(dbservice, userservice);
+		user.createAbout();
+	}
 	
 	public void createUser() {
 		final UserView user=new UserView(dbservice, userservice);
