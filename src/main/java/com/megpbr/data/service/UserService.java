@@ -33,7 +33,7 @@ public class UserService {
     }
     
     public List<UserLoginLevel> getUserLevels(long a){
-    	return levelrepo.findByIdGreaterThan(a);
+    	return levelrepo.findByLevelGreaterThan(a);
     }
     
     public UserDetails getUser() {

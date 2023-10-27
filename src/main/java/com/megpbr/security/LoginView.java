@@ -1,4 +1,4 @@
-package com.megpbr.views;
+package com.megpbr.security;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -18,8 +18,6 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import com.megpbr.audit.Audit;
 import com.megpbr.audit.CaptchaCheck;
 import com.megpbr.data.entity.UserLogin;
-import com.megpbr.security.SecurityUtils;
-import com.megpbr.security.UserDetailsServiceImpl;
 import com.megpbr.views.dashboard.DashboardView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;

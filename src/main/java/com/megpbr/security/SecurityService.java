@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import com.megpbr.audit.Audit;
 import com.megpbr.data.entity.AuditTrail;
 import com.megpbr.data.repository.AuditRepository;
-import com.megpbr.views.LoginView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.VaadinServletRequest;
 import com.vaadin.flow.spring.security.AuthenticationContext;

@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.megpbr.data.entity.UserLoginLevel;
 
 public interface UserLevelRepository extends JpaRepository<UserLoginLevel, Long>{
-	List<UserLoginLevel> findByIdGreaterThan(long a);
+	List<UserLoginLevel> findByLevelGreaterThan(long a);
 }

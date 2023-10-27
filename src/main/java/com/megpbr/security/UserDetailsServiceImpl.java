@@ -23,7 +23,6 @@ import com.megpbr.data.entity.AuditTrail;
 import com.megpbr.data.entity.UserLogin;
 import com.megpbr.data.repository.AuditRepository;
 import com.megpbr.data.repository.UserRepository;
-import com.megpbr.views.LoginView;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {

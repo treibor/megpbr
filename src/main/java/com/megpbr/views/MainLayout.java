@@ -107,7 +107,7 @@ public class MainLayout extends AppLayout {
     }
     public boolean isVerifier() {
     	String userLevel=userservice.getLoggedUserLevel();
-		if(userLevel.endsWith("VERIFIER")) {
+		if(userLevel.endsWith("VERIFIER")||userLevel.startsWith("SUPER")) {
 			return true;
 		}else {
 			return false;
@@ -115,7 +115,7 @@ public class MainLayout extends AppLayout {
     }
     public boolean isVerifiers() {
     	String userLevel=userservice.getLoggedUserLevel();
-		if(userLevel.endsWith("VERIFIER")||userLevel.startsWith("SUPER")||userLevel.startsWith("STATE")) {
+		if(userLevel.endsWith("VERIFIER")||userLevel.startsWith("SUPER")) {
 			return true;
 		}else {
 			return false;
@@ -250,7 +250,7 @@ public class MainLayout extends AppLayout {
         nav.addItem(category1, category2, category3);
         SideNavItem crowd=new SideNavItem("Crowd Sourcing");
         crowd.setPrefixComponent(LineAwesomeIcon.PEOPLE_CARRY_SOLID.create());
-        SideNavItem preverify=new SideNavItem("Verification", PreCrowdView.class, LineAwesomeIcon.ACCESSIBLE_ICON.create());
+        SideNavItem preverify=new SideNavItem("Coordinates Verification", PreCrowdView.class, LineAwesomeIcon.ACCESSIBLE_ICON.create());
         SideNavItem verify=new SideNavItem("Verification", CrowdView.class, LineAwesomeIcon.ACCESSIBLE_ICON.create());
         crowd.addItem(preverify, verify);
         nav.addItem(crowd);

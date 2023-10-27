@@ -58,7 +58,7 @@ public class UserView {
 		Dialog aboutdialog=new Dialog();
 		H2 headline = new H2("About");
 		H3 header=new H3("Meghalaya Biodiversity Board");
-		H3 header2=new H3("People's Biodiversity Register (PBR)");
+		H3 header2=new H3("People's Biodiversity Register (PBR): Version 2.0");
 		H5 body=new H5("Designed & Developed By National Informatics Centre, Meghalaya");
 		headline.getStyle().set("margin", "var(--lumo-space-m) 0 0 0").set("font-size", "1.5em").set("font-weight",
 				"bold").set("text-decoration", "underline");
@@ -186,17 +186,53 @@ public class UserView {
 		}else if(userLevel.startsWith("DISTRICT")) {
 			state.setVisible(true);
 			district.setVisible(true);
+			
 		}else if(userLevel.startsWith("BLOCK")) {
 			state.setVisible(true);
 			district.setVisible(true);
 			block.setVisible(true);
+			state.setValue(userservice.getLoggedUser().getState());
+			district.setValue(userservice.getLoggedUser().getDistrict());
+			block.setValue(userservice.getLoggedUser().getBlock());
 		}else if(userLevel.startsWith("VILLAGE")) {
 			state.setVisible(true);
 			district.setVisible(true);
 			block.setVisible(true);
 			village.setVisible(true);
+			state.setValue(userservice.getLoggedUser().getState());
+			district.setValue(userservice.getLoggedUser().getDistrict());
+			block.setValue(userservice.getLoggedUser().getBlock());
+			village.setValue(userservice.getLoggedUser().getVillage());
+		}
+		//configureVisiblility();
+		String loggedLevel=userservice.getLoggedUser().getLevel().getLevelName();
+		if(loggedLevel.startsWith("STATE")||userLevel.startsWith("VERIFIER")) {
+			state.setVisible(false);
+			state.setValue(userservice.getLoggedUser().getState());
+		}else if(loggedLevel.startsWith("DISTRICT")) {
+			state.setVisible(false);
+			district.setVisible(false);
+			state.setValue(userservice.getLoggedUser().getState());
+			district.setValue(userservice.getLoggedUser().getDistrict());
+		}else if(loggedLevel.startsWith("BLOCK")) {
+			state.setVisible(false);
+			district.setVisible(false);
+			block.setVisible(false);
+			state.setValue(userservice.getLoggedUser().getState());
+			district.setValue(userservice.getLoggedUser().getDistrict());
+			block.setValue(userservice.getLoggedUser().getBlock());
+		}else if(loggedLevel.startsWith("VILLAGE")) {
+			state.setVisible(false);
+			district.setVisible(false);
+			block.setVisible(false);
+			village.setVisible(false);
+			state.setValue(userservice.getLoggedUser().getState());
+			district.setValue(userservice.getLoggedUser().getDistrict());
+			block.setValue(userservice.getLoggedUser().getBlock());
+			village.setValue(userservice.getLoggedUser().getVillage());
 		}
 	}
+	
 	
 	private void saveUser() {
 		if(userlevel.getValue()==null) {
