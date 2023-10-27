@@ -23,6 +23,7 @@ import com.megpbr.security.UserDetailsServiceImpl;
 import com.megpbr.views.dashboard.DashboardView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -73,7 +74,7 @@ public class LoginView extends Div implements BeforeEnterObserver, ComponentEven
     private Button loginbutton=new Button("Login");
     //public Button captchabutton=new Button("");
     //private final AuthenticatedUser authenticatedUser;
-    private static final String LOGIN_SUCCESS_URL = "/";
+    private static final String LOGIN_SUCCESS_URL = "/megpbr";
     TextField code = new TextField("");
     LoginOverlay loginOverlay = new LoginOverlay();
     //private static CaptchaCheck captcha;
@@ -92,6 +93,7 @@ public class LoginView extends Div implements BeforeEnterObserver, ComponentEven
 		code.setPlaceholder("Enter Captcha Text");
 		code.getElement().setAttribute("name", "code");
 		code.setErrorMessage("Required");
+		//code.addKeyPressListener(this);
 		code.setRequired(true);
 		loginOverlay.getCustomFormArea().add(captchapanel);
 		loginOverlay.getCustomFormArea().add(code);

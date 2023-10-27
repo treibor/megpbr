@@ -107,16 +107,6 @@
 		<property name="com.jaspersoft.studio.field.label" value="uses"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="crops"/>
 	</field>
-	<field name="variety" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.name" value="variety"/>
-		<property name="com.jaspersoft.studio.field.label" value="variety"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="crops"/>
-	</field>
-	<field name="verified" class="java.lang.Boolean">
-		<property name="com.jaspersoft.studio.field.name" value="verified"/>
-		<property name="com.jaspersoft.studio.field.label" value="verified"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="crops"/>
-	</field>
 	<field name="xfield1" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.name" value="xfield1"/>
 		<property name="com.jaspersoft.studio.field.label" value="xfield1"/>

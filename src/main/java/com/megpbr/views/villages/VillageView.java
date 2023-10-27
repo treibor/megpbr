@@ -992,7 +992,7 @@ public class VillageView extends Div{
 		Button exp4Button=new Button("Export");
 		exp4Button.addClickListener(e -> GridExporter.newWithDefaults(annex4grid).open());
 		Div annex4div=new Div(new
-			Text("Details of schools, colleges, departments, universities, government institutions, non-goyernmental organization and individuals involved in the preparation of the PBR. "
+			Text("Details of schools, colleges, departments, universities, government institutions, non-governmental organization and individuals involved in the preparation of the PBR. "
 					), exp4Button); 
 		//ConfigureOtherGrids();
 		vld.setSizeFull();

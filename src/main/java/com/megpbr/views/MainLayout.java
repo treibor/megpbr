@@ -3,6 +3,7 @@ package com.megpbr.views;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
 import com.megpbr.audit.Audit;
+import com.megpbr.data.entity.UserLogin;
 import com.megpbr.data.service.Dbservice;
 import com.megpbr.data.service.UserService;
 import com.megpbr.security.SecurityService;
@@ -121,6 +122,7 @@ public class MainLayout extends AppLayout {
 		}
     }
     private void addHeaderContent() {
+    	//UserLogin logUser=userservice.get
     	String user=userservice.getLoggedUserName();
     	Avatar avatarImage = new Avatar(user);
     	//avatarImage.addThemeVariants(AvatarVariant.LUMO_SMALL);

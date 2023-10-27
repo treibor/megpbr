@@ -17,7 +17,7 @@ import com.vaadin.flow.spring.security.AuthenticationContext;
 
 @Component
 public class SecurityService {
-	private static final String LOGOUT_SUCCESS_URL = "/";
+	private static final String LOGOUT_SUCCESS_URL = "/megpbr";
 	@Autowired
 	AuditRepository arepo;
 	private final AuthenticationContext authenticationContext;

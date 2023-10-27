@@ -68,7 +68,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="20">
+		<band height="55">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField>
 				<reportElement x="2" y="0" width="800" height="20" uuid="e25f2609-92ce-40f0-9156-775905490796">
@@ -79,6 +79,11 @@
 				</textElement>
 				<textFieldExpression><![CDATA["ANNEXURE 2"]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="0" y="20" width="802" height="35" uuid="5e8aaf44-4869-4ecc-b47f-728a204cc6ed"/>
+				<text><![CDATA[List of Vaids, hakims and traditional health care (human and livestock) practitioners residing and or using biological resources occurring within the jurisdiction of the village
+]]></text>
+			</staticText>
 		</band>
 	</title>
 	<pageHeader>
@@ -415,34 +420,6 @@
 			</frame>
 		</band>
 	</detail>
-	<pageFooter>
-		<band height="25" splitType="Stretch">
-			<frame>
-				<reportElement mode="Opaque" x="0" y="0" width="802" height="25" forecolor="#D0B48E" backcolor="#FFFFFF" uuid="ffb10ec8-0371-4545-8eaa-96d62ad3cec0"/>
-				<textField evaluationTime="Report">
-					<reportElement style="Column header" x="757" y="3" width="40" height="20" forecolor="#121111" uuid="b5521ea6-5f36-4864-856f-58d0bcd011f2"/>
-					<textElement verticalAlignment="Middle">
-						<font fontName="SansSerif" size="6" isBold="false"/>
-					</textElement>
-					<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement style="Column header" x="677" y="3" width="80" height="20" forecolor="#121111" uuid="e625ea3c-1741-4cfe-81cf-fbbdd00162c8"/>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="SansSerif" size="6" isBold="false"/>
-					</textElement>
-					<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
-				</textField>
-				<textField pattern="EEEEE dd MMMMM yyyy">
-					<reportElement style="Column header" x="2" y="3" width="197" height="20" forecolor="#121111" uuid="0c9f7e91-d3f5-47f9-82b7-0b2b3a43a5d6"/>
-					<textElement verticalAlignment="Middle">
-						<font fontName="SansSerif" size="6" isBold="false"/>
-					</textElement>
-					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
-				</textField>
-			</frame>
-		</band>
-	</pageFooter>
 	<summary>
 		<band splitType="Stretch"/>
 	</summary>
