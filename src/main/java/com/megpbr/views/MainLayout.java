@@ -107,12 +107,13 @@ public class MainLayout extends AppLayout {
     }
     public boolean isVerifier() {
     	String userLevel=userservice.getLoggedUserLevel();
-		if(userLevel.endsWith("VERIFIER")||userLevel.startsWith("SUPER")) {
+		if(userLevel.endsWith("VERIFIER")) {
 			return true;
 		}else {
 			return false;
 		}
     }
+    
     public boolean isVerifiers() {
     	String userLevel=userservice.getLoggedUserLevel();
 		if(userLevel.endsWith("VERIFIER")||userLevel.startsWith("SUPER")) {
@@ -259,7 +260,7 @@ public class MainLayout extends AppLayout {
         crowd.setVisible(isVerifiers());
         master.setVisible(isStateAdmin());
         preverify.setVisible(isStateUser());
-        verify.setVisible(isVerifier());
+        verify.setVisible(isVerifiers());
         category1.setVisible(!isVerifier());
         category2.setVisible(!isVerifier());
         category3.setVisible(!isVerifier());
