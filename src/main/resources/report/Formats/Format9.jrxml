@@ -350,7 +350,7 @@
 				<textElement textAlignment="Center">
 					<font size="8" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Associated Tk]]></text>
+				<text><![CDATA[Associated TK]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="Column header" x="692" y="0" width="52" height="30" forecolor="#000000" uuid="2a32a06b-f67f-47d8-a307-0c4c13e86e95">

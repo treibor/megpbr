@@ -606,7 +606,7 @@ public class WildPlantsMedicinalView extends HorizontalLayout {
 			//grid.addColumn("uses").setHeader("Uses").setAutoWidth(true).setResizable(true).setSortable(true);
 			//grid.addColumn("otherDetails").setAutoWidth(true).setResizable(true).setSortable(true);
 			//grid.addColumn("specialFeatures").setAutoWidth(true).setResizable(true).setSortable(true);
-			grid.addColumn("xfield1").setHeader("Habit").setAutoWidth(true).setResizable(true).setSortable(true);
+			//grid.addColumn("xfield1").setHeader("Habit").setAutoWidth(true).setResizable(true).setSortable(true);
 			//grid.addColumn(crop-> crop.getWildhome()==null ? "":crop.getWildhome().getWname()).setHeader("Wild/Home?").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn("associatedTk").setHeader("Associated TK").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn("knowledgeHolder").setHeader("Knowledge Holder").setAutoWidth(true).setResizable(true).setSortable(true);

@@ -591,7 +591,7 @@ public class WildOrnamentalPlantsView extends HorizontalLayout {
 					.setHeader("Block").setSortable(true).setAutoWidth(true).setResizable(true);
 			villageColumn = grid.addColumn(crop -> crop.getVillage() == null ? "" : crop.getVillage().getVillageName())
 					.setHeader("Village").setSortable(true).setAutoWidth(true).setResizable(true);
-			grid.addColumn("type").setAutoWidth(true).setHeader("Plant Type").setAutoWidth(true).setResizable(true).setSortable(true);
+			//grid.addColumn("type").setAutoWidth(true).setHeader("Plant Type").setAutoWidth(true).setResizable(true).setSortable(true);
 			
 			scientificColumn=grid.addColumn("scientificName").setAutoWidth(true).setResizable(true).setSortable(true);
 			localColumn=grid.addColumn("localName").setHeader("Local Name").setAutoWidth(true).setResizable(true).setSortable(true);

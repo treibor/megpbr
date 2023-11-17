@@ -227,7 +227,7 @@
 				<text><![CDATA[Animal Type]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="60" y="0" width="50" height="22" forecolor="#000000" uuid="42e70e40-f85a-4108-8531-8323fa5aae04">
+				<reportElement style="Column header" x="109" y="0" width="50" height="22" forecolor="#000000" uuid="42e70e40-f85a-4108-8531-8323fa5aae04">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a5b171c1-6d4f-4e87-b139-c5ee163ac940"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -243,7 +243,7 @@
 				<text><![CDATA[Scientific Name]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="110" y="0" width="49" height="22" forecolor="#000000" uuid="eef91945-4e18-4422-a734-65f159414aa2">
+				<reportElement style="Column header" x="60" y="0" width="49" height="22" forecolor="#000000" uuid="eef91945-4e18-4422-a734-65f159414aa2">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="bea6f6ae-b42f-4e15-a52c-04a6d3f54181"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -308,7 +308,7 @@
 				<text><![CDATA[Local Status present]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="500" y="0" width="58" height="22" forecolor="#000000" uuid="8cd54f79-3386-4a96-84b7-99eb9ec02888">
+				<reportElement style="Column header" x="581" y="0" width="58" height="22" forecolor="#000000" uuid="8cd54f79-3386-4a96-84b7-99eb9ec02888">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3bbe1abc-614d-470c-8662-5b34c1a7826e"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -324,7 +324,7 @@
 				<text><![CDATA[Commercial Rearing]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="559" y="0" width="80" height="22" forecolor="#000000" uuid="ace20c61-782c-4219-8530-fb571a363d53">
+				<reportElement style="Column header" x="501" y="0" width="80" height="22" forecolor="#000000" uuid="ace20c61-782c-4219-8530-fb571a363d53">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="20b727e0-d818-4bc2-85c7-1d16d7593454"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -353,7 +353,7 @@
 				<textElement textAlignment="Center">
 					<font size="8" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Other Details]]></text>
+				<text><![CDATA[Other Details including products and services]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="Column header" x="719" y="0" width="83" height="22" forecolor="#000000" uuid="a3ee1618-5d49-477b-8747-5bec6b336c81">
@@ -401,7 +401,7 @@
 				<textElement textAlignment="Center">
 					<font size="8" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Breed]]></text>
+				<text><![CDATA[Breed (Local/Hybrid)]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="Column header" x="220" y="0" width="80" height="22" forecolor="#000000" uuid="73d31c09-8c3c-4b9b-8d15-d1a20f71774e">
@@ -448,7 +448,7 @@
 					<textFieldExpression><![CDATA[$F{type}]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-					<reportElement style="Detail" positionType="Float" stretchType="ElementGroupHeight" x="60" y="0" width="50" height="18" uuid="6900af28-17e8-4587-ad43-456283f29312">
+					<reportElement style="Detail" positionType="Float" stretchType="ElementGroupHeight" x="109" y="0" width="50" height="18" uuid="6900af28-17e8-4587-ad43-456283f29312">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a5b171c1-6d4f-4e87-b139-c5ee163ac940"/>
 					</reportElement>
 					<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
@@ -463,7 +463,7 @@
 					<textFieldExpression><![CDATA[$F{scientificName}]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-					<reportElement style="Detail" positionType="Float" stretchType="ElementGroupHeight" x="110" y="0" width="49" height="18" uuid="74bac7c3-76b0-4233-aca1-5abae801626a">
+					<reportElement style="Detail" positionType="Float" stretchType="ElementGroupHeight" x="60" y="0" width="49" height="18" uuid="74bac7c3-76b0-4233-aca1-5abae801626a">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="bea6f6ae-b42f-4e15-a52c-04a6d3f54181"/>
 					</reportElement>
 					<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
@@ -523,7 +523,7 @@
 					<textFieldExpression><![CDATA[$F{presentStatus.status}]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-					<reportElement style="Detail" positionType="Float" stretchType="ElementGroupHeight" x="500" y="0" width="58" height="18" uuid="d97e28bb-095b-4a7a-b827-17254a1d1bb9">
+					<reportElement style="Detail" positionType="Float" stretchType="ElementGroupHeight" x="581" y="0" width="58" height="18" uuid="d97e28bb-095b-4a7a-b827-17254a1d1bb9">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3bbe1abc-614d-470c-8662-5b34c1a7826e"/>
 					</reportElement>
 					<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
@@ -538,7 +538,7 @@
 					<textFieldExpression><![CDATA[$F{management}]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-					<reportElement style="Detail" positionType="Float" stretchType="ElementGroupHeight" x="559" y="0" width="80" height="18" uuid="9dc873de-63b7-4f9b-b8ff-e0c9919f799d">
+					<reportElement style="Detail" positionType="Float" stretchType="ElementGroupHeight" x="501" y="0" width="80" height="18" uuid="9dc873de-63b7-4f9b-b8ff-e0c9919f799d">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="20b727e0-d818-4bc2-85c7-1d16d7593454"/>
 					</reportElement>
 					<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">

@@ -313,5 +313,28 @@ public class Dbservice {
 		return mprepo.findAll();
 	}
 	
-	
+	public void saveState(State state) {
+		st_repo.save(state);
+	}
+	public void saveDistrict(District district) {
+		drepo.save(district);
+	}
+	public void saveBlock(Block block) {
+		brepo.save(block);
+	}
+	public void saveVillage(Village village) {
+		vrepo.save(village);
+	}
+	public void deleteState(State state) {
+		st_repo.delete(state);
+	}
+	public void deleteDistrict(District dist) {
+		drepo.delete(dist);
+	}
+	public void deleteBlock(Block block) {
+		brepo.delete(block);
+	}
+	public void deleteVillage(Village vill) {
+		vrepo.delete(vill);
+	}
 }

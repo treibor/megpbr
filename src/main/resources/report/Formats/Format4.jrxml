@@ -348,7 +348,7 @@
 				<textElement textAlignment="Center">
 					<font size="8" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Other Details]]></text>
+				<text><![CDATA[Other Details like exotic]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="Column header" x="719" y="0" width="83" height="22" forecolor="#000000" uuid="a3ee1618-5d49-477b-8747-5bec6b336c81">

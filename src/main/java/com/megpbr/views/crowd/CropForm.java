@@ -742,6 +742,9 @@ public class CropForm extends Div {
 			break;
 		case 12:
 			fruitSeasons.setPlaceholder("Season of Fruiting");
+			fruitSeasons.setVisible(false);
+			fruitSeason.setVisible(false);
+			partsUsed.setVisible(true);
 			break;
 		case 13:
 			pastStatus.setVisible(false);
@@ -836,8 +839,8 @@ public class CropForm extends Div {
 			fruitSeason.setVisible(false);
 			fruitSeasons.setVisible(false);
 			source.setVisible(false);
-			xfield1.setLabel("Habit");
-			xfield1.setVisible(true);
+			//xfield1.setLabel("Habit");
+			//xfield1.setVisible(true);
 			break;
 		case 23:
 			type.setLabel("Associated Crop");
@@ -849,6 +852,7 @@ public class CropForm extends Div {
 			uses.setLabel("Uses(Usage)");
 			break;
 		case 24:
+			type.setVisible(false);
 			pastStatus.setVisible(false);
 			presentStatus.setVisible(false);
 			fruitSeasons.setVisible(false);
@@ -864,7 +868,8 @@ public class CropForm extends Div {
 			uses.setVisible(false);
 			break;
 		case 26:
-			type.setLabel("Plant Type");
+			type.setVisible(false);
+			partsUsed.setVisible(false);
 			variety.setVisible(false);
 			fruitSeasons.setVisible(false);
 			fruitSeason.setVisible(false);

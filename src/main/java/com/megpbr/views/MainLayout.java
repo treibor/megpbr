@@ -28,6 +28,7 @@ import com.megpbr.views.domesticateddiversity.MedicinalPlantsView;
 import com.megpbr.views.domesticateddiversity.OrnamentalPlantsView;
 import com.megpbr.views.domesticateddiversity.TimberPlantsView;
 import com.megpbr.views.master.MasterView;
+import com.megpbr.views.master.lgd;
 import com.megpbr.views.villages.VillageView;
 import com.megpbr.views.wilddiversity.AquaticBiodiversityView;
 import com.megpbr.views.wilddiversity.FumigateChewingView;
@@ -84,6 +85,14 @@ public class MainLayout extends AppLayout {
     public boolean isAdmin() {
     	String userLevel=userservice.getLoggedUserLevel();
 		if(userLevel.endsWith("ADMIN")) {
+			return true;
+		}else {
+			return false;
+		}
+    }
+    public boolean isSuperAdmin() {
+    	String userLevel=userservice.getLoggedUserLevel();
+		if(userLevel.endsWith("SUPERADMIN")) {
 			return true;
 		}else {
 			return false;
@@ -178,6 +187,7 @@ public class MainLayout extends AppLayout {
     private SideNav createNavigation() {
         SideNav nav = new SideNav();
         nav.addItem(new SideNavItem("Dashboard", DashboardView.class, LineAwesomeIcon.ACCUSOFT.create()));
+        nav.addItem(new SideNavItem("LGD DATA", lgd.class, LineAwesomeIcon.ACCUSOFT.create()));
         SideNavItem village=new SideNavItem("Villages Details", VillageView.class, LineAwesomeIcon.AVIANEX.create());
         nav.addItem(village);
         //Agro Biodiversity -Category 1
@@ -257,6 +267,7 @@ public class MainLayout extends AppLayout {
         nav.addItem(crowd);
         SideNavItem master=new SideNavItem("Master", MasterView.class, LineAwesomeIcon.ACCESSIBLE_ICON.create());
         nav.addItem(master);
+        SideNavItem lgd=new SideNavItem("LGD Data", lgd.class, LineAwesomeIcon.ZHIHU.create());
         crowd.setVisible(isVerifiers());
         master.setVisible(isStateAdmin());
         preverify.setVisible(isStateUser());
@@ -265,6 +276,7 @@ public class MainLayout extends AppLayout {
         category2.setVisible(!isVerifier());
         category3.setVisible(!isVerifier());
         village.setVisible(!isVerifier());
+        lgd.setVisible(isSuperAdmin());
         return nav;
     }
 

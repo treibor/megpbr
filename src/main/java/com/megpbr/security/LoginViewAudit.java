@@ -56,11 +56,11 @@ import com.vaadin.flow.server.VaadinServletRequest;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 
-@Route("login")
+//@Route("login")
 @PageTitle("Login")
 @AnonymousAllowed
 
-public class LoginView extends Div implements BeforeEnterObserver, ComponentEventListener<AbstractLogin.LoginEvent> {
+public class LoginViewAudit extends Div implements BeforeEnterObserver, ComponentEventListener<AbstractLogin.LoginEvent> {
 	@Autowired
 	Audit audit;
 	FormLayout form=new FormLayout();
@@ -71,29 +71,29 @@ public class LoginView extends Div implements BeforeEnterObserver, ComponentEven
     private Button loginbutton=new Button("Login");
     //public Button captchabutton=new Button("");
     //private final AuthenticatedUser authenticatedUser;
-    private static final String LOGIN_SUCCESS_URL = "/";
+    private static final String LOGIN_SUCCESS_URL = "/megpbr";
     TextField code = new TextField("");
     LoginOverlay loginOverlay = new LoginOverlay();
     //private static CaptchaCheck captcha;
-	public LoginView() {
-		refreshCaptcha();
-		captchatext.setEnabled(false);
-		captchatext.addThemeVariants(TextFieldVariant.LUMO_ALIGN_CENTER);
-		captchatext.setWidthFull();
-		captchatext.getStyle().set("font-size", "18px").set("font-weight", "bold");
-		//captchatext.getStyle().set("font-style", "oblique");
-		Button captchabutton = new Button(new Icon(VaadinIcon.REFRESH));
-		captchabutton.addClickListener(e-> refreshCaptcha());
-		var captchapanel=new HorizontalLayout(captchatext, captchabutton);
-		captchapanel.setAlignItems(Alignment.BASELINE);
-		captchapanel.setWidthFull();
-		code.setPlaceholder("Enter Captcha Text");
-		code.getElement().setAttribute("name", "code");
-		code.setErrorMessage("Required");
-		//code.addKeyPressListener(this);
-		code.setRequired(true);
-		loginOverlay.getCustomFormArea().add(captchapanel);
-		loginOverlay.getCustomFormArea().add(code);
+	public LoginViewAudit() {
+//		refreshCaptcha();
+//		captchatext.setEnabled(false);
+//		captchatext.addThemeVariants(TextFieldVariant.LUMO_ALIGN_CENTER);
+//		captchatext.setWidthFull();
+//		captchatext.getStyle().set("font-size", "18px").set("font-weight", "bold");
+//		//captchatext.getStyle().set("font-style", "oblique");
+//		Button captchabutton = new Button(new Icon(VaadinIcon.REFRESH));
+//		captchabutton.addClickListener(e-> refreshCaptcha());
+//		var captchapanel=new HorizontalLayout(captchatext, captchabutton);
+//		captchapanel.setAlignItems(Alignment.BASELINE);
+//		captchapanel.setWidthFull();
+//		code.setPlaceholder("Enter Captcha Text");
+//		code.getElement().setAttribute("name", "code");
+//		code.setErrorMessage("Required");
+//		//code.addKeyPressListener(this);
+//		code.setRequired(true);
+//		loginOverlay.getCustomFormArea().add(captchapanel);
+//		loginOverlay.getCustomFormArea().add(code);
 		add(loginOverlay);
 		loginOverlay.setTitle("Meghalaya Biodiversity Board");
 		loginOverlay.setDescription("People's Biodiversity Register");
@@ -115,27 +115,18 @@ public class LoginView extends Div implements BeforeEnterObserver, ComponentEven
    
 	@Override
 	public void onComponentEvent(AbstractLogin.LoginEvent loginEvent) {
-		//inValidateSession();
-		String codevalue=code.getValue().trim();
-		String captchavalue=captchatext.getValue().trim();
-		if (codevalue.equals(captchavalue)) {
-			boolean authenticated = SecurityUtils.authentication(loginEvent.getUsername(), loginEvent.getPassword());
-			if (authenticated) {
-				UI.getCurrent().getPage().setLocation(LOGIN_SUCCESS_URL);
-				audit.saveAudit("Login Successfull", loginEvent.getUsername());
-			} else {
-				audit.saveLoginAudit("Login Failure", loginEvent.getUsername());
-				loginOverlay.setError(true);
-				loginOverlay.setEnabled(true);
-				//refreshCaptcha();
-			}
+		boolean authenticated = SecurityUtils.authentication(loginEvent.getUsername(), loginEvent.getPassword());
+		if (authenticated) {
+			UI.getCurrent().getPage().setLocation(LOGIN_SUCCESS_URL);
+			audit.saveAudit("Login Successfull", loginEvent.getUsername());
 		} else {
-			Notification.show("Invalid Captcha Text");
-			//loginOverlay.setError(true);
-			refreshCaptcha();
+			audit.saveLoginAudit("Login Failure", loginEvent.getUsername());
+			loginOverlay.setError(true);
 			loginOverlay.setEnabled(true);
+			// refreshCaptcha();
 		}
 	}
+
     public void inValidateSession(){
     	SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
 		logoutHandler.logout(VaadinServletRequest.getCurrent().getHttpServletRequest(), null, null);

@@ -131,12 +131,11 @@
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="22" splitType="Stretch">
+		<band height="30" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
-				<reportElement style="Column header" x="0" y="0" width="15" height="22" forecolor="#000000" uuid="f915aba7-dea2-4601-8a64-305c31bbfbdb">
+				<reportElement style="Column header" x="0" y="0" width="15" height="30" forecolor="#000000" uuid="f915aba7-dea2-4601-8a64-305c31bbfbdb">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="4a7a2b35-4ab0-49a7-af6d-ca4cb41728b6"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box>
@@ -151,9 +150,8 @@
 				<text><![CDATA[Sl.No.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="15" y="0" width="87" height="22" forecolor="#000000" uuid="695a5ca1-bb68-417d-abed-db08f0be3106">
+				<reportElement style="Column header" x="15" y="0" width="87" height="30" forecolor="#000000" uuid="695a5ca1-bb68-417d-abed-db08f0be3106">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7891d1e7-b8b1-4055-a2e5-9ea8b50acc12"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box>
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#666666"/>
@@ -167,9 +165,8 @@
 				<text><![CDATA[Name of the Weekly market / Fair]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="172" y="0" width="80" height="22" forecolor="#000000" uuid="42e70e40-f85a-4108-8531-8323fa5aae04">
+				<reportElement style="Column header" x="172" y="0" width="88" height="30" forecolor="#000000" uuid="42e70e40-f85a-4108-8531-8323fa5aae04">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a5b171c1-6d4f-4e87-b139-c5ee163ac940"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box>
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#666666"/>
@@ -183,7 +180,7 @@
 				<text><![CDATA[Weekly(D) /Fortnight(D) /Monthly(D) /Biannual(M) /Annual(M)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="252" y="0" width="90" height="22" forecolor="#000000" uuid="eef91945-4e18-4422-a734-65f159414aa2">
+				<reportElement style="Column header" x="260" y="0" width="82" height="30" forecolor="#000000" uuid="eef91945-4e18-4422-a734-65f159414aa2">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="bea6f6ae-b42f-4e15-a52c-04a6d3f54181"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -199,9 +196,8 @@
 				<text><![CDATA[Day Held]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="342" y="0" width="98" height="22" forecolor="#000000" uuid="bae9c07a-fd48-4205-b08a-c20acb5f082c">
+				<reportElement style="Column header" x="342" y="0" width="98" height="30" forecolor="#000000" uuid="bae9c07a-fd48-4205-b08a-c20acb5f082c">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="41cbd425-906e-46b1-b1b1-d3651cf9c9b7"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box>
@@ -216,9 +212,8 @@
 				<text><![CDATA[Month (in case of bi annual or annual market fair)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="440" y="0" width="90" height="22" forecolor="#000000" uuid="8cd54f79-3386-4a96-84b7-99eb9ec02888">
+				<reportElement style="Column header" x="440" y="0" width="90" height="30" forecolor="#000000" uuid="8cd54f79-3386-4a96-84b7-99eb9ec02888">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3bbe1abc-614d-470c-8662-5b34c1a7826e"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box>
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#666666"/>
@@ -232,9 +227,8 @@
 				<text><![CDATA[Types of animals bought and sold]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="530" y="0" width="110" height="22" forecolor="#000000" uuid="ace20c61-782c-4219-8530-fb571a363d53">
+				<reportElement style="Column header" x="530" y="0" width="110" height="30" forecolor="#000000" uuid="ace20c61-782c-4219-8530-fb571a363d53">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="20b727e0-d818-4bc2-85c7-1d16d7593454"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box>
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#666666"/>
@@ -245,12 +239,11 @@
 				<textElement textAlignment="Center">
 					<font size="8" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Average no. of animals transacted in a day]]></text>
+				<text><![CDATA[Number of animals (average) transacted in a day]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="640" y="0" width="80" height="22" forecolor="#000000" uuid="e724464b-d20e-4df2-b30e-4ab134a7fbd5">
+				<reportElement style="Column header" x="640" y="0" width="80" height="30" forecolor="#000000" uuid="e724464b-d20e-4df2-b30e-4ab134a7fbd5">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d67f7909-9e1f-4c39-bf4d-2cb36b1f7124"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box>
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#666666"/>
@@ -264,9 +257,8 @@
 				<text><![CDATA[Places from where animals Arrive]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="102" y="0" width="70" height="22" forecolor="#000000" uuid="0bf1c977-593d-4c8f-be2b-1246982fac31">
+				<reportElement style="Column header" x="102" y="0" width="70" height="30" forecolor="#000000" uuid="0bf1c977-593d-4c8f-be2b-1246982fac31">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7891d1e7-b8b1-4055-a2e5-9ea8b50acc12"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box>
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#666666"/>
@@ -280,9 +272,8 @@
 				<text><![CDATA[Location]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="720" y="0" width="82" height="22" forecolor="#000000" uuid="b4dc2b17-7bee-4157-89dd-76c20ab84bbe">
+				<reportElement style="Column header" x="720" y="0" width="82" height="30" forecolor="#000000" uuid="b4dc2b17-7bee-4157-89dd-76c20ab84bbe">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d67f7909-9e1f-4c39-bf4d-2cb36b1f7124"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box>
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#666666"/>
@@ -293,7 +284,7 @@
 				<textElement textAlignment="Center">
 					<font size="8" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Places to which animals are transported]]></text>
+				<text><![CDATA[Places to where animals are transported]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
@@ -324,7 +315,7 @@
 					<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-					<reportElement style="Detail" positionType="Float" stretchType="ElementGroupHeight" x="172" y="0" width="80" height="18" uuid="6900af28-17e8-4587-ad43-456283f29312">
+					<reportElement style="Detail" positionType="Float" stretchType="ElementGroupHeight" x="172" y="0" width="88" height="18" uuid="6900af28-17e8-4587-ad43-456283f29312">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a5b171c1-6d4f-4e87-b139-c5ee163ac940"/>
 					</reportElement>
 					<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
@@ -339,7 +330,7 @@
 					<textFieldExpression><![CDATA[$F{frequency}]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-					<reportElement style="Detail" positionType="Float" stretchType="ElementGroupHeight" x="252" y="0" width="90" height="18" uuid="74bac7c3-76b0-4233-aca1-5abae801626a">
+					<reportElement style="Detail" positionType="Float" stretchType="ElementGroupHeight" x="260" y="0" width="82" height="18" uuid="74bac7c3-76b0-4233-aca1-5abae801626a">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="bea6f6ae-b42f-4e15-a52c-04a6d3f54181"/>
 					</reportElement>
 					<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">

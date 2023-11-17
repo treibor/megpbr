@@ -1,5 +1,5 @@
 
-package com.megpbr.audit;
+package com.megpbr.security;
 
 import java.util.*;
 import java.io.*;
@@ -18,13 +18,15 @@ public class CaptchaCheck {
 
 		// Characters to be included
 		//String chrs = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-		String chrs = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		//String chrs = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		String chrs = "0123456789";
 		// Generate n characters from above set and
 		// add these characters to captcha.
 		String captcha = "";
 		while (n-- > 0) {
 			//int index = (int) (Math.random() * 62);
-			int index = (int) (Math.random() * 36);
+			//int index = (int) (Math.random() * 36);
+			int index = (int) (Math.random() * 10);
 			captcha += chrs.charAt(index);
 		}
 

@@ -116,7 +116,9 @@ public class UserView {
 			Notification.show("Invalid Password").addThemeVariants(NotificationVariant.LUMO_WARNING);
 		}else if(!password.getValue().trim().equals(confirmPassword.getValue().trim())){
 			Notification.show("Passwords Don Not Match").addThemeVariants(NotificationVariant.LUMO_WARNING);
-		}else if(password.getValue().trim().length()<=10){
+		}else if(!checkPasswordStrength(password.getValue())){
+			Notification.show("Password is too weak. Please use a combination of Lower case, Upper case, Number and Special Charaters").addThemeVariants(NotificationVariant.LUMO_WARNING);
+		}else if(password.getValue().trim().length()<=8){
 			Notification.show("Password is too short").addThemeVariants(NotificationVariant.LUMO_WARNING);
 		}else {
 			user.setHashedPassword(passwordEncoder.encode(password.getValue()));
@@ -232,7 +234,31 @@ public class UserView {
 			village.setValue(userservice.getLoggedUser().getVillage());
 		}
 	}
-	
+	private boolean checkPasswordStrength(String password) {
+		boolean containsLowerChar= false, containsUpperChar = false;
+		boolean containsDigit = false, containsSpecialChar = false;
+		char[] ch= password.toCharArray();
+		//System.out.println(password);
+		String special_chars = "!(){}[]:;<>?,@#$%^&*+=_-~`|./'";
+		for (int i = 0; i < password.length(); i++) {
+			if (Character.isLowerCase(ch[i])) {
+				containsLowerChar= true;
+			}	
+			if (Character.isUpperCase(ch[i])) {
+				containsUpperChar= true;
+			}
+			if (Character.isDigit(ch[i])) {
+				containsDigit= true;
+			}
+			if (special_chars.contains(String.valueOf(ch[i]))) {
+				containsSpecialChar=true;
+			}
+		}
+		if(containsDigit && containsUpperChar && containsSpecialChar && containsLowerChar){
+			return true;
+		}
+		return false;
+	}
 	
 	private void saveUser() {
 		if(userlevel.getValue()==null) {
@@ -247,10 +273,12 @@ public class UserView {
 				Notification.show("Please Select The Block").addThemeVariants(NotificationVariant.LUMO_WARNING);
 			} else if (userLevel.startsWith("VILLAGE")&& village.getValue()==null) {
 				Notification.show("Please Select The Village").addThemeVariants(NotificationVariant.LUMO_WARNING);
-			}else if(userName.getValue().length()<=8 ){
+			}else if(userName.getValue().length()<=7 ){
 				Notification.show("User Name should be at least 8 characters long").addThemeVariants(NotificationVariant.LUMO_WARNING);
-			}else if(password.getValue().length()<=10){
+			}else if(password.getValue().length()<=8){
 				Notification.show("Password is too short").addThemeVariants(NotificationVariant.LUMO_WARNING);
+			}else if(!checkPasswordStrength(password.getValue())){
+				Notification.show("Password is too weak. Please use a combination of Lower case, Upper case, Number and Special Charaters").addThemeVariants(NotificationVariant.LUMO_WARNING);
 			}else if(!password.getValue().trim().equals(confirmPassword.getValue().trim())){
 				Notification.show("Passwords Do Not Match").addThemeVariants(NotificationVariant.LUMO_WARNING);
 			}else {

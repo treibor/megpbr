@@ -308,7 +308,7 @@
 				<text><![CDATA[Local Status present]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="500" y="0" width="59" height="22" forecolor="#000000" uuid="8cd54f79-3386-4a96-84b7-99eb9ec02888">
+				<reportElement style="Column header" x="580" y="0" width="59" height="22" forecolor="#000000" uuid="8cd54f79-3386-4a96-84b7-99eb9ec02888">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3bbe1abc-614d-470c-8662-5b34c1a7826e"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -324,7 +324,7 @@
 				<text><![CDATA[Part Used]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="559" y="0" width="80" height="22" forecolor="#000000" uuid="ace20c61-782c-4219-8530-fb571a363d53">
+				<reportElement style="Column header" x="500" y="0" width="80" height="22" forecolor="#000000" uuid="ace20c61-782c-4219-8530-fb571a363d53">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="20b727e0-d818-4bc2-85c7-1d16d7593454"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -507,7 +507,7 @@
 					<textFieldExpression><![CDATA[$F{presentStatus.status}]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-					<reportElement style="Detail" positionType="Float" stretchType="ElementGroupHeight" x="500" y="0" width="59" height="18" uuid="d97e28bb-095b-4a7a-b827-17254a1d1bb9">
+					<reportElement style="Detail" positionType="Float" stretchType="ElementGroupHeight" x="580" y="0" width="59" height="18" uuid="d97e28bb-095b-4a7a-b827-17254a1d1bb9">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3bbe1abc-614d-470c-8662-5b34c1a7826e"/>
 					</reportElement>
 					<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
@@ -522,7 +522,7 @@
 					<textFieldExpression><![CDATA[$F{partsUsed}]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-					<reportElement style="Detail" positionType="Float" stretchType="ElementGroupHeight" x="559" y="0" width="80" height="18" uuid="9dc873de-63b7-4f9b-b8ff-e0c9919f799d">
+					<reportElement style="Detail" positionType="Float" stretchType="ElementGroupHeight" x="500" y="0" width="80" height="18" uuid="9dc873de-63b7-4f9b-b8ff-e0c9919f799d">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="20b727e0-d818-4bc2-85c7-1d16d7593454"/>
 					</reportElement>
 					<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
