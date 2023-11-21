@@ -2,6 +2,7 @@ package com.megpbr;
 
 import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.component.page.Push;
+import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 import javax.sql.DataSource;
 import org.springframework.boot.SpringApplication;
@@ -21,6 +22,8 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 @Theme(value = "megpbr")
 @Push
+@PWA(name = "MegPbr",
+shortName = "MegPbr")
 public class Application extends SpringBootServletInitializer implements AppShellConfigurator {
 
     public static void main(String[] args) {

@@ -71,7 +71,8 @@ public class LoginView extends Div implements BeforeEnterObserver, ComponentEven
     private Button loginbutton=new Button("Login");
     //public Button captchabutton=new Button("");
     //private final AuthenticatedUser authenticatedUser;
-    private static final String LOGIN_SUCCESS_URL = "/";
+    //private static final String LOGIN_SUCCESS_URL = "/";
+    private static final String LOGIN_SUCCESS_URL = "/megpbr";
     TextField code = new TextField("");
     LoginOverlay loginOverlay = new LoginOverlay();
     //private static CaptchaCheck captcha;

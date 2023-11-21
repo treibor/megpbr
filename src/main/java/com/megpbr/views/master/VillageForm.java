@@ -1,8 +1,10 @@
 package com.megpbr.views.master;
 
+import com.megpbr.data.entity.Village;
+import com.megpbr.data.entity.Block;
 import com.megpbr.data.entity.District;
 import com.megpbr.data.entity.State;
-import com.megpbr.data.entity.District;
+import com.megpbr.data.entity.Village;
 import com.megpbr.data.service.Dbservice;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
@@ -29,20 +31,22 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.shared.Registration;
 
 
-public class DistrictForm extends Div {
+public class VillageForm extends Div {
 	Dbservice dbservice;
-	District district;
-	Binder<District> binder = new BeanValidationBinder<>(District.class);
-	TextField districtCode = new TextField("District Code");
-	TextField districtName = new TextField("District Name");
+	Village village;
+	Binder<Village> binder = new BeanValidationBinder<>(Village.class);
+	TextField villageCode = new TextField("Village Code");
+	TextField villageName = new TextField("Village Name");
 	public ComboBox<State> state = new ComboBox("State");
-	//TextField state = new TextField("District Name");
+	public ComboBox<District> district = new ComboBox("District");
+	public ComboBox<Block> block = new ComboBox("Block");
+	//TextField state = new TextField("Village Name");
 	FormLayout form = new FormLayout();
 	public Button save = new Button("Save");
 	Button delete = new Button("Delete");
 	Button newButton = new Button("New");
 	//FormLayout form=new FormLayout();
-	public DistrictForm(Dbservice dbservice) {
+	public VillageForm(Dbservice dbservice) {
 		super();
 		this.dbservice = dbservice;
 		initForm();
@@ -61,37 +65,44 @@ public class DistrictForm extends Div {
 
 	}
 
-	public void setDistrict(District district) {
-		this.district=district;
-		binder.readBean(district);
+	public void setVillage(Village village) {
+		this.village=village;
+		binder.readBean(village);
 	}
 	private void initForm() {
 		state.setItems(dbservice.getStates());
 		state.setItemLabelGenerator(state->state.getStateName());
-		binder.setBean(new District());
+		district.setItems(dbservice.getDistricts());
+		district.setItemLabelGenerator(district->district.getDistrictName());
+		block.setItems(dbservice.getBlocks());
+		block.setItemLabelGenerator(block->block.getBlockName());
+		binder.setBean(new Village());
+		state.addValueChangeListener(e->district.setItems(dbservice.getDistricts(state.getValue())));
+		district.addValueChangeListener(e->block.setItems(dbservice.getBlocks(district.getValue())));
+		//block.addValueChangeListener(e->block.setItems(dbservice.getBlocks(e.getValue())));
 	}
 	private Component createButtons() {
 		var hl = new HorizontalLayout();
 		save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 		save.addClickShortcut(Key.ENTER);
-		save.addClickListener(e -> saveDistrict());
+		save.addClickListener(e -> saveVillage());
 		delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
-		delete.addClickListener(e -> deleteDistrict(district));
-		newButton.addClickListener(e->newDistrict());
+		delete.addClickListener(e -> deleteVillage(village));
+		newButton.addClickListener(e->newVillage());
 		hl.setJustifyContentMode(JustifyContentMode.CENTER);
 		hl.add(save,newButton,  delete);
 		hl.setSizeFull();
 		return hl;
 	}
 
-	public void newDistrict() {
-		setDistrict(new District());
+	public void newVillage() {
+		setVillage(new Village());
 	}
-	private void saveDistrict() {
+	private void saveVillage() {
 		try {
-			binder.writeBean(district);
-			fireEvent(new SaveEvent(this, district));
-			this.setDistrict(new District());
+			binder.writeBean(village);
+			fireEvent(new SaveEvent(this, village));
+			this.setVillage(new Village());
 			//Notification.show("Added Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		} catch (ValidationException e) { // TODO
 			//e.printStackTrace();
@@ -99,8 +110,8 @@ public class DistrictForm extends Div {
 
 	}
 
-	public void deleteDistrict(District district) {
-		if (district == null) {
+	public void deleteVillage(Village village) {
+		if (village == null) {
 			Notification.show("Error. Please Select An Item To Delete").addThemeVariants(NotificationVariant.LUMO_ERROR);
 		} else {
 			ConfirmDialog dialog = new ConfirmDialog();
@@ -110,7 +121,7 @@ public class DistrictForm extends Div {
 			dialog.addCancelListener(event -> dialog.close());
 			dialog.addRejectListener(event -> dialog.close());
 			dialog.setConfirmText("Delete");
-			dialog.addConfirmListener(event ->fireEvent(new DeleteEvent(this, district)));
+			dialog.addConfirmListener(event ->fireEvent(new DeleteEvent(this, village)));
 			dialog.open();
 		}
 	}
@@ -122,7 +133,7 @@ public class DistrictForm extends Div {
 	}
 
 	private void clearForm() {
-		this.district = new District();
+		this.village = new Village();
 		
 	}
 	
@@ -132,8 +143,10 @@ public class DistrictForm extends Div {
 
 	public Component createBasicForm() {
 		form.add(state, 2);
-		form.add(districtCode, 2);
-		form.add(districtName, 2);
+		form.add(district, 2);
+		form.add(block, 2);
+		form.add(villageCode, 2);
+		form.add(villageName, 2);
 		form.setResponsiveSteps(new ResponsiveStep("0", 2),
 				// Use two columns, if layout's width exceeds 500px
 				new ResponsiveStep("300px", 2));
@@ -144,34 +157,34 @@ public class DistrictForm extends Div {
 	
 	
 
-	public static abstract class DistrictFormEvent extends ComponentEvent<DistrictForm> {
-		private District district;
+	public static abstract class VillageFormEvent extends ComponentEvent<VillageForm> {
+		private Village village;
 
-		protected DistrictFormEvent(DistrictForm source, District district) {
+		protected VillageFormEvent(VillageForm source, Village village) {
 			super(source, false);
-			this.district = district;
+			this.village = village;
 		}
 
-		public District getDistrict() {
-			return district;
-		}
-	}
-
-	public static class SaveEvent extends DistrictFormEvent {
-		SaveEvent(DistrictForm source, District district) {
-			super(source, district);
+		public Village getVillage() {
+			return village;
 		}
 	}
 
-	public static class DeleteEvent extends DistrictFormEvent {
-		DeleteEvent(DistrictForm source, District district) {
-			super(source, district);
+	public static class SaveEvent extends VillageFormEvent {
+		SaveEvent(VillageForm source, Village village) {
+			super(source, village);
+		}
+	}
+
+	public static class DeleteEvent extends VillageFormEvent {
+		DeleteEvent(VillageForm source, Village village) {
+			super(source, village);
 		}
 
 	}
 
-	public static class CloseEvent extends DistrictFormEvent {
-		CloseEvent(DistrictForm source) {
+	public static class CloseEvent extends VillageFormEvent {
+		CloseEvent(VillageForm source) {
 			super(source, null);
 		}
 	}

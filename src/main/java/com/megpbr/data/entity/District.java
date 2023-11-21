@@ -17,7 +17,9 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 
 @Entity
@@ -31,10 +33,10 @@ public class District {
 	private String districtName;
 	@Column(unique=true)
 	private long districtCode;
-	@NotBlank
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name="state", referencedColumnName = "stateCode")
-	@NotNull
+	
 	private State state;
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "district")
 	List<Block> block;

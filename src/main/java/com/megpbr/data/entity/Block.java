@@ -17,6 +17,7 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name="Block", schema = "megpbr")
@@ -31,7 +32,7 @@ public class Block {
 	private String blockName;
 	@ManyToOne
 	@JoinColumn(name="district", referencedColumnName = "districtCode")
-	@NotBlank
+	@NotNull
 	private District district;
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "block")
 	private List<Village> village;

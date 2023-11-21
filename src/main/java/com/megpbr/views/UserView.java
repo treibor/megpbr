@@ -302,6 +302,10 @@ public class UserView {
 							role.setUser(newUser);
 							userservice.update(role);
 							createAdminRole(newUser);
+							role.setRoleName("STATEADMIN");
+							role.setUser(newUser);
+							userservice.update(role);
+							createAdminRole(newUser);
 						} else {
 							if (userLevel.endsWith("VERIFIER")) {
 								role.setRoleName("VERIFIER");

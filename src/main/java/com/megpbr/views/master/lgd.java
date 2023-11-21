@@ -80,6 +80,8 @@ public class lgd extends HorizontalLayout{
 	TextField localLanguage=new TextField("Local Language");
 	StateForm stateform;
 	DistrictForm distform;
+	BlockForm blockform;
+	VillageForm villageform;
 	LocalLanguageForm languageform;
 	@Autowired
 	private Audit auditobject;
@@ -101,10 +103,18 @@ public class lgd extends HorizontalLayout{
 		distform = new DistrictForm(dbservice);
 		distform.setVisible(false);
 		distform.setWidth("50%");
-		//distform.state.setItems(dbservice.getStates());
-		//state.setItemLabelGenerator(state->state.getStateName());
-		//distform.addListener(StateForm.SaveEvent.class, this::saveState);
-		//distform.addListener(StateForm.DeleteEvent.class, this::deleteState);
+		distform.addListener(DistrictForm.SaveEvent.class, this::saveDistrict);
+		distform.addListener(DistrictForm.DeleteEvent.class, this::deleteDistrict);
+		blockform = new BlockForm(dbservice);
+		blockform.setVisible(false);
+		blockform.setWidth("50%");
+		blockform.addListener(BlockForm.SaveEvent.class, this::saveBlock);
+		blockform.addListener(BlockForm.DeleteEvent.class, this::deleteBlock);
+		villageform = new VillageForm(dbservice);
+		villageform.setVisible(false);
+		villageform.setWidth("50%");
+		villageform.addListener(VillageForm.SaveEvent.class, this::saveVillage);
+		villageform.addListener(VillageForm.DeleteEvent.class, this::deleteVillage);
 	}
 	private boolean isStateAdmin() {
 		String userLevel=uservice.getLoggedUserLevel();
@@ -140,10 +150,81 @@ public class lgd extends HorizontalLayout{
 			Notification.show("Unable To Delete"+e).addThemeVariants(NotificationVariant.LUMO_ERROR);
 		}
 	}
-	
+	public void saveDistrict(DistrictForm.SaveEvent event) {
+
+		try {
+			District dist = event.getDistrict();
+			dbservice.saveDistrict(dist);
+			Notification.show("Saved Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+			refreshDistrictGrid();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			Notification.show("Unable to Update+"+e).addThemeVariants(NotificationVariant.LUMO_ERROR);
+		}
+
+	}
+	public void deleteDistrict(DistrictForm.DeleteEvent event) {
+		try {
+			District dist=event.getDistrict();
+			dbservice.deleteDistrict(dist);
+			Notification.show("Deleted Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+			refreshDistrictGrid();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			Notification.show("Unable To Delete"+e).addThemeVariants(NotificationVariant.LUMO_ERROR);
+		}
+	}
+	public void saveBlock(BlockForm.SaveEvent event) {
+
+		try {
+			Block dist = event.getBlock();
+			dbservice.saveBlock(dist);
+			Notification.show("Saved Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+			refreshBlockGrid();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			Notification.show("Unable to Update+"+e).addThemeVariants(NotificationVariant.LUMO_ERROR);
+		}
+
+	}
+	public void deleteBlock(BlockForm.DeleteEvent event) {
+		try {
+			Block dist=event.getBlock();
+			dbservice.deleteBlock(dist);
+			Notification.show("Deleted Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+			refreshBlockGrid();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			Notification.show("Unable To Delete"+e).addThemeVariants(NotificationVariant.LUMO_ERROR);
+		}
+	}
+	public void saveVillage(VillageForm.SaveEvent event) {
+
+		try {
+			Village dist = event.getVillage();
+			dbservice.saveVillage(dist);
+			Notification.show("Saved Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+			refreshVillageGrid();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			Notification.show("Unable to Update+"+e).addThemeVariants(NotificationVariant.LUMO_ERROR);
+		}
+
+	}
+	public void deleteVillage(VillageForm.DeleteEvent event) {
+		try {
+			Village dist=event.getVillage();
+			dbservice.deleteVillage(dist);
+			Notification.show("Deleted Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+			refreshVillageGrid();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			Notification.show("Unable To Delete"+e).addThemeVariants(NotificationVariant.LUMO_ERROR);
+		}
+	}
 	private Component getGrids() {
 		var mainlayout=new HorizontalLayout();
-		mainlayout.add(stategrid, districtgrid, blockgrid, villagegrid, stateform);
+		mainlayout.add(stategrid, districtgrid, blockgrid, villagegrid, stateform, distform, blockform, villageform);
 		mainlayout.setSizeFull();
 		return mainlayout;
 	}
@@ -162,6 +243,9 @@ public class lgd extends HorizontalLayout{
 		if (state != null) {
 			stateform.setState(state);
 			stateform.setVisible(true);
+			distform.setVisible(false);
+			blockform.setVisible(false);
+			villageform.setVisible(false);
 		}else {
 			stateform.setVisible(false);
 		}
@@ -176,9 +260,11 @@ public class lgd extends HorizontalLayout{
 		if(district!=null) {
 			distform.setDistrict(district);
 			distform.setVisible(true);
-			System.out.println("Not NUll");
+			stateform.setVisible(false);
+			blockform.setVisible(false);
+			villageform.setVisible(false);
 		}else {
-			System.out.println("NUll");
+			
 			distform.setVisible(false);
 		}
 		blockgrid.setSizeFull();
@@ -189,14 +275,47 @@ public class lgd extends HorizontalLayout{
 		blockgrid.asSingleSelect().addValueChangeListener(e -> configureVillageGrid(e.getValue()));
 	}
 	public void configureVillageGrid(Block block) {
+		if(block!=null) {
+			//blockform.set
+			blockform.setBlock(block);
+			blockform.state.setValue(block.getDistrict().getState());
+			blockform.setVisible(true);
+			stateform.setVisible(false);
+			distform.setVisible(false);
+			villageform.setVisible(false);
+		}else {
+			
+			blockform.setVisible(false);
+		}
 		villagegrid.setSizeFull();
 		villagegrid.removeAllColumns();
 		villagegrid.addColumn("villageCode").setAutoWidth(true).setResizable(true).setSortable(true);
 		villagegrid.addColumn("villageName").setAutoWidth(true).setResizable(true).setSortable(true);
 		villagegrid.setItems(dbservice.getVillages(block));
-		//villagegrid.setItems(dbservice.getvillages());
+		villagegrid.asSingleSelect().addValueChangeListener(e -> getVillageDetails(e.getValue()));
+	}
+	private void getVillageDetails(Village village) {
+		if(village!=null) {
+			villageform.setVillage(village);
+			villageform.state.setValue(village.getBlock().getDistrict().getState());
+			villageform.district.setValue(village.getBlock().getDistrict());
+			villageform.block.setValue(village.getBlock());
+			villageform.setVisible(true);
+			stateform.setVisible(false);
+			distform.setVisible(false);
+			blockform.setVisible(false);
+		}
 	}
 	public void refreshStateGrid() {
 		stategrid.setItems(dbservice.getStates());
+	}
+	public void refreshDistrictGrid() {
+		districtgrid.setItems(dbservice.getDistricts());
+	}
+	public void refreshBlockGrid() {
+		blockgrid.setItems(dbservice.getBlocks());
+	}
+	public void refreshVillageGrid() {
+		villagegrid.setItems(dbservice.getVillages());
 	}
 }

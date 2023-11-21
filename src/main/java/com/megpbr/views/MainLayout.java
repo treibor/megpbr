@@ -116,17 +116,29 @@ public class MainLayout extends AppLayout {
     }
     public boolean isVerifier() {
     	String userLevel=userservice.getLoggedUserLevel();
+    	
 		if(userLevel.endsWith("VERIFIER")) {
 			return true;
 		}else {
 			return false;
 		}
     }
-    
-    public boolean isVerifiers() {
+    public boolean isVerifierAndSuper() {
     	String userLevel=userservice.getLoggedUserLevel();
+    	
 		if(userLevel.endsWith("VERIFIER")||userLevel.startsWith("SUPER")) {
 			return true;
+		}else {
+			return false;
+		}
+    }
+    public boolean isVerifiers() {
+    	String userLevel=userservice.getLoggedUserLevel();
+    	
+		if(userLevel.endsWith("VERIFIER")||userLevel.startsWith("SUPER")||userLevel.startsWith("STATE")) {
+			
+			return true;
+			
 		}else {
 			return false;
 		}
@@ -176,7 +188,7 @@ public class MainLayout extends AppLayout {
    
    
 	private void addDrawerContent() {
-        H1 appName = new H1("Hi, "+ userservice.getLoggedUserName());
+        H1 appName = new H1("Hi, "+ userservice.getLoggedUser().getName());
         appName.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
         //appName.add
         Header header = new Header(appName);
@@ -187,7 +199,7 @@ public class MainLayout extends AppLayout {
     private SideNav createNavigation() {
         SideNav nav = new SideNav();
         nav.addItem(new SideNavItem("Dashboard", DashboardView.class, LineAwesomeIcon.ACCUSOFT.create()));
-        nav.addItem(new SideNavItem("LGD DATA", lgd.class, LineAwesomeIcon.ACCUSOFT.create()));
+        //nav.addItem(new SideNavItem("LGD DATA", lgd.class, LineAwesomeIcon.ACCUSOFT.create()));
         SideNavItem village=new SideNavItem("Villages Details", VillageView.class, LineAwesomeIcon.AVIANEX.create());
         nav.addItem(village);
         //Agro Biodiversity -Category 1
@@ -268,10 +280,11 @@ public class MainLayout extends AppLayout {
         SideNavItem master=new SideNavItem("Master", MasterView.class, LineAwesomeIcon.ACCESSIBLE_ICON.create());
         nav.addItem(master);
         SideNavItem lgd=new SideNavItem("LGD Data", lgd.class, LineAwesomeIcon.ZHIHU.create());
+        nav.addItem(lgd);
         crowd.setVisible(isVerifiers());
         master.setVisible(isStateAdmin());
         preverify.setVisible(isStateUser());
-        verify.setVisible(isVerifiers());
+        verify.setVisible(isVerifierAndSuper());
         category1.setVisible(!isVerifier());
         category2.setVisible(!isVerifier());
         category3.setVisible(!isVerifier());

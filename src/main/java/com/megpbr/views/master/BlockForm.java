@@ -1,8 +1,9 @@
 package com.megpbr.views.master;
 
+import com.megpbr.data.entity.Block;
 import com.megpbr.data.entity.District;
 import com.megpbr.data.entity.State;
-import com.megpbr.data.entity.District;
+import com.megpbr.data.entity.Block;
 import com.megpbr.data.service.Dbservice;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
@@ -29,20 +30,21 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.shared.Registration;
 
 
-public class DistrictForm extends Div {
+public class BlockForm extends Div {
 	Dbservice dbservice;
-	District district;
-	Binder<District> binder = new BeanValidationBinder<>(District.class);
-	TextField districtCode = new TextField("District Code");
-	TextField districtName = new TextField("District Name");
+	Block block;
+	Binder<Block> binder = new BeanValidationBinder<>(Block.class);
+	TextField blockCode = new TextField("Block Code");
+	TextField blockName = new TextField("Block Name");
 	public ComboBox<State> state = new ComboBox("State");
-	//TextField state = new TextField("District Name");
+	public ComboBox<District> district = new ComboBox("District");
+	//TextField state = new TextField("Block Name");
 	FormLayout form = new FormLayout();
 	public Button save = new Button("Save");
 	Button delete = new Button("Delete");
 	Button newButton = new Button("New");
 	//FormLayout form=new FormLayout();
-	public DistrictForm(Dbservice dbservice) {
+	public BlockForm(Dbservice dbservice) {
 		super();
 		this.dbservice = dbservice;
 		initForm();
@@ -61,37 +63,39 @@ public class DistrictForm extends Div {
 
 	}
 
-	public void setDistrict(District district) {
-		this.district=district;
-		binder.readBean(district);
+	public void setBlock(Block block) {
+		this.block=block;
+		binder.readBean(block);
 	}
 	private void initForm() {
 		state.setItems(dbservice.getStates());
 		state.setItemLabelGenerator(state->state.getStateName());
-		binder.setBean(new District());
+		district.setItems(dbservice.getDistricts());
+		district.setItemLabelGenerator(district->district.getDistrictName());
+		binder.setBean(new Block());
 	}
 	private Component createButtons() {
 		var hl = new HorizontalLayout();
 		save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 		save.addClickShortcut(Key.ENTER);
-		save.addClickListener(e -> saveDistrict());
+		save.addClickListener(e -> saveBlock());
 		delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
-		delete.addClickListener(e -> deleteDistrict(district));
-		newButton.addClickListener(e->newDistrict());
+		delete.addClickListener(e -> deleteBlock(block));
+		newButton.addClickListener(e->newBlock());
 		hl.setJustifyContentMode(JustifyContentMode.CENTER);
 		hl.add(save,newButton,  delete);
 		hl.setSizeFull();
 		return hl;
 	}
 
-	public void newDistrict() {
-		setDistrict(new District());
+	public void newBlock() {
+		setBlock(new Block());
 	}
-	private void saveDistrict() {
+	private void saveBlock() {
 		try {
-			binder.writeBean(district);
-			fireEvent(new SaveEvent(this, district));
-			this.setDistrict(new District());
+			binder.writeBean(block);
+			fireEvent(new SaveEvent(this, block));
+			this.setBlock(new Block());
 			//Notification.show("Added Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		} catch (ValidationException e) { // TODO
 			//e.printStackTrace();
@@ -99,8 +103,8 @@ public class DistrictForm extends Div {
 
 	}
 
-	public void deleteDistrict(District district) {
-		if (district == null) {
+	public void deleteBlock(Block block) {
+		if (block == null) {
 			Notification.show("Error. Please Select An Item To Delete").addThemeVariants(NotificationVariant.LUMO_ERROR);
 		} else {
 			ConfirmDialog dialog = new ConfirmDialog();
@@ -110,7 +114,7 @@ public class DistrictForm extends Div {
 			dialog.addCancelListener(event -> dialog.close());
 			dialog.addRejectListener(event -> dialog.close());
 			dialog.setConfirmText("Delete");
-			dialog.addConfirmListener(event ->fireEvent(new DeleteEvent(this, district)));
+			dialog.addConfirmListener(event ->fireEvent(new DeleteEvent(this, block)));
 			dialog.open();
 		}
 	}
@@ -122,7 +126,7 @@ public class DistrictForm extends Div {
 	}
 
 	private void clearForm() {
-		this.district = new District();
+		this.block = new Block();
 		
 	}
 	
@@ -132,8 +136,9 @@ public class DistrictForm extends Div {
 
 	public Component createBasicForm() {
 		form.add(state, 2);
-		form.add(districtCode, 2);
-		form.add(districtName, 2);
+		form.add(district, 2);
+		form.add(blockCode, 2);
+		form.add(blockName, 2);
 		form.setResponsiveSteps(new ResponsiveStep("0", 2),
 				// Use two columns, if layout's width exceeds 500px
 				new ResponsiveStep("300px", 2));
@@ -144,34 +149,34 @@ public class DistrictForm extends Div {
 	
 	
 
-	public static abstract class DistrictFormEvent extends ComponentEvent<DistrictForm> {
-		private District district;
+	public static abstract class BlockFormEvent extends ComponentEvent<BlockForm> {
+		private Block block;
 
-		protected DistrictFormEvent(DistrictForm source, District district) {
+		protected BlockFormEvent(BlockForm source, Block block) {
 			super(source, false);
-			this.district = district;
+			this.block = block;
 		}
 
-		public District getDistrict() {
-			return district;
-		}
-	}
-
-	public static class SaveEvent extends DistrictFormEvent {
-		SaveEvent(DistrictForm source, District district) {
-			super(source, district);
+		public Block getBlock() {
+			return block;
 		}
 	}
 
-	public static class DeleteEvent extends DistrictFormEvent {
-		DeleteEvent(DistrictForm source, District district) {
-			super(source, district);
+	public static class SaveEvent extends BlockFormEvent {
+		SaveEvent(BlockForm source, Block block) {
+			super(source, block);
+		}
+	}
+
+	public static class DeleteEvent extends BlockFormEvent {
+		DeleteEvent(BlockForm source, Block block) {
+			super(source, block);
 		}
 
 	}
 
-	public static class CloseEvent extends DistrictFormEvent {
-		CloseEvent(DistrictForm source) {
+	public static class CloseEvent extends BlockFormEvent {
+		CloseEvent(BlockForm source) {
 			super(source, null);
 		}
 	}
