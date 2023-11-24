@@ -56,7 +56,7 @@ import com.vaadin.flow.server.VaadinServletRequest;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 
-@Route("login")
+//@Route("login")
 @PageTitle("Login")
 @AnonymousAllowed
 

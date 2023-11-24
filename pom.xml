@@ -187,6 +187,11 @@
         <profile>
             <!-- Production mode is activated using -Pproduction -->
             <id>production</id>
+            <properties>
+				<vaadin.productionMode>true</vaadin.productionMode>
+				<vaadin.disable-xsrf-protection>true</vaadin.disable-xsrf-protection>
+			</properties>
+			
             <dependencies>
                 <!-- Exclude development dependencies from production -->
                 <dependency>
