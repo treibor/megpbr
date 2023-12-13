@@ -238,6 +238,7 @@ public class CropPlantsForm extends Div {
 			binder.writeBean(crops);
 			crops.setMaster(master);
 			crops.setCrowdData(false);
+			Village vill=crops.getVillage();
 			if (getImageAsByteArray(buffer1) != null) {
 				crops.setPhoto1(getImageAsByteArray(buffer1));
 			}
@@ -257,6 +258,10 @@ public class CropPlantsForm extends Div {
 			initMasterFields(format);
 			removeFields();
 			clearBuffer();
+			state.setValue(vill.getBlock().getDistrict().getState());
+			district.setValue(vill.getBlock().getDistrict());
+			block.setValue(vill.getBlock());
+			village.setValue(vill);
 		} catch (ValidationException e) {
 			// TODO Auto-generated catch block
 			Notification.show("Error. Please Check").addThemeVariants(NotificationVariant.LUMO_ERROR);
@@ -516,6 +521,7 @@ public class CropPlantsForm extends Div {
 		commercial.setItems(dbservice.getMasterCommercial());
 		commercial.setItemLabelGenerator(MasterCommercial::getCname);
 		wildhome.setItems(dbservice.getMasterWildhome());
+		wildhome.setItemLabelGenerator(MasterWildhome::getWname);
 		pastStatus.setItems(dbservice.getStatus());
 		presentStatus.setItems(dbservice.getStatus());
 		pastStatus.setItemLabelGenerator(status -> status.getStatus());
@@ -682,14 +688,14 @@ public class CropPlantsForm extends Div {
 		switch (formatNo) {
 		case 1:
 			area.setVisible(true);
-			
+			specialFeatures.setVisible(true);
 			break;
 		case 2:
 			fruitSeasons.setPlaceholder("Season of Fruiting");
 			break;
 		case 3:
 			variety.setVisible(false);
-			specialFeatures.setVisible(true);
+			//specialFeatures.setVisible(true);
 			partsUsed.setVisible(true);
 			fruitSeasons.setVisible(false);
 			fruitSeason.setVisible(false);
@@ -702,6 +708,7 @@ public class CropPlantsForm extends Div {
 			variety.setVisible(false);
 			source.setVisible(false);
 			management.setVisible(true);
+			otherDetails.setLabel("Other Details Like Exotic");
 			xfield1.setVisible(true);
 			xfield2.setVisible(true);
 			xfield1.setLabel("Affected Crops");
@@ -743,7 +750,7 @@ public class CropPlantsForm extends Div {
 			fruitSeasons.setVisible(false);
 			fruitSeason.setVisible(false);
 			source.setVisible(false);	
-			area.setVisible(true);
+			//area.setVisible(true);
 			wildhome.setVisible(true);
 			break;
 		case 15:
@@ -821,6 +828,7 @@ public class CropPlantsForm extends Div {
 			break;
 		case 22:
 			type.setLabel("Plant");
+			partsUsed.setVisible(true);
 			fruitSeason.setVisible(false);
 			fruitSeasons.setVisible(false);
 			source.setVisible(false);
@@ -829,7 +837,7 @@ public class CropPlantsForm extends Div {
 			break;
 		case 23:
 			type.setLabel("Associated Crop");
-			variety.setVisible(true);
+			variety.setVisible(false);
 			fruitSeason.setVisible(false);
 			fruitSeasons.setVisible(false);
 			otherDetails.setLabel("Other Details(Mode of Use)");
@@ -844,13 +852,16 @@ public class CropPlantsForm extends Div {
 			fruitSeason.setVisible(false);
 			source.setVisible(false);
 			uses.setVisible(false);
+			commercial.setVisible(true);
 			break;
 		case 25:
 			type.setLabel("Plant");
 			fruitSeasons.setVisible(false);
 			fruitSeason.setVisible(false);
 			source.setVisible(false);
-			uses.setVisible(false);
+			uses.setVisible(true);
+			uses.setLabel("Uses (usage)");
+			partsUsed.setVisible(true);
 			break;
 		case 26:
 			type.setVisible(false);
@@ -866,6 +877,7 @@ public class CropPlantsForm extends Div {
 			variety.setVisible(false);
 			fruitSeasons.setPlaceholder("Season When Seen");
 			source.setVisible(false);
+			xfield1.setVisible(true);
 			xfield1.setLabel("Mode of Hunting");
 			break;
 		

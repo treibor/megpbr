@@ -610,6 +610,7 @@ public class CropPlantsView extends HorizontalLayout {
 					.setHeader("Past Status").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn(crop -> crop.getPastStatus() == null ? "" : crop.getPastStatus().getStatus())
 					.setHeader("Present Status").setAutoWidth(true).setResizable(true).setSortable(true);
+			grid.addColumn("specialFeatures").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn("fruitSeason").setHeader("Cropping Season").setAutoWidth(true).setResizable(true)
 					.setSortable(true);
 			grid.addColumn("source").setHeader("Plant/Seed Source").setAutoWidth(true).setResizable(true)
@@ -617,7 +618,7 @@ public class CropPlantsView extends HorizontalLayout {
 			grid.addColumn("uses").setHeader("Uses").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn("otherDetails").setAutoWidth(true).setResizable(true).setSortable(true);
 
-			grid.addColumn("specialFeatures").setAutoWidth(true).setResizable(true).setSortable(true);
+			
 			grid.addColumn("associatedTk").setHeader("Associated TK").setAutoWidth(true).setResizable(true)
 					.setSortable(true);
 			grid.addColumn("knowledgeHolder").setHeader("Knowledge Holder").setAutoWidth(true).setResizable(true)

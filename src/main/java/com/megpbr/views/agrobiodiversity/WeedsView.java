@@ -593,7 +593,7 @@ public class WeedsView extends HorizontalLayout{
 			///grid.addColumn("fruitSeason").setHeader("Cropping Season").setAutoWidth(true).setResizable(true).setSortable(true);
 			//grid.addColumn("source").setHeader("Plant/Seed Source").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn("uses").setHeader("Uses").setAutoWidth(true).setResizable(true).setSortable(true);
-			grid.addColumn("otherDetails").setAutoWidth(true).setResizable(true).setSortable(true);
+			grid.addColumn("otherDetails").setHeader("Other Details like exotic").setAutoWidth(true).setResizable(true).setSortable(true);
 			longitudeColumn=grid.addColumn("xfield1").setHeader("Affected Crops").setAutoWidth(true).setResizable(true).setSortable(true);
 			longitudeColumn=grid.addColumn("xfield2").setHeader("Impact").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn("management").setHeader("Management Option").setAutoWidth(true).setResizable(true).setSortable(true);

@@ -597,7 +597,7 @@ public class WildRelativesView extends HorizontalLayout {
 			localColumn=grid.addColumn("localName").setHeader("Local Name").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn("localLanguage").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn("habitat").setHeader("Landscape Habitat").setAutoWidth(true).setResizable(true).setSortable(true);
-			grid.addColumn("variety").setAutoWidth(true).setResizable(true).setSortable(true);
+			//grid.addColumn("variety").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn("partsUsed").setHeader("Part Used").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn(crop-> crop.getPresentStatus()==null ? "":crop.getPresentStatus().getStatus()).setHeader("Past Status").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn(crop-> crop.getPastStatus()==null ? "":crop.getPastStatus().getStatus()).setHeader("Present Status").setAutoWidth(true).setResizable(true).setSortable(true);

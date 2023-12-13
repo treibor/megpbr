@@ -236,6 +236,7 @@ public class ScapeForm extends Div {
 			binder.writeBean(scape);
 			scape.setMaster(master);
 			scape.setCrowdData(false);
+			Village vill=scape.getVillage();
 			if (getImageAsByteArray(buffer1) != null) {
 				scape.setPhoto1(getImageAsByteArray(buffer1));
 			}
@@ -255,6 +256,10 @@ public class ScapeForm extends Div {
 			initMasterFields(format);
 			removeFields();
 			clearBuffer();
+			state.setValue(vill.getBlock().getDistrict().getState());
+			district.setValue(vill.getBlock().getDistrict());
+			block.setValue(vill.getBlock());
+			village.setValue(vill);
 		} catch (ValidationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -686,6 +691,7 @@ public class ScapeForm extends Div {
 			management.setVisible(false);
 			generalResources.setVisible(false);
 			socialCommunity.setVisible(false);
+			otherDetails.setLabel("Other Information");
 			faunaPopulation.setLabel("Soil Type ");
 			floraOccupation.setLabel("Colour & Texture");
 			typeAgriOccupation.setLabel("Features");

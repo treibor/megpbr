@@ -579,11 +579,11 @@ public class MarketsFairView extends HorizontalLayout{
 			localColumn=grid.addColumn(market->market.getName()).setHeader("Weekly Market Name").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn("frequency").setHeader("Frequency").setAutoWidth(true).setResizable(true);
 			grid.addColumn("animalType").setHeader("Types of Animals Bought & Sold").setAutoWidth(true).setResizable(true);
-			grid.addColumn("transactions").setHeader("Type & Avg Transactions Per Day").setAutoWidth(true).setResizable(true);
+			grid.addColumn("transactions").setHeader("No of animals (average) transacted in a day").setAutoWidth(true).setResizable(true);
 			grid.addColumn("day").setHeader("Day Held").setAutoWidth(true).setResizable(true);
 			grid.addColumn("month").setHeader("Month, In case of Bi-Annual or Annual").setAutoWidth(true).setResizable(true);
-			grid.addColumn("placesFrom").setHeader("Places From Which Animals Are Brought").setAutoWidth(true).setResizable(true);
-			grid.addColumn("placesTo").setHeader("Places To Which Animals Are Sold").setAutoWidth(true).setResizable(true);
+			grid.addColumn("placesFrom").setHeader("Places from where animals Arrive").setAutoWidth(true).setResizable(true);
+			grid.addColumn("placesTo").setHeader("Places to where the animals are transported").setAutoWidth(true).setResizable(true);
 			grid.addColumn("fishLocation").setHeader("Location ").setAutoWidth(true).setResizable(true);
 			//grid.addColumn("fishType").setHeader("Types of Fishes Sold").setAutoWidth(true).setResizable(true);
 			//grid.addColumn("fishSource").setHeader("Sources of Fish").setAutoWidth(true).setResizable(true);

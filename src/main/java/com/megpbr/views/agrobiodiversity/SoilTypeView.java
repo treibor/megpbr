@@ -590,7 +590,7 @@ public class SoilTypeView extends HorizontalLayout{
 			//grid.addColumn("management").setHeader("Management Practices").setAutoWidth(true).setResizable(true);
 			//grid.addColumn("generalResources").setHeader("General Uses").setAutoWidth(true).setResizable(true);
 			grid.addColumn("associatedTk").setHeader("Associated TK").setAutoWidth(true).setResizable(true);
-			grid.addColumn("otherDetails").setHeader("Other Details").setAutoWidth(true).setResizable(true);
+			grid.addColumn("otherDetails").setHeader("Other Information").setAutoWidth(true).setResizable(true);
 			//grid.addColumn("socialCommunity").setHeader("Community Accessed").setAutoWidth(true).setResizable(true);
 			//grid.addColumn("features").setHeader("Sources of Fish").setAutoWidth(true).setResizable(true);
 			grid.addColumn("remarks").setHeader("Remarks").setAutoWidth(true).setResizable(true);

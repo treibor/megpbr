@@ -603,7 +603,7 @@ public class FumigateChewingView extends HorizontalLayout {
 			grid.addColumn(crop-> crop.getPastStatus()==null ? "":crop.getPastStatus().getStatus()).setHeader("Present Status").setAutoWidth(true).setResizable(true).setSortable(true);
 			//grid.addColumn("fruitSeason").setHeader("Cropping Season").setAutoWidth(true).setResizable(true).setSortable(true);
 			//grid.addColumn("source").setHeader("Plant/Seed Source").setAutoWidth(true).setResizable(true).setSortable(true);
-			//grid.addColumn("uses").setHeader("Uses").setAutoWidth(true).setResizable(true).setSortable(true);
+			grid.addColumn("uses").setHeader("Uses (usage)").setAutoWidth(true).setResizable(true).setSortable(true);
 			//grid.addColumn("otherDetails").setAutoWidth(true).setResizable(true).setSortable(true);
 			//grid.addColumn("specialFeatures").setAutoWidth(true).setResizable(true).setSortable(true);
 			grid.addColumn("xfield1").setHeader("Habit").setAutoWidth(true).setResizable(true).setSortable(true);

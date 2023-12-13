@@ -221,6 +221,7 @@ public class MarketsForm extends Div {
 			binder.writeBean(market);
 			market.setMaster(master);
 			market.setCrowdData(false);
+			Village vill=market.getVillage();
 			if (getImageAsByteArray(buffer1) != null) {
 				market.setPhoto1(getImageAsByteArray(buffer1));
 			}
@@ -240,6 +241,10 @@ public class MarketsForm extends Div {
 			initMasterFields(format);
 			removeFields();
 			clearBuffer();
+			state.setValue(vill.getBlock().getDistrict().getState());
+			district.setValue(vill.getBlock().getDistrict());
+			block.setValue(vill.getBlock());
+			village.setValue(vill);
 		} catch (ValidationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -571,6 +576,7 @@ public class MarketsForm extends Div {
 		case 6:
 			month.setVisible(false);
 			day.setVisible(false);
+			transactions.setPlaceholder("");
 			break;
 		case 17:
 			fishType.setVisible(false);
@@ -578,6 +584,10 @@ public class MarketsForm extends Div {
 			name.setLabel("Weekly Market Name");
 			frequency.setLabel("Frequency: Weekly/Fortnight");
 			fishLocation.setLabel("Location");
+			placesFrom.setLabel("Places from where animals Arrive");
+			placesTo.setLabel("Places from where animals are transported");
+			transactions.setLabel("No of animals (average) transacted in a day");
+			transactions.setPlaceholder("No of animals (average) transacted in a day");
 			break;
 		}
 	}
