@@ -256,10 +256,12 @@ public class ScapeForm extends Div {
 			initMasterFields(format);
 			removeFields();
 			clearBuffer();
-			state.setValue(vill.getBlock().getDistrict().getState());
-			district.setValue(vill.getBlock().getDistrict());
-			block.setValue(vill.getBlock());
-			village.setValue(vill);
+			if (master == false) {
+				state.setValue(vill.getBlock().getDistrict().getState());
+				district.setValue(vill.getBlock().getDistrict());
+				block.setValue(vill.getBlock());
+				village.setValue(vill);
+			}
 		} catch (ValidationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

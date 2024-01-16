@@ -258,10 +258,12 @@ public class CropPlantsForm extends Div {
 			initMasterFields(format);
 			removeFields();
 			clearBuffer();
-			state.setValue(vill.getBlock().getDistrict().getState());
-			district.setValue(vill.getBlock().getDistrict());
-			block.setValue(vill.getBlock());
-			village.setValue(vill);
+			if (master == false) {
+				state.setValue(vill.getBlock().getDistrict().getState());
+				district.setValue(vill.getBlock().getDistrict());
+				block.setValue(vill.getBlock());
+				village.setValue(vill);
+			}
 		} catch (ValidationException e) {
 			// TODO Auto-generated catch block
 			Notification.show("Error. Please Check").addThemeVariants(NotificationVariant.LUMO_ERROR);
@@ -739,6 +741,7 @@ public class CropPlantsForm extends Div {
 			partsUsed.setVisible(true);
 			break;
 		case 13:
+			habitat.setVisible(false);
 			pastStatus.setVisible(false);
 			presentStatus.setVisible(false);
 			fruitSeasons.setVisible(false);
@@ -802,6 +805,8 @@ public class CropPlantsForm extends Div {
 			xfield2.setVisible(true);
 			xfield1.setLabel("Importance: Economic/Social/Cultural");
 			xfield2.setLabel("Status");
+			associatedTk.setVisible(false);
+			knowledgeHolder.setVisible(false);
 			break;
 		case 20:
 			type.setVisible(false);
@@ -813,6 +818,7 @@ public class CropPlantsForm extends Div {
 			partsUsed.setVisible(true);
 			break;
 		case 21:
+			habitat.setVisible(false);
 			type.setVisible(false);
 			pastStatus.setVisible(false);
 			presentStatus.setVisible(false);
@@ -825,6 +831,8 @@ public class CropPlantsForm extends Div {
 			xfield2.setVisible(true);
 			xfield1.setLabel("Importance");
 			xfield2.setLabel("Trends");
+			associatedTk.setVisible(false);
+			knowledgeHolder.setVisible(false);
 			break;
 		case 22:
 			type.setLabel("Plant");
