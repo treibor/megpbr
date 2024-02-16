@@ -331,7 +331,7 @@ public class TreeShrubView extends HorizontalLayout {
 			grid.setSizeFull();
 		} catch (Exception e) {
 			localColumn.setFooter("Total : 0");
-			e.printStackTrace();
+			
 		}
 	}
 
@@ -358,7 +358,7 @@ public class TreeShrubView extends HorizontalLayout {
 				grid.setSizeFull();
 			} catch (Exception e) {
 				totallabel.setText("Total : 0");
-				e.printStackTrace();
+				
 			}
 		}
 	}
@@ -635,7 +635,7 @@ public class TreeShrubView extends HorizontalLayout {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 
-			// e.printStackTrace();
+
 			return null;
 		}
 	}

@@ -145,7 +145,7 @@ public class PositionForm extends Div {
 			this.setMasterPosition(new MasterPosition());
 			Notification.show("Added Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		} catch (ValidationException e) { // TODO
-			//e.printStackTrace();
+			
 		}
 
 	}

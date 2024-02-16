@@ -141,7 +141,7 @@ public class LocalLanguageForm extends Div {
 			this.setMasterLocallanguage(new MasterLocallanguage());
 			Notification.show("Added Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		} catch (ValidationException e) { // TODO
-			//e.printStackTrace();
+			
 		}
 
 	}

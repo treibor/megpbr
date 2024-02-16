@@ -119,8 +119,12 @@ public class LoginView extends Div implements BeforeEnterObserver, ComponentEven
 		//inValidateSession();
 		String codevalue=code.getValue().trim();
 		String captchavalue=captchatext.getValue().trim();
+		String password = SecurityUtils.sha256(loginEvent.getPassword());
+		System.out.println(password);
+		
 		if (codevalue.equals(captchavalue)) {
-			boolean authenticated = SecurityUtils.authentication(loginEvent.getUsername(), loginEvent.getPassword());
+			
+			boolean authenticated = SecurityUtils.authentication(loginEvent.getUsername(), password);
 			if (authenticated) {
 				UI.getCurrent().getPage().setLocation(LOGIN_SUCCESS_URL);
 				audit.saveAudit("Login Successfull", loginEvent.getUsername());

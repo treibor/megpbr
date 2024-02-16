@@ -141,7 +141,7 @@ public class StatusForm extends Div {
 			this.setMasterStatus(new MasterStatus());
 			Notification.show("Added Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		} catch (ValidationException e) { // TODO
-			//e.printStackTrace();
+			
 		}
 
 	}

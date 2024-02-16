@@ -88,7 +88,7 @@ public class StateForm extends Div {
 			this.setState(new State());
 			//Notification.show("Added Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		} catch (ValidationException e) { // TODO
-			//e.printStackTrace();
+			Notification.show("Error. ").addThemeVariants(NotificationVariant.LUMO_ERROR);
 		}
 
 	}

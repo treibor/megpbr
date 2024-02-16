@@ -331,7 +331,7 @@ public class DomFruitTreesView extends HorizontalLayout {
 			grid.setSizeFull();
 		} catch (Exception e) {
 			localColumn.setFooter("Total : 0");
-			e.printStackTrace();
+			
 		}
 	}
 
@@ -358,7 +358,7 @@ public class DomFruitTreesView extends HorizontalLayout {
 				grid.setSizeFull();
 			} catch (Exception e) {
 				totallabel.setText("Total : 0");
-				e.printStackTrace();
+				
 			}
 		}
 	}
@@ -628,7 +628,7 @@ public class DomFruitTreesView extends HorizontalLayout {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 
-			// e.printStackTrace();
+
 			return null;
 		}
 	}

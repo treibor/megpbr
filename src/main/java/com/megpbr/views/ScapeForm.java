@@ -225,7 +225,7 @@ public class ScapeForm extends Div {
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
 			Notification.show("Error: " + e);
 		}
 
@@ -264,7 +264,7 @@ public class ScapeForm extends Div {
 			}
 		} catch (ValidationException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
 		}
 	}
 	public void deleteScape(Scapes scape) {
@@ -785,7 +785,7 @@ public class ScapeForm extends Div {
 			imageLayout.add(imageContainer);
 			//imageContainer.get
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 			Notification.show("Error" + e);
 		}
 	}
@@ -803,7 +803,7 @@ public class ScapeForm extends Div {
 				return IOUtils.toByteArray(is);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			
 			return null;
 		}
 	}

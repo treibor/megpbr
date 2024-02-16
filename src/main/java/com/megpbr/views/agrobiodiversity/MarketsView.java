@@ -323,7 +323,7 @@ public class MarketsView extends HorizontalLayout{
 			grid.setSizeFull();
 		} catch (Exception e) {
 			totallabel.setText("Total : 0");
-			e.printStackTrace();
+			
 		}
 	}
 	
@@ -352,7 +352,7 @@ public class MarketsView extends HorizontalLayout{
 				grid.setSizeFull();
 			} catch (Exception e) {
 				totallabel.setText("Total : 0");
-				e.printStackTrace();
+				
 			}
 		}
 	}
@@ -606,7 +606,7 @@ public class MarketsView extends HorizontalLayout{
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			
-			//e.printStackTrace();
+
 			return null;
 		}
 	}

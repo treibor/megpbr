@@ -210,7 +210,7 @@ public class MarketsForm extends Div {
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
 			Notification.show("Error: " + e);
 		}
 
@@ -249,7 +249,7 @@ public class MarketsForm extends Div {
 			}
 		} catch (ValidationException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
 		}
 	}
 	public void deleteScape(Markets market) {
@@ -674,7 +674,7 @@ public class MarketsForm extends Div {
 			imageLayout.add(imageContainer);
 			//imageContainer.get
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 			Notification.show("Error" + e);
 		}
 	}
@@ -693,7 +693,7 @@ public class MarketsForm extends Div {
 				return IOUtils.toByteArray(is);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			
 			return null;
 		}
 	}

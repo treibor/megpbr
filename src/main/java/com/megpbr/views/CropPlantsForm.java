@@ -974,7 +974,7 @@ public class CropPlantsForm extends Div {
 			imageLayout.add(imageContainer);
 			//imageContainer.get
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 			Notification.show("Error" + e);
 		}
 	}
@@ -992,7 +992,7 @@ public class CropPlantsForm extends Div {
 				return IOUtils.toByteArray(is);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			
 			return null;
 		}
 	}

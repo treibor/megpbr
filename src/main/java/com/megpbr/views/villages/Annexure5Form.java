@@ -175,7 +175,7 @@ public class Annexure5Form extends Div {
 				
 			}
 		} catch (ValidationException e) { // TODO
-			//e.printStackTrace();
+			
 		}
 
 	}
@@ -320,7 +320,7 @@ public class Annexure5Form extends Div {
 				return IOUtils.toByteArray(is);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			
 			return null;
 		}
 	}

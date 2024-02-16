@@ -327,7 +327,7 @@ public class UserView {
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					Notification.show("Failed To Create User").addThemeVariants(NotificationVariant.LUMO_ERROR);
-					e.printStackTrace();
+					
 				}
 				
 			}

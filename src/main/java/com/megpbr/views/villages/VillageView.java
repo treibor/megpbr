@@ -517,7 +517,7 @@ public class VillageView extends Div{
         try {
             stream = new FileInputStream(file);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+           
         }
 
         return stream;
@@ -710,7 +710,7 @@ public class VillageView extends Div{
 		} catch (NullPointerException npe) {
 			Notification.show("Please Select A Village To Delete").addThemeVariants(NotificationVariant.LUMO_ERROR);
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 			// TODO Auto-generated catch block
 			Notification.show("Error Encountered :" + e);
 		}
@@ -737,7 +737,7 @@ public class VillageView extends Div{
 			form1.save.setText("Add");
 			ConfigureGrid1(event.getVillageAnnexure1().getVillage());
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 			// TODO Auto-generated catch block
 			//Notification.show("Error Encountered :"+e);		
 		}
@@ -752,7 +752,7 @@ public class VillageView extends Div{
 			dbservice.deleteAnnexure1Details(annex1);
 			ConfigureGrid1(deletedvillage);
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 			// TODO Auto-generated catch block
 			Notification.show("Error Encountered :"+e);
 		}
@@ -779,7 +779,7 @@ public class VillageView extends Div{
 			form2.save.setText("Add");
 			ConfigureGrid2(event.getVillageAnnexure2().getVillage());
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 					
 		}
 	}
@@ -792,7 +792,7 @@ public class VillageView extends Div{
 			dbservice.deleteAnnexure2Details(annex1);
 			ConfigureGrid2(deletedvillage);
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 			// TODO Auto-generated catch block
 			Notification.show("Error Encountered :"+e);
 		}
@@ -819,7 +819,7 @@ public class VillageView extends Div{
 			form3.save.setText("Add");
 			ConfigureGrid3(event.getVillageAnnexure3().getVillage());
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 			// TODO Auto-generated catch block
 			//Notification.show("Error Encountered :"+e);		
 		}
@@ -836,7 +836,7 @@ public class VillageView extends Div{
 			
 			ConfigureGrid3(deletedvillage);
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 			// TODO Auto-generated catch block
 			Notification.show("Error Encountered :"+e);
 		}
@@ -863,7 +863,7 @@ public class VillageView extends Div{
 			form4.save.setText("Add");
 			ConfigureGrid4(event.getVillageAnnexure4().getVillage());
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 			// TODO Auto-generated catch block
 			//Notification.show("Error Encountered :"+e);		
 		}
@@ -880,7 +880,7 @@ public class VillageView extends Div{
 			dbservice.deleteAnnexure4Details(annex1);
 			ConfigureGrid4(deletedvillage);
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 			// TODO Auto-generated catch block
 			Notification.show("Error Encountered :"+e);
 		}
@@ -907,7 +907,7 @@ public class VillageView extends Div{
 			form5.save.setText("Add");
 			ConfigureGrid5(event.getVillageAnnexure5().getVillage());
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 			// TODO Auto-generated catch block
 			//Notification.show("Error Encountered :"+e);		
 		}
@@ -923,7 +923,7 @@ public class VillageView extends Div{
 			dbservice.deleteAnnexure5Details(annex1);
 			ConfigureGrid5(deletedvillage);
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 			// TODO Auto-generated catch block
 			Notification.show("Error Encountered :"+e);
 		}
@@ -1065,7 +1065,7 @@ public class VillageView extends Div{
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			
-			//e.printStackTrace();
+
 			return null;
 		}
 	}
@@ -1078,7 +1078,7 @@ public class VillageView extends Div{
 			grid.setSizeFull();
 		} catch (Exception e) {
 			geographicColumn.setFooter("Total : 0");
-			e.printStackTrace();
+			
 		}
 	}
 	
@@ -1143,7 +1143,7 @@ public class VillageView extends Div{
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			
-			//e.printStackTrace();
+
 			return null;
 		}
 	}
@@ -1164,7 +1164,7 @@ public class VillageView extends Div{
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			
-			//e.printStackTrace();
+
 			return null;
 		}
 	}
@@ -1181,7 +1181,7 @@ public class VillageView extends Div{
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			
-			//e.printStackTrace();
+
 			return null;
 		}
 	}
@@ -1196,7 +1196,7 @@ public class VillageView extends Div{
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			
-			//e.printStackTrace();
+
 			return null;
 		}
 	}
@@ -1214,7 +1214,7 @@ public class VillageView extends Div{
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			
-			//e.printStackTrace();
+
 			return null;
 		}
 	}

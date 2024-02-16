@@ -141,7 +141,7 @@ public class RegimeForm extends Div {
 			this.setMasterManagementRegime(new MasterManagementRegime());
 			Notification.show("Added Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		} catch (ValidationException e) { // TODO
-			//e.printStackTrace();
+			
 		}
 
 	}

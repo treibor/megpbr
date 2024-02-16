@@ -63,6 +63,7 @@ import com.vaadin.flow.shared.Registration;
 
 import elemental.json.Json;
 
+
 public class CrowdForm extends Div {
 	Dbservice dbservice;
 	CrowdService cservice;
@@ -88,6 +89,7 @@ public class CrowdForm extends Div {
 		addClassName("crowdplants-view");
 		initForm();
 		binder.bindInstanceFields(this);
+		//add(new VerticalLayout(createMasterForm(), createButtons(), createMap()));
 		add(new VerticalLayout(createMasterForm(), createButtons()));
 		this.setHeightFull();
 	}
@@ -188,7 +190,13 @@ public class CrowdForm extends Div {
 
 	
 
-
+	private Component createMap() {
+		
+		
+			return null;
+			
+		
+	}
 	public Component createMasterForm() {
 		// state.setVisible(isSuperAdmin);
 		state.setPlaceholder("State");

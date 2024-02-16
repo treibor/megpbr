@@ -65,9 +65,9 @@ public class LoginViewAudit extends Div implements BeforeEnterObserver, Componen
 	Audit audit;
 	FormLayout form=new FormLayout();
     //private LoginForm login = new LoginForm();
-    private TextField username=new TextField("User Name");
+    //private TextField username=new TextField("User Name");
     public TextField captchatext=new TextField();
-    private PasswordField password=new PasswordField("Password");
+   // private PasswordField password=new PasswordField("Password");
     private Button loginbutton=new Button("Login");
     //public Button captchabutton=new Button("");
     //private final AuthenticatedUser authenticatedUser;
@@ -115,6 +115,9 @@ public class LoginViewAudit extends Div implements BeforeEnterObserver, Componen
    
 	@Override
 	public void onComponentEvent(AbstractLogin.LoginEvent loginEvent) {
+		
+		//String password = SecurityUtils.sha256(loginEvent.getPassword());
+		//boolean authenticated = SecurityUtils.authentication(loginEvent.getUsername(), password);
 		boolean authenticated = SecurityUtils.authentication(loginEvent.getUsername(), loginEvent.getPassword());
 		if (authenticated) {
 			UI.getCurrent().getPage().setLocation(LOGIN_SUCCESS_URL);
@@ -141,17 +144,5 @@ public class LoginViewAudit extends Div implements BeforeEnterObserver, Componen
             loginOverlay.setError(true);
         }
     }
-    
-//    @Override
-//    public void beforeEnter(BeforeEnterEvent event) {
-//        if (authenticatedUser.get().isPresent()) {
-//            // Already logged in
-//            setOpened(false);
-//            event.forwardTo("");
-//        }
-//
-//        setError(event.getLocation().getQueryParameters().getParameters().containsKey("error"));
-//    }
-    
-   
+  
 }

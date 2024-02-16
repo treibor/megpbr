@@ -170,6 +170,7 @@ public class CropForm extends Div {
 	
 	
 	public Component createAccordion() {
+		System.out.println("XYZ");
 		Accordion accordion = new Accordion();
 		AccordionPanel topaccordion = new AccordionPanel();
 		AccordionPanel bottomaccordion = new AccordionPanel();
@@ -294,6 +295,8 @@ public class CropForm extends Div {
 		binder.setBean(new Crops());
 	}
 
+	
+	
 	private void removeFields() {
 		habitat.setValue("");
 		area.setValue("");
@@ -969,7 +972,7 @@ public class CropForm extends Div {
 			imageLayout.add(imageContainer);
 			//imageContainer.get
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 			Notification.show("Error" + e);
 		}
 	}
@@ -987,7 +990,7 @@ public class CropForm extends Div {
 				return IOUtils.toByteArray(is);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			
 			return null;
 		}
 	}

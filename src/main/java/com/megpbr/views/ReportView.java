@@ -96,7 +96,7 @@ public class ReportView extends VerticalLayout {
 			JasperExportManager.exportReportToPdfFile(jasperPrint, reportPath + "//annexures.pdf");
 		} catch (Exception e) {
 			// notify.show("Error:" + e, 5000, Position.TOP_CENTER);
-			e.printStackTrace();
+			
 		}
 
 	}
@@ -160,7 +160,7 @@ public class ReportView extends VerticalLayout {
 			exporter.exportReport();
 		} catch (Exception e) {
 			// notify.show("Error:" + e, 5000, Position.TOP_CENTER);
-			e.printStackTrace();
+			
 		}
 
 	}
@@ -195,7 +195,7 @@ public class ReportView extends VerticalLayout {
 			
 		} catch (Exception e) {
 			// notify.show("Error:" + e, 5000, Position.TOP_CENTER);
-			e.printStackTrace();
+			
 		}
 
 	}
