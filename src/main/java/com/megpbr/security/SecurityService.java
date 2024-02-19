@@ -1,6 +1,10 @@
 package com.megpbr.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,36 +20,24 @@ import com.vaadin.flow.spring.security.AuthenticationContext;
 
 @Component
 public class SecurityService {
-	//	private static final String LOGOUT_SUCCESS_URL = "/";
-	private static final String LOGOUT_SUCCESS_URL = "/megpbr";
-	@Autowired
-	AuditRepository arepo;
+	
 	private final AuthenticationContext authenticationContext;
 
-    
 	public SecurityService(AuthenticationContext authenticationContext) {
-        this.authenticationContext = authenticationContext;
-    }
-	
-	public UserDetails getAuthenticatedUser() {
-		//System.out.println("Authenticated User");
-		SecurityContext context = SecurityContextHolder.getContext();
-		Object principal = context.getAuthentication().getPrincipal();
-		if (principal instanceof UserDetails) {
-			return (UserDetails) context.getAuthentication().getPrincipal();
-		}
-		// Anonymous or no authentication.
-		return null;
+		this.authenticationContext = authenticationContext;
+	}
 
+	public UserDetails getAuthenticatedUser() {
+		return authenticationContext.getAuthenticatedUser(UserDetails.class).get();
 	}
 
 	public void logout() {
-		//System.out.println("Logout");
-		UI.getCurrent().getPage().setLocation(LOGOUT_SUCCESS_URL);
-		SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
-		logoutHandler.logout(VaadinServletRequest.getCurrent().getHttpServletRequest(), null, null);
-		//authenticationContext.logout();
+		authenticationContext.logout();
 	}
 	
 	
+	public void authenticateUser(UserDetails userDetails) {
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
 }

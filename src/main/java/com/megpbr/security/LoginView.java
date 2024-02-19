@@ -72,7 +72,7 @@ public class LoginView extends Div implements BeforeEnterObserver, ComponentEven
     //public Button captchabutton=new Button("");
     //private final AuthenticatedUser authenticatedUser;
     //private static final String LOGIN_SUCCESS_URL = "/";
-    private static final String LOGIN_SUCCESS_URL = "/megpbr";
+    private static final String LOGIN_SUCCESS_URL = "/";
     TextField code = new TextField("");
     LoginOverlay loginOverlay = new LoginOverlay();
     //private static CaptchaCheck captcha;
@@ -103,9 +103,10 @@ public class LoginView extends Div implements BeforeEnterObserver, ComponentEven
 		//loginOverlay.setError(true);
 		loginOverlay.addLoginListener(this);
 		loginOverlay.getElement().setAttribute("no-autofocus", "");
-		if(SecurityUtils.isAuthenticated()) {
-			UI.getCurrent().getPage().setLocation(LOGIN_SUCCESS_URL);
-		}
+		/*
+		 * if(SecurityUtils.isAuthenticated()) {
+		 * //UI.getCurrent().getPage().setLocation(LOGIN_SUCCESS_URL); }
+		 */
 	}
     
 	public void refreshCaptcha() {
@@ -116,24 +117,23 @@ public class LoginView extends Div implements BeforeEnterObserver, ComponentEven
    
 	@Override
 	public void onComponentEvent(AbstractLogin.LoginEvent loginEvent) {
-		//inValidateSession();
 		String codevalue=code.getValue().trim();
 		String captchavalue=captchatext.getValue().trim();
-		String password = SecurityUtils.sha256(loginEvent.getPassword());
-		System.out.println(password);
+		//String password = SecurityUtils.sha256(loginEvent.getPassword());
+		//System.out.println(password);
 		
 		if (codevalue.equals(captchavalue)) {
 			
-			boolean authenticated = SecurityUtils.authentication(loginEvent.getUsername(), password);
-			if (authenticated) {
-				UI.getCurrent().getPage().setLocation(LOGIN_SUCCESS_URL);
-				audit.saveAudit("Login Successfull", loginEvent.getUsername());
-			} else {
-				audit.saveLoginAudit("Login Failure", loginEvent.getUsername());
-				loginOverlay.setError(true);
-				loginOverlay.setEnabled(true);
-				//refreshCaptcha();
-			}
+			/*
+			 * boolean authenticated =
+			 * SecurityUtils.authentication(loginEvent.getUsername(),
+			 * loginEvent.getPassword()); if (authenticated) {
+			 * UI.getCurrent().getPage().setLocation(LOGIN_SUCCESS_URL);
+			 * audit.saveAudit("Login Successfull", loginEvent.getUsername()); } else {
+			 * audit.saveLoginAudit("Login Failure", loginEvent.getUsername());
+			 * loginOverlay.setError(true); loginOverlay.setEnabled(true);
+			 * //refreshCaptcha(); }
+			 */
 		} else {
 			Notification.show("Invalid Captcha Text");
 			//loginOverlay.setError(true);
