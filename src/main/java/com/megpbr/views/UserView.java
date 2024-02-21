@@ -301,10 +301,10 @@ public class UserView {
 							role.setRoleName("ADMIN");
 							role.setUser(newUser);
 							userservice.update(role);
-							createAdminRole(newUser);
+							//createAdminRole(newUser);
 							role.setRoleName("STATEADMIN");
 							role.setUser(newUser);
-							userservice.update(role);
+							//userservice.update(role);
 							createAdminRole(newUser);
 						} else {
 							if (userLevel.endsWith("VERIFIER")) {

@@ -45,13 +45,13 @@ public class LoginViewAudit extends Div implements BeforeEnterObserver, Componen
 	FormLayout form = new FormLayout();
     public TextField captchatext=new TextField();
     private Button loginbutton=new Button("Login");
-    private static final String LOGIN_SUCCESS_URL = "/megpbr";
+    private static final String LOGIN_SUCCESS_URL = "/";
     TextField code = new TextField("");
     LoginOverlay loginOverlay = new LoginOverlay();
 	public LoginViewAudit() {
 		add(loginOverlay);
 		loginOverlay.setTitle("Meghalaya Biodiversity Board");
-		loginOverlay.setDescription("People's Biodiversity Register");
+		loginOverlay.setDescription("People's Biodiversity Register Ver. 2.0");
 		loginOverlay.setForgotPasswordButtonVisible(false);
 		loginOverlay.setOpened(true);
 		//loginOverlay.addLoginListener(this);

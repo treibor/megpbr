@@ -53,11 +53,11 @@ public class SecurityConfiguration extends VaadinWebSecurity {
 	            .xssProtection(xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
 	            .frameOptions(frame -> frame.sameOrigin())
 	            .referrerPolicy(referrer -> referrer.policy(ReferrerPolicy.SAME_ORIGIN))
-	            .contentSecurityPolicy(content -> content
+	            /*.contentSecurityPolicy(content -> content
 	                .policyDirectives("default-src 'self' ; " + "img-src 'self'; media-src 'self'; "
 	                        + "object-src 'self'; script-src 'unsafe-inline' " + "'unsafe-eval' 'self'; "
-	                        + "style-src 'unsafe-inline' 'self'")
-	            )
+	                        + "style-src 'unsafe-inline' 'self'"))*/
+	            
 	        )
 	        .sessionManagement(session -> session
 	        	
