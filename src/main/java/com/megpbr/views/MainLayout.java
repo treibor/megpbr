@@ -61,26 +61,34 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.spring.security.AuthenticationContext;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
 import com.vaadin.flow.theme.lumo.LumoUtility.Padding;
 
+import jakarta.annotation.security.PermitAll;
+
 /**
  * The main view is a top-level placeholder for other views.
  */
+
 public class MainLayout extends AppLayout {
 	private H2 viewTitle;
     private Dbservice dbservice;
     private UserService userservice;
     private SecurityService securityService;
     private Audit auditobject; 
+    //private final transient AuthenticationContext authContext;
+
     public MainLayout(Dbservice dbservice, UserService userservice, SecurityService securityService) {
     	this.dbservice=dbservice;
     	this.securityService=securityService;
     	this.userservice=userservice;
+    	//this.authContext=auth;
         setPrimarySection(Section.NAVBAR);
         addDrawerContent();
         addHeaderContent();
+        //System.out.println("A:"+auth.getPrincipalName());
     }
     public boolean isAdmin() {
     	String userLevel=userservice.getLoggedUserLevel();

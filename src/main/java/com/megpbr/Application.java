@@ -12,6 +12,8 @@ import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 
+import jakarta.servlet.ServletContext;
+
 /**
  * The entry point of the Spring Boot application.
  *
@@ -30,7 +32,10 @@ public class Application extends SpringBootServletInitializer implements AppShel
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
-   
+    @Override
+    public void onStartup(ServletContext servletContext) {
+        servletContext.setSessionTimeout(30); // Timeout in minutes
+    }
 	
 	  @Bean
 	  public FilterRegistrationBean<HiddenHttpMethodFilter>

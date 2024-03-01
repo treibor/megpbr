@@ -170,7 +170,7 @@ public class CropForm extends Div {
 	
 	
 	public Component createAccordion() {
-		System.out.println("XYZ");
+		//System.out.println("XYZ");
 		Accordion accordion = new Accordion();
 		AccordionPanel topaccordion = new AccordionPanel();
 		AccordionPanel bottomaccordion = new AccordionPanel();

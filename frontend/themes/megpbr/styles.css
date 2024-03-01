@@ -31,6 +31,8 @@
       --lumo-base-color: hsl(214, 23%, 82%);
 
     }
+    
+
 vaadin-app-layout::part(drawer) {
   width: 300px;
 }
@@ -59,8 +61,17 @@ vaadin-radio-group vaadin-radio-group::part(group-field){
 vaadin-radio-group vaadin-radio-group > label{
 	font-size:5%;
 }
+
 .login{
-	--background-image: url("../images/bg.jpg");
-	--background: url("../images/bg.jpg") !important;
+	background-image: url("../images/bg.jpg");
+	background: url("../images/bg.jpg");
 }
 
+
+.login-rich-content {
+  background-image: url("/images/bg.jpg");
+  background-position: center;
+  background-size: cover;
+  display: flex;
+  height: 100%;
+}

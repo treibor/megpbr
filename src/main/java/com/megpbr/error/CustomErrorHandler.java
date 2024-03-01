@@ -11,7 +11,6 @@ import com.vaadin.flow.server.ErrorHandler;
 public class CustomErrorHandler implements ErrorHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(CustomErrorHandler.class);
-
     @Override
     public void error(ErrorEvent errorEvent) {
         logger.error("Something wrong happened", errorEvent.getThrowable());

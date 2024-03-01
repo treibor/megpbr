@@ -1,0 +1,7 @@
+@charset "ISO-8859-1";
+
+:host [part="brand"] {
+    background-image: url("images/bg.jpg");
+    background-size: cover;
+    background-position-x: center;
+}

@@ -10,6 +10,7 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
+import org.springframework.stereotype.Controller;
 
 import com.megpbr.data.entity.District;
 import com.megpbr.data.entity.MasterFormat;
@@ -60,12 +61,12 @@ public class DashboardView extends VerticalLayout {
 	DashboardService dservice;
     public DashboardView(DashboardService dservice) {
     	this.dservice=dservice;
-    	
-        add(getCharts());
+    	add(getCharts());
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         getStyle().set("text-align", "center");
+        
     }
     public Component getCharts() {
     	SOChart soChart = new SOChart();
