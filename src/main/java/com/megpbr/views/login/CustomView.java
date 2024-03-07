@@ -34,7 +34,7 @@ import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 
-@Route("loginss")
+//@Route("loginss")
 @PageTitle("Login")
 @AnonymousAllowed
 

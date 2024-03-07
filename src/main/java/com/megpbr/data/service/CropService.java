@@ -110,6 +110,21 @@ public class CropService {
 	public List<String> findPartsUsedAsString(MasterFormat format){
 		return crepo.partsUsed( format);
 	}
+	public List<String> findManagementAsString(MasterFormat format){
+		return crepo.management( format);
+	}
+	public List<String> findXfield1AsString(MasterFormat format){
+		return crepo.xfield1( format);
+	}
+	public List<String> findXfield2AsString(MasterFormat format){
+		return crepo.xfield2( format);
+	}
+	public List<String> findOtherDetailsAsString(MasterFormat format){
+		return crepo.otherDetails( format);
+	}
+	public List<String> findSpFeaturesAsString(MasterFormat format){
+		return crepo.specialFeatures( format);
+	}
 	public List<Crops> findDistinctScientificName(MasterFormat format){
 		//System.out.println(crepo.findByFormatOrderByScientificName(format));
 		return crepo.findDistinctByFormat(format);

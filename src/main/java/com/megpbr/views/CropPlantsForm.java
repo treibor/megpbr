@@ -6,20 +6,12 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.megpbr.data.entity.Block;
 import com.megpbr.data.entity.District;
@@ -36,13 +28,10 @@ import com.megpbr.data.entity.pbr.Crops;
 import com.megpbr.data.service.CropService;
 import com.megpbr.data.service.Dbservice;
 import com.megpbr.views.agrobiodiversity.CropPlantsView;
-import com.megpbr.views.dashboard.DashboardView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.Text;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.accordion.AccordionPanel;
 import com.vaadin.flow.component.button.Button;
@@ -56,28 +45,22 @@ import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H6;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.notification.Notification.Position;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.Scroller.ScrollDirection;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
-import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.shared.Registration;
-
 
 import elemental.json.Json;
 
@@ -113,8 +96,10 @@ public class CropPlantsForm extends Div {
 	ComboBox<String> knowledgeHolder = new ComboBox("Knowledge Holder");
 	ComboBox<String> uses = new ComboBox("Uses");
 	ComboBox<String> partsUsed = new ComboBox("Parts Used");
-	TextField otherDetails = new TextField("Other Details");
-	TextField specialFeatures = new TextField("Special Features");
+	//TextField otherDetails = new TextField("Other Details");
+	ComboBox<String> otherDetails = new ComboBox("Other Details");
+	//TextField specialFeatures = new TextField("Special Features");
+	ComboBox<String> specialFeatures = new ComboBox("Special Features");
 	TextField remarks = new TextField("");
 	TextField area = new TextField("Approx Area Sown");
 	MultiSelectComboBox<MasterLocallanguage> localLanguages = new MultiSelectComboBox("");
@@ -129,9 +114,12 @@ public class CropPlantsForm extends Div {
 	TextField photo4Source = new TextField();
 	TextField latitude = new TextField("Latitude");
 	TextField longitude = new TextField("Longitude");
-	TextField management = new TextField("Management Options");
-	TextField xfield1 = new TextField("");
-	TextField xfield2 = new TextField("");
+	//TextField management = new TextField("Management Options");
+	ComboBox<String> management = new ComboBox("Management Options");
+	//TextField xfield1 = new TextField("");
+	ComboBox<String> xfield1 = new ComboBox("");
+	//TextField xfield2 = new TextField("");
+	ComboBox<String> xfield2 = new ComboBox("");
 	public Button save = new Button("Save");
 	Button cancel = new Button("Close");
 	public Button delete = new Button("Delete");
@@ -383,7 +371,8 @@ public class CropPlantsForm extends Div {
 			management.setValue(crops.getManagement());
 			xfield1.setValue(crops.getXfield1());
 			xfield2.setValue(crops.getXfield2());
-			
+			otherDetails.setValue(crops.getOtherDetails());
+			specialFeatures.setValue(crops.getSpecialFeatures());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 
@@ -604,6 +593,36 @@ public class CropPlantsForm extends Div {
 			partsUsed.setItems(custompartsUsed);
 			partsUsed.setValue(custompartsUsed);
 		});
+		management.setAllowCustomValue(true);
+		management.addCustomValueSetListener(e -> {
+			String custommanagement = e.getDetail();
+			management.setItems(custommanagement);
+			management.setValue(custommanagement);
+		});
+		xfield1.setAllowCustomValue(true);
+		xfield1.addCustomValueSetListener(e -> {
+			String customxfield1 = e.getDetail();
+			xfield1.setItems(customxfield1);
+			xfield1.setValue(customxfield1);
+		});
+		xfield2.setAllowCustomValue(true);
+		xfield2.addCustomValueSetListener(e -> {
+			String customxfield2 = e.getDetail();
+			xfield2.setItems(customxfield2);
+			xfield2.setValue(customxfield2);
+		});
+		otherDetails.setAllowCustomValue(true);
+		otherDetails.addCustomValueSetListener(e -> {
+			String customotherDetails = e.getDetail();
+			otherDetails.setItems(customotherDetails);
+			otherDetails.setValue(customotherDetails);
+		});
+		specialFeatures.setAllowCustomValue(true);
+		specialFeatures.addCustomValueSetListener(e -> {
+			String customspecialFeatures = e.getDetail();
+			specialFeatures.setItems(customspecialFeatures);
+			specialFeatures.setValue(customspecialFeatures);
+		});
 		initMasterFields(format);
 		initFormatFields(format);
 	}
@@ -632,6 +651,11 @@ public class CropPlantsForm extends Div {
 		List<String> knowledge=cservice.findKnowledgeHolderAsString(format);
 		List<String> usess=cservice.findUsesAsString(format);
 		List<String> usedparts=cservice.findPartsUsedAsString(format);
+		List<String> managements=cservice.findManagementAsString(format);
+		List<String> xfields1=cservice.findXfield1AsString(format);
+		List<String> xfields2=cservice.findXfield2AsString(format);
+		List<String> otherdetails=cservice.findOtherDetailsAsString(format);
+		List<String> specialfeatures=cservice.findSpFeaturesAsString(format);
 		scientificName.setItems(snames);
 		localName.setItems(lnames);
 		type.setItems(types);
@@ -642,6 +666,11 @@ public class CropPlantsForm extends Div {
 		knowledgeHolder.setItems(knowledge);
 		uses.setItems(usess);
 		partsUsed.setItems(usedparts);
+		management.setItems(managements);
+		xfield1.setItems(xfields1);
+		xfield2.setItems(xfields2);
+		otherDetails.setItems(otherdetails);
+		specialFeatures.setItems(specialfeatures);
 	}
 
 	public static abstract class CropPlantsFormEvent extends ComponentEvent<CropPlantsForm> {
@@ -790,6 +819,8 @@ public class CropPlantsForm extends Div {
 			source.setVisible(false);
 			uses.setVisible(false);
 			commercial.setVisible(true);
+			xfield1.setVisible(true);
+			xfield1.setLabel("Habit");
 			break;
 		case 19:
 			habitat.setVisible(false);
@@ -850,6 +881,7 @@ public class CropPlantsForm extends Div {
 			fruitSeasons.setVisible(false);
 			otherDetails.setLabel("Other Details(Mode of Use)");
 			source.setVisible(false);
+			partsUsed.setVisible(true);
 			uses.setLabel("Uses(Usage)");
 			break;
 		case 24:

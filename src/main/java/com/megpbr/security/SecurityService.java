@@ -34,7 +34,7 @@ public class SecurityService {
 	}
 	
 	public UserDetails getAuthenticatedUser1() {
-		System.out.println("USER"+authenticationContext.getAuthenticatedUser(UserDetails.class).get());
+		//System.out.println("USER"+authenticationContext.getAuthenticatedUser(UserDetails.class).get());
 		return authenticationContext.getAuthenticatedUser(UserDetails.class).get();
 	}
 	public UserDetails getAuthenticatedUser2() {

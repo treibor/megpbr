@@ -17,7 +17,7 @@ import com.megpbr.data.entity.pbr.Scapes;
 import com.megpbr.data.entity.pbr.Scapes;
 
 public interface ScapeRepository extends JpaRepository<Scapes, Long>{
-	
+	long countByFormat(MasterFormat format);
 	Scapes findTopByFaunaPopulation(String fauna);
 	List<Scapes> findByFormatOrderByFaunaPopulation(MasterFormat format);
 	List<Scapes> findByStateAndFormatAndMasterOrderByFaunaPopulation(State state, MasterFormat format, boolean master);

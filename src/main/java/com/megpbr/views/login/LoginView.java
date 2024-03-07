@@ -48,10 +48,9 @@ public class LoginView extends Div implements BeforeEnterObserver{
 		loginOverlay.setTitle("Meghalaya Biodiversity Board-LoginView");
 		loginOverlay.setDescription("People's Biodiversity Register Ver. 2.0");
 		loginOverlay.setForgotPasswordButtonVisible(false);
-		
 		loginOverlay.getElement().setAttribute("no-autofocus", "");
-		code.getElement().setAttribute("name", "code");
-		loginOverlay.getCustomFormArea().add(code);
+		//code.getElement().setAttribute("name", "code");
+		//loginOverlay.getCustomFormArea().add(code);
 		loginOverlay.setOpened(true);
 		loginOverlay.setAction("login");
 		//loginOverlay.addLoginListener(loginEventComponentEventListener());
@@ -63,9 +62,7 @@ public class LoginView extends Div implements BeforeEnterObserver{
 	@Override
 	public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
 		if (beforeEnterEvent.getLocation()
-
 				.getQueryParameters().getParameters().containsKey("error")) {
-			
 			loginOverlay.setError(true);
 		}
 

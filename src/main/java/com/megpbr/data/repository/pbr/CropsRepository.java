@@ -16,6 +16,7 @@ import java.util.List;
 
 
 public interface CropsRepository extends JpaRepository<Crops, Long>{
+	long countByFormat(MasterFormat format);
 	Crops findTopByScientificNameOrderByIdAsc(String scientificName);
 	//Crops findTopByScientificName(String scientificName);
 	List<Crops> findByFormatOrderByScientificName(MasterFormat format);
@@ -54,10 +55,6 @@ public interface CropsRepository extends JpaRepository<Crops, Long>{
 	
 	
 	
-	
-	
-	
-	
 	//Populating Comboboxes for AutoComplete
 	@Query("select distinct c.scientificName from Crops c  where c.format= :format and c.scientificName<>'' and c.scientificName is not null")
 	List<String> scientificNames(@Param("format") MasterFormat format);
@@ -79,4 +76,14 @@ public interface CropsRepository extends JpaRepository<Crops, Long>{
 	List<String> uses(@Param("format") MasterFormat format);
 	@Query("select distinct c.partsUsed from Crops c  where c.format= :format and c.partsUsed<>'' and c.partsUsed is not null")
 	List<String> partsUsed(@Param("format") MasterFormat format);
+	@Query("select distinct c.management from Crops c  where c.format= :format and c.management<>'' and c.management is not null")
+	List<String> management(@Param("format") MasterFormat format);
+	@Query("select distinct c.specialFeatures from Crops c  where c.format= :format and c.specialFeatures<>'' and c.specialFeatures is not null")
+	List<String> specialFeatures(@Param("format") MasterFormat format);
+	@Query("select distinct c.otherDetails from Crops c  where c.format= :format and c.otherDetails<>'' and c.otherDetails is not null")
+	List<String> otherDetails(@Param("format") MasterFormat format);
+	@Query("select distinct c.xfield1 from Crops c  where c.format= :format and c.xfield1<>'' and c.xfield1 is not null")
+	List<String> xfield1(@Param("format") MasterFormat format);
+	@Query("select distinct c.xfield2 from Crops c  where c.format= :format and c.xfield2<>'' and c.xfield2 is not null")
+	List<String> xfield2(@Param("format") MasterFormat format);
 }

@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
 
 import com.vaadin.flow.component.page.AppShellConfigurator;
@@ -22,26 +23,15 @@ import jakarta.servlet.ServletContext;
  *
  */
 @SpringBootApplication
-
 @Theme(value = "megpbr")
 @Push
-@PWA(name = "MegPbr",
-shortName = "MegPbr")
+@PWA(name = "MegPbr", shortName = "MegPbr")
 public class Application extends SpringBootServletInitializer implements AppShellConfigurator {
 
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
-    @Override
-    public void onStartup(ServletContext servletContext) {
-        servletContext.setSessionTimeout(30); // Timeout in minutes
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
+
 	
-	  @Bean
-	  public FilterRegistrationBean<HiddenHttpMethodFilter>
-	  hiddenHttpMethodFilterRegistration() {
-	  FilterRegistrationBean<HiddenHttpMethodFilter> registrationBean = new
-	  FilterRegistrationBean<>( new HiddenHttpMethodFilter());
-	  registrationBean.setEnabled(false); return registrationBean; }
-	 
+
 }

@@ -36,7 +36,6 @@ import com.megpbr.data.entity.pbr.Crops;
 import com.megpbr.data.entity.pbr.Crowd;
 import com.megpbr.data.service.CropService;
 import com.megpbr.data.service.Dbservice;
-
 import com.megpbr.views.dashboard.DashboardView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
@@ -83,6 +82,10 @@ import com.vaadin.flow.shared.Registration;
 import elemental.json.Json;
 
 public class CropForm extends Div {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	Dbservice dbservice;
 	CropService cservice;
 	Crops crops;

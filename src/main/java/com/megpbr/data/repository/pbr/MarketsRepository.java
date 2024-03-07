@@ -16,6 +16,7 @@ import com.megpbr.data.entity.pbr.Crops;
 import com.megpbr.data.entity.pbr.Markets;
 
 public interface MarketsRepository extends JpaRepository<Markets, Long>{
+	long countByFormat(MasterFormat format);
 	Markets findTopByName(String fauna);
 	List<Markets> findByFormatOrderByName(MasterFormat format);
 	List<Markets> findByStateAndFormatAndMaster(State state, MasterFormat format, boolean master);

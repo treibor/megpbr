@@ -147,12 +147,16 @@ public class DashboardService {
 		return formatrepo.findAllByOrderByFormat();
 	}
 	public long getCropsCount(MasterFormat format) {
-		return crepo.findByFormat(format).size();
+		return crepo.countByFormat(format);
 	}
 	public long getMarketsCount(MasterFormat format) {
-		return mrepo.findByFormatOrderByName(format).size();
+		return mrepo.countByFormat(format);
 	}
 	public long getScapesCount(MasterFormat format) {
-		return srepo.findByFormatOrderByFaunaPopulation(format).size();
+		return srepo.countByFormat(format);
 	}
+	public long getFormatCount(MasterFormat format, boolean master) {
+		return getCropsCount(format)+getMarketsCount(format)+getScapesCount(format);
+	}
+	
 }

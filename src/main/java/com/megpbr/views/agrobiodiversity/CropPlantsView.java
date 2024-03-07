@@ -108,7 +108,7 @@ public class CropPlantsView extends HorizontalLayout {
 	H6 totallabel = new H6();
 	@Autowired
 	private Audit auditobject;
-
+	
 	public CropPlantsView(Dbservice service, CropService cservice, UserService uservice) {
 		this.dbservice = service;
 		this.cservice = cservice;
