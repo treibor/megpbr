@@ -45,7 +45,7 @@ public class LoginView extends Div implements BeforeEnterObserver{
 	LoginOverlay loginOverlay = new LoginOverlay();
 	public LoginView() {
 	    add(loginOverlay);
-		loginOverlay.setTitle("Meghalaya Biodiversity Board-LoginView");
+		loginOverlay.setTitle("Meghalaya Biodiversity Board");
 		loginOverlay.setDescription("People's Biodiversity Register Ver. 2.0");
 		loginOverlay.setForgotPasswordButtonVisible(false);
 		loginOverlay.getElement().setAttribute("no-autofocus", "");

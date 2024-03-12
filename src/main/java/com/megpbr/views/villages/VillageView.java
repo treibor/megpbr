@@ -408,7 +408,7 @@ public class VillageView extends Div{
 					Map<Integer, List<Crops>> formatVsCropsMap = new HashMap<>();
 					Map<Integer, List<Markets>> formatVsMarketsMap = new HashMap<>();
 					Map<Integer, List<Scapes>> formatVsScapesMap = new HashMap<>();
-					parameters.put("SUBREPORT_DIR", reportPath + "Formats\\");
+					parameters.put("SUBREPORT_DIR", reportPath + "Formats//");
 					for (Crops crop : crops) {
 						formatVsCropsMap.computeIfAbsent(crop.getFormat().getFormat(), k -> new ArrayList<>());
 						formatVsCropsMap.get(crop.getFormat().getFormat()).add(crop);
@@ -462,7 +462,7 @@ public class VillageView extends Div{
 					List<VillageAnnexure3> annex3=dbservice.getAnnexure3Details(selectedvillage);
 					List<VillageAnnexure4> annex4=dbservice.getAnnexure4Details(selectedvillage);
 					List<VillageAnnexure5> annex5=dbservice.getAnnexure5Details(selectedvillage);
-					parameters.put("SUBREPORT_DIR", reportPath+"Annexures\\");
+					parameters.put("SUBREPORT_DIR", reportPath+"Annexures//");
 					parameters.put("SUBREPORT_DATA1", annex1);
 					parameters.put("SUBREPORT_DATA2", annex2);
 					parameters.put("SUBREPORT_DATA3", annex3);
@@ -495,6 +495,7 @@ public class VillageView extends Div{
 			Notification.show("Error. Please Select a Village from the Table and Select the Report Type and Format")
 			.addThemeVariants(NotificationVariant.LUMO_ERROR);
 		}catch (Exception e) {
+			e.printStackTrace();
 			Notification.show("Error Encountered While Generating Report")
 					.addThemeVariants(NotificationVariant.LUMO_ERROR);
 		}

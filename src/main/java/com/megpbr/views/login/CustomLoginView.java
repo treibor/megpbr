@@ -34,6 +34,8 @@ import com.megpbr.data.service.Dbservice;
 import com.megpbr.security.AuthenticatedUser;
 import com.megpbr.security.SecurityService;
 import com.megpbr.security.UserDetailsServiceImpl;
+import com.megpbr.security.captcha.Captcha;
+import com.megpbr.security.captcha.CapthaImpl;
 import com.megpbr.views.dashboard.DashboardView;
 import com.storedobject.chart.BarChart;
 import com.storedobject.chart.CategoryData;
@@ -55,6 +57,7 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Header;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Nav;
 import com.vaadin.flow.component.html.UnorderedList;
 import com.vaadin.flow.component.login.AbstractLogin;
@@ -88,7 +91,7 @@ import com.vaadin.flow.theme.lumo.LumoUtility.Padding;
 import com.vaadin.flow.theme.lumo.LumoUtility.Width;
 
 
-//@Route("logins")
+@Route("customlogin")
 @PageTitle("Login")
 @AnonymousAllowed
 
@@ -108,21 +111,27 @@ public class CustomLoginView extends Div implements BeforeEnterObserver, Compone
 	FormLayout form = new FormLayout();
     public TextField captchatext=new TextField();
     private Button loginbutton=new Button("Login");
+    private Button refresfbutton=new Button("Login");
     private static final String LOGIN_SUCCESS_URL = "/";
     TextField code = new TextField("");
     public LoginOverlay loginOverlay = new LoginOverlay();
     TreeGrid<District> treeGrid=new TreeGrid<>();
+    Captcha captcha = new CapthaImpl();
    // private final AuthenticatedUser authenticatedUser;
     public CustomLoginView(AuthenticatedUser authenticatedUser, DashboardService dservice, Dbservice dbservice) {
     	this.authenticatedUser=authenticatedUser;
     	this.dservice=dservice;
-    	this.dbservice=dbservice;
+		this.dbservice = dbservice;
+		captchatext.setPlaceholder("ENTER CAPTCHA");
+		Image image = captcha.getCaptchaImg();
     	loginOverlay.setTitle("Meghalaya Biodiversity Board");
     	loginOverlay.setDescription("People's Biodiversity Register Ver. 2.0");
-    	loginOverlay.getCustomFormArea().add(code);
+    	//loginOverlay.getCustomFormArea().add(code);
+    	loginOverlay.getCustomFormArea().add(image);
+    	loginOverlay.getCustomFormArea().add(captchatext);
     	loginOverlay.setForgotPasswordButtonVisible(false);
-    	add(loginOverlay, createHeaderContent(), getCharts3());
-    	///loginOverlay.add
+    	
+    	add(createHeaderContent());
     	loginbutton.addClickListener(e-> loginOverlay.setOpened(true));
     	loginOverlay.addLoginListener(this);
 		loginOverlay.getElement().setAttribute("no-autofocus", "");
@@ -200,17 +209,23 @@ public class CustomLoginView extends Div implements BeforeEnterObserver, Compone
 	
 	@Override
 	public void onComponentEvent(AbstractLogin.LoginEvent loginEvent) {
-		Authentication authentication = new UsernamePasswordAuthenticationToken(loginEvent.getUsername(), loginEvent.getPassword());
-        Authentication authenticated = authenticationManager.authenticate(authentication);
-        SecurityContextHolder.getContext().setAuthentication(authenticated);
-        SecurityContext context = SecurityContextHolder.getContext();
-        securityRepo.saveContext(context, VaadinServletRequest.getCurrent(), VaadinServletResponse.getCurrent());
-		  if (authenticated.isAuthenticated()) {
-			  UI.getCurrent().navigate(DashboardView.class); 
-		  } else {
-			  loginOverlay.setError(true);
-		  }
-		 
+		if (captcha.checkUserAnswer(captchatext.getValue())) {
+			Authentication authentication = new UsernamePasswordAuthenticationToken(loginEvent.getUsername(),
+					loginEvent.getPassword());
+			Authentication authenticated = authenticationManager.authenticate(authentication);
+			SecurityContextHolder.getContext().setAuthentication(authenticated);
+			SecurityContext context = SecurityContextHolder.getContext();
+			securityRepo.saveContext(context, VaadinServletRequest.getCurrent(), VaadinServletResponse.getCurrent());
+			if (authenticated.isAuthenticated()) {
+				loginOverlay.setOpened(false);
+				UI.getCurrent().navigate(DashboardView.class);
+			} else {
+				loginOverlay.setError(true);
+			}
+		}else {
+			Notification.show("Invalid Captcha Entered");
+			loginOverlay.setError(true);
+		}
 	}
 	
 	@Override

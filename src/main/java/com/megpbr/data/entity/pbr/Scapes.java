@@ -71,6 +71,8 @@ public class Scapes {
 	private String photo4Source;
 	private boolean master;
 	private boolean crowdData;
+
+
 	@ManyToOne
 	@JoinColumn(name = "enteredBy", referencedColumnName = "id")
 	private UserLogin enteredBy;
