@@ -2,6 +2,9 @@ package com.megpbr.views.login;
 
 
 
+import java.util.List;
+import java.util.stream.Stream;
+
 import org.apache.catalina.core.ApplicationContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -25,10 +28,11 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import com.ctc.wstx.shaded.msv_core.reader.State;
 import com.megpbr.audit.Audit;
+import com.megpbr.data.entity.Block;
 import com.megpbr.data.entity.District;
 import com.megpbr.data.entity.MasterFormat;
+import com.megpbr.data.entity.State;
 import com.megpbr.data.service.DashboardService;
 import com.megpbr.data.service.Dbservice;
 import com.megpbr.security.AuthenticatedUser;
@@ -67,6 +71,9 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.treegrid.TreeGrid;
+import com.vaadin.flow.data.provider.hierarchy.AbstractBackEndHierarchicalDataProvider;
+import com.vaadin.flow.data.provider.hierarchy.HierarchicalDataProvider;
+import com.vaadin.flow.data.provider.hierarchy.HierarchicalQuery;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
@@ -115,8 +122,9 @@ public class CustomLoginView extends Div implements BeforeEnterObserver, Compone
     private static final String LOGIN_SUCCESS_URL = "/";
     TextField code = new TextField("");
     public LoginOverlay loginOverlay = new LoginOverlay();
-    TreeGrid<District> treeGrid=new TreeGrid<>();
+    TreeGrid<District> grid=new TreeGrid<>();
     Captcha captcha = new CapthaImpl();
+    District district;
    // private final AuthenticatedUser authenticatedUser;
     public CustomLoginView(AuthenticatedUser authenticatedUser, DashboardService dservice, Dbservice dbservice) {
     	this.authenticatedUser=authenticatedUser;
@@ -131,13 +139,74 @@ public class CustomLoginView extends Div implements BeforeEnterObserver, Compone
     	loginOverlay.getCustomFormArea().add(captchatext);
     	loginOverlay.setForgotPasswordButtonVisible(false);
     	
-    	add(createHeaderContent());
+    	add(createHeaderContent(), getGrid());
     	loginbutton.addClickListener(e-> loginOverlay.setOpened(true));
     	loginOverlay.addLoginListener(this);
 		loginOverlay.getElement().setAttribute("no-autofocus", "");
 		
 	}
-	
+
+	private Component getGrid() {
+		grid.addHierarchyColumn(District::getDistrictCode).setHeader("Account Title");
+		grid.addColumn(District::getDistrictName).setHeader("Code");
+
+		HierarchicalDataProvider<District, Void> dataProvider = new AbstractBackEndHierarchicalDataProvider<District, Void>() {
+		
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public int getChildCount(HierarchicalQuery<District, Void> query) {
+				System.out.println("getChildCount: " + query.getParent());
+				return (int) dservice.getChildCount(query.getParent());
+			}
+
+			@Override
+			public boolean hasChildren(District item) {
+				System.out.println("hasChildren: " + item);
+				return dservice.hasChildren(item);
+				// return true;
+			}
+
+			@Override
+			protected Stream<District> fetchChildrenFromBackEnd(HierarchicalQuery<District, Void> query) {
+				System.out.println("fetchChildrenFromBackEnd: " + query.getParent());
+				return dservice.fetchChildren(query.getParent()).stream();
+			}
+		};
+
+		grid.setDataProvider(dataProvider);
+
+		return grid;
+	}
+    
+	private Component getGrid2() {
+		grid.addHierarchyColumn(District::getDistrictName).setHeader("District");
+		//grid.addColumn(District::getState).setHeader("Code");
+		HierarchicalDataProvider<District, State> dataProvider = new AbstractBackEndHierarchicalDataProvider<District, State>() {
+	        @Override
+	        public int getChildCount(HierarchicalQuery<District, State> query) {
+	        	return (int) dservice.getChildCount(query.getParent().getState());
+	        }
+
+	        @Override
+	        public Stream<District> fetchChildrenFromBackEnd(HierarchicalQuery<District, State> query) {
+	            State state = query.getParent().getState();
+	            if (state != null) {
+	               // return state.getDistrict().stream();
+	            	return dservice.fetchChildren(query.getParent()).stream();
+	            }
+	            return Stream.empty();
+	        }
+
+	        @Override
+	        public boolean hasChildren(District item) {
+	            // Check if the district has any blocks
+	            return !item.getBlock().isEmpty();
+	        }
+	    };
+	    grid.setDataProvider(dataProvider);
+		return grid;
+	}
     public Component getCharts3() {
     	SOChart soChartf = new SOChart();
     	//SOChart soChartf = new SOChart();

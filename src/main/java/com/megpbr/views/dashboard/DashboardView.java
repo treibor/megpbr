@@ -3,6 +3,7 @@ package com.megpbr.views.dashboard;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -33,6 +34,9 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.treegrid.TreeGrid;
+import com.vaadin.flow.data.provider.hierarchy.AbstractBackEndHierarchicalDataProvider;
+import com.vaadin.flow.data.provider.hierarchy.HierarchicalDataProvider;
+import com.vaadin.flow.data.provider.hierarchy.HierarchicalQuery;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
@@ -48,7 +52,7 @@ public class DashboardView extends VerticalLayout {
 	DashboardService dservice;
 	Dbservice dbservice;
 	UserService uservice;
-	//Grid<District> grid=new Grid<>(District.class);
+	TreeGrid<District> grid=new TreeGrid<>(District.class);
 	District district;
     public DashboardView(DashboardService dservice, Dbservice dbservice, UserService uservice) {
     	this.dservice=dservice;
@@ -165,6 +169,7 @@ public class DashboardView extends VerticalLayout {
         return soChartf;
     }
     private Component getGrid() {
-    	return null;
-    }
+    	//TreeGrid<>> grid = new TreeGrid<>();
+       return null;
+	}
 }

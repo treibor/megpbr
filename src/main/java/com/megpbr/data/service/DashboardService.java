@@ -1,6 +1,7 @@
 package com.megpbr.data.service;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -119,7 +120,11 @@ public class DashboardService {
 	private UserLevelRepository levelrepo;
 	@Autowired
 	private Dbservice dbservice;
-	
+	List<District> districtlist;
+	public  DashboardService () {
+		
+		
+	}
 	public State getState() {
 		return dbservice.getState();
 	}
@@ -158,5 +163,29 @@ public class DashboardService {
 	public long getFormatCount(MasterFormat format, boolean master) {
 		return getCropsCount(format)+getMarketsCount(format)+getScapesCount(format);
 	}
+	
+	
+	public long getChildCount(District parent) {
+		System.out.println(brepo.findByDistrict(parent).size());
+		return drepo.findAll().size();
+
+	}
+	public long getChildCount(State parent) {
+		return srepo.findAll().size();
+
+	}
+	public Boolean hasChildren(District parent) {
+		int a = brepo.findByDistrict(parent).size();
+		if (a > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public List<District> fetchChildren(District parent) {
+		return drepo.findAll();
+	}
+
 	
 }
