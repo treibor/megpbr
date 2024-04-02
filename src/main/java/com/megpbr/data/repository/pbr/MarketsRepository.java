@@ -1,5 +1,6 @@
 package com.megpbr.data.repository.pbr;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -34,6 +35,11 @@ public interface MarketsRepository extends JpaRepository<Markets, Long>{
 	@Query("select  c from Markets c join c.village d join d.block e join e.district f where c.format= :format and  (district=:district or :district is null) and(lower(c.name) like lower(concat('%', :searchTerm, '%'))or lower(c.frequency) like lower(concat('%', :searchTerm, '%'))or lower(c.animalType) like lower(concat('%', :searchTerm, '%')))")
 	List<Markets> searchFilterMarketsData(@Param("district") District district, @Param("searchTerm") String searchTerm,
 			@Param("format") MasterFormat format);
+
+	//  Count By Year
+	@Query("select  count(*) from Markets c join c.village d join d.block e join e.district f where c.master =:master and c.enteredOn between :sdate and :edate")
+	int getMarketsCountYearly(@Param("master") boolean master, @Param("sdate") LocalDateTime sdate,
+			@Param("edate") LocalDateTime edate);
 
 	// Block Data
 	@Query("select  c from Markets c join c.village d join d.block e  where c.format= :format and  (block=:block or :block is null) and(lower(c.name) like lower(concat('%', :searchTerm, '%'))or lower(c.frequency) like lower(concat('%', :searchTerm, '%'))or lower(c.animalType) like lower(concat('%', :searchTerm, '%')))")

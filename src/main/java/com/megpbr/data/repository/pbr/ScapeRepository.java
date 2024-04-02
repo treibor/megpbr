@@ -1,5 +1,6 @@
 package com.megpbr.data.repository.pbr;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -30,6 +31,11 @@ public interface ScapeRepository extends JpaRepository<Scapes, Long>{
 	
 	@Query("select c from Scapes c where c.state=:state and c.master=true and c.format= :format and (lower(c.faunaPopulation) like lower(concat('%', :searchTerm, '%'))or lower(c.floraOccupation) like lower(concat('%', :searchTerm, '%'))or lower(c.typeAgriOccupation) like lower(concat('%', :searchTerm, '%'))) order by c.id Desc")
 	List<Scapes> search(@Param("state") State state,@Param("searchTerm") String searchTerm, @Param("format") MasterFormat format);
+
+	// Crops Count By Year
+	@Query("select  count(*) from Scapes c join c.village d join d.block e join e.district f where c.master =:master and c.enteredOn between :sdate and :edate")
+	int getScapesCountYearly(@Param("master") boolean master, @Param("sdate") LocalDateTime sdate,
+			@Param("edate") LocalDateTime edate);
 	
 	//District Data
 	@Query("select  c from Scapes c join c.village d join d.block e join e.district f where c.format= :format and  (district=:district or :district is null) and(lower(c.faunaPopulation) like lower(concat('%', :searchTerm, '%'))or lower(c.floraOccupation) like lower(concat('%', :searchTerm, '%'))or lower(c.typeAgriOccupation) like lower(concat('%', :searchTerm, '%')))" )

@@ -8,6 +8,7 @@ import org.hibernate.validator.constraints.UniqueElements;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -41,7 +42,9 @@ public class District {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "district")
 	List<Block> block;
 	
-	
+	public int getVillageCount() {
+        return block.stream().mapToInt(block -> block.getVillage().size()).sum();
+    }
 	
 	public long getId() {
 		return id;

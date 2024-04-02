@@ -1,5 +1,9 @@
 package com.megpbr.data.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -10,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import com.megpbr.data.dto.SampleDTO;
 import com.megpbr.data.entity.Block;
 import com.megpbr.data.entity.District;
 import com.megpbr.data.entity.MasterApproval;
@@ -121,6 +126,7 @@ public class DashboardService {
 	@Autowired
 	private Dbservice dbservice;
 	List<District> districtlist;
+	DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	public  DashboardService () {
 		
 		
@@ -148,6 +154,14 @@ public class DashboardService {
 		return getCropsCount(district, master)+getMarketsCount(district, master)+getScapesCount(district, master);
 	}
 	
+	public long getCropsCountYear(District district, boolean master, String date) {
+		LocalDateTime startdate=LocalDate.parse("01/01/"+date, df).atStartOfDay();
+		LocalDateTime enddate=LocalDate.parse("31/12/"+date, df).atStartOfDay();
+		return crepo.getCropsCountYear(district, master, startdate, enddate);
+	}
+	
+	
+	
 	public List<MasterFormat> getFormats() {
 		return formatrepo.findAllByOrderByFormat();
 	}
@@ -164,28 +178,51 @@ public class DashboardService {
 		return getCropsCount(format)+getMarketsCount(format)+getScapesCount(format);
 	}
 	
-	
-	public long getChildCount(District parent) {
-		System.out.println(brepo.findByDistrict(parent).size());
-		return drepo.findAll().size();
-
-	}
-	public long getChildCount(State parent) {
-		return srepo.findAll().size();
-
-	}
-	public Boolean hasChildren(District parent) {
-		int a = brepo.findByDistrict(parent).size();
-		if (a > 0) {
-			return true;
-		} else {
-			return false;
+	public SampleDTO getSample() {
+		
+		SampleDTO sampleDTO = new SampleDTO();
+		
+		sampleDTO.setCrops(crepo.findAll());
+		sampleDTO.setMarkets(mrepo.findAll());
+		
+		for(Crops crop : sampleDTO.getCrops()) {
+			
+			System.out.println(crop.getArea());
 		}
+		
+		return sampleDTO;
 	}
-
-	public List<District> fetchChildren(District parent) {
-		return drepo.findAll();
+	
+	public List<String> getYearList(){
+	    List<String> yearlist = new ArrayList<>();
+	    DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	    int startYear = 2020;
+	    int endYear = 2040;
+	    for (int i = startYear; i < endYear; i++) {
+	        LocalDateTime startdate = LocalDate.parse("01/01/" + i, df).atStartOfDay();
+	        LocalDateTime enddate = LocalDate.parse("31/12/" + i, df).atTime(23, 59, 59);
+	        int count1 = crepo.getCropsCountYearly(false, startdate, enddate);
+	        int count2 = mrepo.getMarketsCountYearly(false, startdate, enddate);
+	        int count3 = srepo.getScapesCountYearly(false, startdate, enddate);
+	        
+	        int count=count1+count2+count3;
+	        if (count > 0) {
+	        	//System.out.println("Year:"+i+"- Count:"+count1);
+	            yearlist.add(String.valueOf(i));
+	        }
+	    }
+	    return yearlist;
 	}
-
+	public int getYearData(int year){
+		//List<Integer> yearData = new ArrayList<>();
+		int yeardata;
+		DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		LocalDateTime startdate = LocalDate.parse("01/01/" + year, df).atStartOfDay();
+		LocalDateTime enddate = LocalDate.parse("31/12/" + year, df).atTime(23, 59, 59);
+		int count1 = crepo.getCropsCountYearly(false, startdate, enddate);
+		int count2 = mrepo.getMarketsCountYearly(false, startdate, enddate);
+		int count3 = srepo.getScapesCountYearly(false, startdate, enddate);
+		return count1+count2+count3;
+	}
 	
 }
