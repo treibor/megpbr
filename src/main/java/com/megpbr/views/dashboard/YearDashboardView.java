@@ -50,9 +50,9 @@ import jakarta.annotation.security.PermitAll;
 
 @PermitAll
 @PageTitle("Dashboard")
-@Route(value = "dashboard", layout = MainLayout.class)
-@RouteAlias(value = "", layout = MainLayout.class)
-public class DashboardView extends VerticalLayout {
+@Route(value = "yeardashboard", layout = MainLayout.class)
+@RouteAlias(value = "yeardashboard", layout = MainLayout.class)
+public class YearDashboardView extends VerticalLayout {
 	DashboardService dservice;
 	Dbservice dbservice;
 	UserService uservice;
@@ -64,13 +64,13 @@ public class DashboardView extends VerticalLayout {
 	HorizontalLayout hlayout=new HorizontalLayout();
     //getCharts.
 	Data data = new Data();
-    public DashboardView(DashboardService dservice, Dbservice dbservice, UserService uservice) {
+    public YearDashboardView(DashboardService dservice, Dbservice dbservice, UserService uservice) {
     	this.dservice=dservice;
     	this.dbservice=dbservice;
     	this.uservice=uservice;
     	//yearCombo.setItems("All", "2022", "2023");
     	
-    	add(getCharts2(), loadCharts());
+    	add( getYearCharts());
     	//loadCharts();
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
@@ -88,114 +88,7 @@ public class DashboardView extends VerticalLayout {
     	
     }
 
-	public Component loadCharts() {
-		//hlayout.removeAll();;
-		SOChart soChart = new SOChart();
-    	SOChart soChart2 = new SOChart();
-		CategoryData labels = new CategoryData();
-		//String yearValue = yearCombo.getValue().trim();
-		int i = dservice.getDistricts().size();
-		hlayout.addClassName("chartsLayout1");
-        hlayout.setWidthFull();
-		for (int index = 0; index < i; index++) {
-			labels.add(dservice.getDistricts().get(index).getDistrictName());
-			District dist = dservice.getDistricts().get(index);
-			data.add(dservice.getDistrictCount(dist, false));
-
-		}
-		BarChart bc = new BarChart(labels, data);
-		RectangularCoordinate rc;
-		rc = new RectangularCoordinate(new XAxis(DataType.CATEGORY), new YAxis(DataType.NUMBER));
-		Position p = new Position();
-		bc.plotOn(rc); // Bar chart needs to be plotted on a coordinate system
-		bc.setName("PBR Entered");
-		Toolbox toolbox = new Toolbox();
-		toolbox.addButton(new Toolbox.Download(), new Toolbox.Zoom());
-		Title title = new Title("District Wise PBR");
-
-		NightingaleRoseChart nc = new NightingaleRoseChart(labels, data);
-		nc.setName("PBR Entered");
-		nc.setPosition(p); // Position it leaving 50% space at the top
-		soChart.add(nc, toolbox);
-		soChart2.add(bc, toolbox, title);
-		//System.out.println("Add Charts");
-		hlayout.add(soChart, soChart2);
-		return hlayout;
-	}
-    
-    public Component getCharts2() {
-    	//SOChart soChart = new SOChart();
-    	SOChart soChart2 = new SOChart();
-    	CategoryData labels = new CategoryData();
-    	Data data = new Data();
-        int i=dservice.getFormats().size();
-        for(int index=0; index<i; index++) {
-        	labels.add(dservice.getFormats().get(index).getFormat()+"-"+dservice.getFormats().get(index).getFormatName());
-			MasterFormat dist = dservice.getFormats().get(index);
-			if (index == 5 || index == 16) {
-				data.add(dservice.getMarketsCount(dist));
-			} else if (index ==6 || index == 7 || index == 8 || index == 9) {
-				data.add(dservice.getScapesCount(dist));
-			} else {
-				data.add(dservice.getCropsCount(dist));
-			}
-        }
-        BarChart bc = new BarChart(labels, data);
-        RectangularCoordinate rc;
-        
-        rc  = new RectangularCoordinate(new XAxis(DataType.CATEGORY), new YAxis(DataType.NUMBER));
-        Position p = new Position();
-        bc.plotOn(rc); // Bar chart needs to be plotted on a coordinate system
-        bc.setName("PBR Entered");
-        Toolbox toolbox = new Toolbox();
-        toolbox.addButton(new Toolbox.Download(), new Toolbox.Zoom());
-        Title title = new Title("PBR Data");
-        soChart2.add(bc, toolbox, title);
-        soChart2.setWidthFull();
-        return soChart2;
-    }    
-    public Component getCharts3() {
-    	SOChart soChartf = new SOChart();
-    	//SOChart soChartf = new SOChart();
-    	CategoryData labels = new CategoryData();
-    	Data data = new Data();
-        int i=dservice.getFormats().size();
-       // System.out.println("Formats "+i);
-        for(int index=0; index<i; index++) {
-        	labels.add(dservice.getFormats().get(index).getFormat()+" - "+dservice.getFormats().get(index).getFormatName());
-        	        	//District dist=dservice.getDistricts().get(index);
-        	MasterFormat format=dservice.getFormats().get(index);
-        	data.add(dservice.getFormatCount(format, false));
-        }
-        BarChart bc = new BarChart(labels, data);
-        
-        RectangularCoordinate rc;
-        rc  = new RectangularCoordinate(new XAxis(DataType.CATEGORY), new YAxis(DataType.NUMBER));
-        Position p = new Position();
-        bc.plotOn(rc); // Bar chart needs to be plotted on a coordinate system
-        bc.setName("PBR Entered");
-        Toolbox toolbox = new Toolbox();
-        toolbox.addButton(new Toolbox.Download(), new Toolbox.Zoom());
-        Title title = new Title("Format Wise PBR");
-        
-        NightingaleRoseChart nc = new NightingaleRoseChart(labels, data);
-        nc.setName("PBR Entered");
-        nc.setPosition(p); // Position it leaving 50% space at the top
-        //soChartf.add(nc, toolbox);
-        soChartf.add(bc, toolbox, title);
-        HorizontalLayout getCharts=new HorizontalLayout();
-        //getCharts.
-        getCharts.addClassName("chartsLayout1");
-        getCharts.setWidthFull();
-        //getCharts.setHeight("10px");
-        soChartf.setWidthFull();
-        getCharts.add(soChartf);
-        return soChartf;
-    }
-    private Component getGrid() {
-    	//TreeGrid<>> grid = new TreeGrid<>();
-       return null;
-	}
+	
     public Component getYearCharts() {
     	SOChart soChart = new SOChart();
     	SOChart soChartf = new SOChart();
@@ -236,5 +129,34 @@ public class DashboardView extends VerticalLayout {
         getCharts.add(soChartf, soChart);
         return getCharts;
     }
-   
+    public Component getYearGrid() {
+        List<DtoClass> data = getYearData();
+
+        Grid<DtoClass> grid = new Grid<>();
+        grid.setItems(data);
+        //grid.addColumn(DtoClass::getTotalCrops).setHeader("Total Crops");
+        //grid.addColumn(DtoClass::getTotalScapes).setHeader("Total Scapes");
+        //grid.addColumn(DtoClass::getTotalMarkets).setHeader("Total Markets");
+        grid.addColumn(DtoClass::getYear).setHeader("Year");
+        grid.addColumn(DtoClass::getTotal).setHeader("Data");
+
+        HorizontalLayout layout = new HorizontalLayout(grid);
+        layout.addClassName("gridLayout");
+        layout.setWidthFull();
+
+        return layout;
+    }
+
+    private List<DtoClass> getYearData() {
+        List<DtoClass> yearData = new ArrayList<>();
+
+        // Populate your data here, e.g., from a service
+        // For demonstration purposes, I'll create some sample data
+        for (int i = 2020; i <= 2023; i++) {
+            //DtoClass dto = new DtoClass(i * 1000, i * 2000, i * 3000, String.valueOf(i), i * 10);
+            //yearData.add(dto);
+        }
+
+        return yearData;
+    }
 }

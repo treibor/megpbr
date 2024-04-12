@@ -20,6 +20,8 @@ import com.megpbr.views.agrobiodiversity.WeedsView;
 import com.megpbr.views.crowd.CrowdView;
 import com.megpbr.views.crowd.PreCrowdView;
 import com.megpbr.views.dashboard.DashboardView;
+import com.megpbr.views.dashboard.StatsView;
+import com.megpbr.views.dashboard.YearDashboardView;
 import com.megpbr.views.domesticateddiversity.CultureFisheriesView;
 import com.megpbr.views.domesticateddiversity.DomFruitTreesView;
 import com.megpbr.views.domesticateddiversity.DomesticatedAnimalsView;
@@ -206,7 +208,14 @@ public class MainLayout extends AppLayout {
 
     private SideNav createNavigation() {
         SideNav nav = new SideNav();
-        nav.addItem(new SideNavItem("Dashboard", DashboardView.class, LineAwesomeIcon.ACCUSOFT.create()));
+        SideNavItem dashboardItems=new SideNavItem("Dashboard");
+        dashboardItems.setPrefixComponent(LineAwesomeIcon.ACCUSOFT.create());
+        SideNavItem dashboardItem1=new SideNavItem("General ", DashboardView.class, LineAwesomeIcon.ADDRESS_BOOK.create());
+        SideNavItem dashboardItem2=new SideNavItem(" Year ", YearDashboardView.class, LineAwesomeIcon.ALGOLIA.create());
+        SideNavItem dashboardItem3=new SideNavItem(" Statistics ", StatsView.class, LineAwesomeIcon.AIR_FRESHENER_SOLID.create());
+        dashboardItems.addItem(dashboardItem1, dashboardItem2, dashboardItem3);
+        nav.addItem(dashboardItems);
+        //nav.addItem(new SideNavItem("Dashboard", DashboardView.class, LineAwesomeIcon.ACCUSOFT.create()));
         //nav.addItem(new SideNavItem("LGD DATA", lgd.class, LineAwesomeIcon.ACCUSOFT.create()));
         SideNavItem village=new SideNavItem("Villages Details", VillageView.class, LineAwesomeIcon.AVIANEX.create());
         nav.addItem(village);

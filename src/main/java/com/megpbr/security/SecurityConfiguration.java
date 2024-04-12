@@ -88,8 +88,8 @@ public class SecurityConfiguration extends VaadinWebSecurity {
 				
 
 		;
-		//setLoginView(http, LoginView.class);
-		setLoginView(http, CustomLoginView.class);
+		setLoginView(http, LoginView.class);
+		//setLoginView(http, CustomLoginView.class);
 		super.configure(http);
 	}
 	
