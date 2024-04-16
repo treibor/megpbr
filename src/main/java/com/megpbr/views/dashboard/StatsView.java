@@ -5,7 +5,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +65,7 @@ import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.component.shared.ThemeVariant;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.treegrid.TreeGrid;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.value.ValueChangeMode;
@@ -87,10 +90,11 @@ public class StatsView extends HorizontalLayout {
 	private MarketsService mservice;
 	private UserService uservice;
 	Grid<DtoClass> grid = new Grid<>();
+	Grid<Object[]> vgrid = new Grid<>();
 	Crops crop;
 	AuditTrail audit;
 	// Grid<Crops> grid = new Grid<>(Crops.class);
-
+	Village villages;
 	MasterFormat format;
 	TextField filterText = new TextField("");
 	Checkbox rejectedData = new Checkbox("Show Rejected Data");
@@ -120,10 +124,25 @@ public class StatsView extends HorizontalLayout {
 		ConfigureCombo();
 		ConfigureAccess();
 		initGrid();
+		
 		add(getContent());
 
 	}
-
+	
+	public Component getVillageGrid() {
+		vgrid.addColumn(array -> ((State) array[3]).getStateName()).setHeader("State").setSortable(true);
+		vgrid.addColumn(array -> ((District) array[2]).getDistrictName()).setHeader("District").setSortable(true);
+		vgrid.addColumn(array -> ((Block) array[1]).getBlockName()).setHeader("Block Name").setSortable(true);
+		vgrid.addColumn(array -> ((Village) array[0]).getVillageName()).setHeader("Village Name").setSortable(true);
+		//vgrid.addColumn(array -> array[4]).setHeader("CropS");
+		//vgrid.addColumn(array -> array[5]).setHeader("Scapes");
+		//vgrid.addColumn(array -> array[6]).setHeader("Markets");
+		vgrid.addColumn(array -> array[4]).setHeader("Total Pbr");
+		List<Object[]> data = dbservice.getVillageCount();
+		vgrid.setItems(data);
+		vgrid.setSizeFull();
+		return vgrid;
+	}
 	private boolean isAdmin() {
 		// UserLogin user=uservice.getLoggedUser();
 		String userLevel = uservice.getLoggedUserLevel();
@@ -154,7 +173,7 @@ public class StatsView extends HorizontalLayout {
 
 	private Component getMainContent() {
 
-		vlx.add(getToolBar2(), initGrid(), getToolBar3());
+		vlx.add(getToolBar2(), getVillageGrid(), getToolBar3());
 		// grid.setSizeFull();
 		vlx.setSizeFull();
 		return vlx;
@@ -243,7 +262,7 @@ public class StatsView extends HorizontalLayout {
 		// radioGroup.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
 		// radioGroup.addValueChangeListener(e -> updateList());
 
-		expButton.addClickListener(e -> GridExporter.newWithDefaults(grid).open());
+		expButton.addClickListener(e -> GridExporter.newWithDefaults(vgrid).open());
 
 	}
 

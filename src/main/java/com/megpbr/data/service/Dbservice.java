@@ -169,7 +169,9 @@ public class Dbservice {
 	public List <Village> getVillages(Block block, boolean inUse){
 		return vrepo.findByBlockAndInUse(block, inUse);
 	}
-	
+	public List <Object[]> getVillageCount(){
+		return vrepo.villageCount();
+	}
 	public List <Village> getVillagesTest(Block block){
 		return vrepo.findByBlock(block);
 	}
