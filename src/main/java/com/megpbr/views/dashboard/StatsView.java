@@ -122,23 +122,32 @@ public class StatsView extends HorizontalLayout {
 		format = dbservice.getFormat(1);
 		setSizeFull();
 		ConfigureCombo();
-		ConfigureAccess();
-		initGrid();
-		
 		add(getContent());
 
 	}
 	
-	public Component getVillageGrid() {
+	public void getVillageGrid() {
+		vgrid.removeAllColumns();
 		vgrid.addColumn(array -> ((State) array[3]).getStateName()).setHeader("State").setSortable(true);
 		vgrid.addColumn(array -> ((District) array[2]).getDistrictName()).setHeader("District").setSortable(true);
 		vgrid.addColumn(array -> ((Block) array[1]).getBlockName()).setHeader("Block Name").setSortable(true);
 		vgrid.addColumn(array -> ((Village) array[0]).getVillageName()).setHeader("Village Name").setSortable(true);
-		//vgrid.addColumn(array -> array[4]).setHeader("CropS");
-		//vgrid.addColumn(array -> array[5]).setHeader("Scapes");
-		//vgrid.addColumn(array -> array[6]).setHeader("Markets");
 		vgrid.addColumn(array -> array[4]).setHeader("Total Pbr");
 		List<Object[]> data = dbservice.getVillageCount();
+		vgrid.setItems(data);
+		
+	}
+	public void getBlockGrid(District district) {
+		vgrid.removeAllColumns();
+		vgrid.addColumn(array -> array[0]).setHeader("Block");
+		vgrid.addColumn(array -> array[1]).setHeader("Pbr Entered");
+		List<Object[]> data = dbservice.getBlockCount();
+		vgrid.setItems(data);
+	}
+	public Component getDistrictGrid() {
+		vgrid.addColumn(array -> array[0]).setHeader("District");
+		vgrid.addColumn(array -> array[1]).setHeader("Pbr Entered");
+		List<Object[]> data = dbservice.getDistrictCount();
 		vgrid.setItems(data);
 		vgrid.setSizeFull();
 		return vgrid;
@@ -163,17 +172,11 @@ public class StatsView extends HorizontalLayout {
 		}
 	}
 
-	private void ConfigureAccess() {
-
-	}
-
-	public void updateList() {
-
-	}
+	
 
 	private Component getMainContent() {
 
-		vlx.add(getToolBar2(), getVillageGrid(), getToolBar3());
+		vlx.add(getToolBar2(), getDistrictGrid(), getToolBar3());
 		// grid.setSizeFull();
 		vlx.setSizeFull();
 		return vlx;
@@ -189,26 +192,7 @@ public class StatsView extends HorizontalLayout {
 		return content;
 	}
 
-	private Component getToolbar() {
-
-		filterText.setPlaceholder("Search by Scientific/Local Name/Type ");
-		filterText.setClearButtonVisible(true);
-		filterText.setValueChangeMode(ValueChangeMode.LAZY);
-		// filterText.addValueChangeListener(e -> updateGrid());
-		filterText.setWidth("400px");
-		Button addButton = new Button("New");
-		addButton.setPrefixComponent(LineAwesomeIcon.PLUS_CIRCLE_SOLID.create());
-		String tempformatName = format.getFormatName();
-		var label = new H3("Format-" + format.getFormat() + " - " + tempformatName);
-		// addButton.addClickListener(e -> addCrops(new Crops()));
-		HorizontalLayout topvl = new HorizontalLayout(label, addButton);
-		topvl.setAlignItems(FlexComponent.Alignment.BASELINE);
-		label.getStyle().set("margin-left", "auto");
-		label.getStyle().set("font-size", "12px");
-		rejectedData.getStyle().set("font-size", "12px");
-		topvl.setWidthFull();
-		return topvl;
-	}
+	
 
 	public Component getToolBar2() {
 		FormLayout formx = new FormLayout();
@@ -256,76 +240,20 @@ public class StatsView extends HorizontalLayout {
 		block.setClearButtonVisible(true);
 		village.setClearButtonVisible(true);
 		village.setVisible(false);
-		// Text text1=new Text("Village Data");
-		// radioGroup.setItems("Master Data", "Village Data");
-		// radioGroup.setValue("Master Data");
-		// radioGroup.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
-		// radioGroup.addValueChangeListener(e -> updateList());
-
+		state.setValue(dbservice.getLoggedUser().getState());
+		state.setVisible(false);
 		expButton.addClickListener(e -> GridExporter.newWithDefaults(vgrid).open());
 
 	}
 
 	public void populateGrid() {
-		Block selblock = block.getValue();
-		if (selblock == null) {
-			Notification.show("Please Select Block");
-		} else {
-			grid.removeAllColumns();
-			List<DtoClass> data = getData(block.getValue());
-			// List<DtoClass> data = getDummyData();
-			grid.addColumn(DtoClass::getDistrictName).setHeader("District");
-			grid.addColumn(DtoClass::getBlockName).setHeader("Block").setSortable(true);
-			grid.addColumn(DtoClass::getVillageName).setHeader("Village").setSortable(true);
-			// grid.addColumn(DtoClass::getYear).setHeader("Year");
-			// grid.addColumn(DtoClass::getTotal).setHeader("Total Crops");
-			// grid.addColumn(DtoClass::getTotalScapes).setHeader("Total Scapes");
-			// grid.addColumn(DtoClass::getTotalMarkets).setHeader("Total Markets");
-			grid.addColumn(DtoClass::getTotal).setHeader("Total").setSortable(true);
-			grid.setItems(data);
+		if(district.getValue()==null||district.getValue().equals(null)) {
+			
+		}else if(district.getValue()!=null &&block.getValue()==null) {
+			getBlockGrid(district.getValue());
+		}else if(block.getValue()!=null) {
+			getVillageGrid();
 		}
-	}
-
-	public Component initGrid() {
-
-		return grid;
-	}
-
-	private List<DtoClass> getData(Block block) {
-		List<DtoClass> data = new ArrayList<>();
-		List<Village> villages = dbservice.getVillages(block);
-		for (Village village : villages) {
-			try {
-				// System.out.println(village.getBlock().getDistrict().getDistrictName()+"-"+village.getBlock().getBlockName()+"-"+village.getVillageName());
-				long totalCrops = calculateTotalCrops(village);
-				long totalScapes = calculateTotalScapes(village);
-				long totalMarkets = calculateTotalMarkets(village);
-				int total = (int) (totalCrops + totalMarkets + totalScapes);
-				data.add(new DtoClass("", total, village.getVillageName(), village.getBlock().getBlockName(),
-						village.getBlock().getDistrict().getDistrictName()));
-			} catch (Exception e) {
-				//e.printStackTrace();
-			}
-		}
-		
-		return data;
-	}
-
-	private long calculateTotalCrops(Village village) {
-		// Your logic to calculate total crops for the village
-		long count = cservice.findCropsByVillage(village, false).size();
-		return count; // Dummy value for demonstration
-	}
-
-	private long calculateTotalScapes(Village village) {
-		long count = sservice.getScapesByVillage(village, false).size();
-		return count;
-		// Dummy value for demonstration
-	}
-
-	private long calculateTotalMarkets(Village village) {
-		long count = mservice.getMarketsByVillage(village, false).size();
-		return count;
 	}
 
 }

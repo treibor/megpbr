@@ -172,6 +172,12 @@ public class Dbservice {
 	public List <Object[]> getVillageCount(){
 		return vrepo.villageCount();
 	}
+	public List <Object[]> getBlockCount(){
+		return vrepo.blockCount();
+	}
+	public List <Object[]> getDistrictCount(){
+		return vrepo.districtCount();
+	}
 	public List <Village> getVillagesTest(Block block){
 		return vrepo.findByBlock(block);
 	}
