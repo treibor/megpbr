@@ -17,6 +17,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -102,11 +103,11 @@ import com.vaadin.flow.theme.lumo.LumoUtility.Padding;
 import com.vaadin.flow.theme.lumo.LumoUtility.Width;
 
 
-@Route("customlogin")
-@PageTitle("Loginsxx")
+@Route("customlogins")
+@PageTitle("Login")
 @AnonymousAllowed
 
-public class CustomLoginView extends Div implements BeforeEnterObserver, ComponentEventListener<AbstractLogin.LoginEvent> {
+public class CustomLoginViewNoCaptcha extends Div implements BeforeEnterObserver, ComponentEventListener<AbstractLogin.LoginEvent> {
 //public class LoginViewAudit extends Div implements BeforeEnterObserver {
 	@Autowired
 	Audit audit;
@@ -121,31 +122,27 @@ public class CustomLoginView extends Div implements BeforeEnterObserver, Compone
 	private static final String LOGIN_BACKGROUND_STYLE = "login";
 	FormLayout form = new FormLayout();
     public TextField captchatext=new TextField();
-    private Button loginbutton=new Button("Login");
-    private Button refresfbutton=new Button("Login");
     private static final String LOGIN_SUCCESS_URL = "/";
     TextField code = new TextField("");
     public LoginOverlay loginOverlay = new LoginOverlay();
     //TreeGrid<District> grid=new TreeGrid<>();
     //TreeGrid<Block> treeGrid=new TreeGrid<>();
-    Captcha captcha = new CapthaImpl();
+    //Captcha captcha = new CapthaImpl();
    // District district;
    // private final AuthenticatedUser authenticatedUser;
-    public CustomLoginView(AuthenticatedUser authenticatedUser, DashboardService dservice, Dbservice dbservice) {
+    public CustomLoginViewNoCaptcha(AuthenticatedUser authenticatedUser, DashboardService dservice, Dbservice dbservice) {
     	this.authenticatedUser=authenticatedUser;
     	this.dservice=dservice;
 		this.dbservice = dbservice;
 		captchatext.setPlaceholder("ENTER CAPTCHA");
-		Image image = captcha.getCaptchaImg();
+		//Image image = captcha.getCaptchaImg();
     	loginOverlay.setTitle("Meghalaya Biodiversity Board");
     	loginOverlay.setDescription("People's Biodiversity Register Ver. 2.0");
     	//loginOverlay.getCustomFormArea().add(code);
-    	loginOverlay.getCustomFormArea().add(image);
-    	loginOverlay.getCustomFormArea().add(captchatext);
+    	//loginOverlay.getCustomFormArea().add(image);
+    	//loginOverlay.getCustomFormArea().add(captchatext);
     	loginOverlay.setForgotPasswordButtonVisible(false);
-    	
-    	add(createHeaderContent());
-    	loginbutton.addClickListener(e-> loginOverlay.setOpened(true));
+    	loginOverlay.setOpened(true);
     	loginOverlay.addLoginListener(this);
 		loginOverlay.getElement().setAttribute("no-autofocus", "");
 		
@@ -160,78 +157,11 @@ public class CustomLoginView extends Div implements BeforeEnterObserver, Compone
 	
 	
 	
-    public Component getCharts3() {
-    	SOChart soChartf = new SOChart();
-    	//SOChart soChartf = new SOChart();
-    	CategoryData labels = new CategoryData();
-    	Data data = new Data();
-        int i=dservice.getFormats().size();
-       // System.out.println("Formats "+i);
-        for(int index=0; index<i; index++) {
-        	labels.add(dservice.getFormats().get(index).getFormat()+" - "+dservice.getFormats().get(index).getFormatName());
-        	        	//District dist=dservice.getDistricts().get(index);
-        	MasterFormat format=dservice.getFormats().get(index);
-        	data.add(dservice.getFormatCount(format, false));
-        }
-        BarChart bc = new BarChart(labels, data);
-        
-        RectangularCoordinate rc;
-        rc  = new RectangularCoordinate(new XAxis(DataType.CATEGORY), new YAxis(DataType.NUMBER));
-        Position p = new Position();
-        bc.plotOn(rc); // Bar chart needs to be plotted on a coordinate system
-        bc.setName("PBR Entered");
-        Toolbox toolbox = new Toolbox();
-        toolbox.addButton(new Toolbox.Download(), new Toolbox.Zoom());
-        Title title = new Title("Format Wise PBR");
-        
-        NightingaleRoseChart nc = new NightingaleRoseChart(labels, data);
-        nc.setName("PBR Entered");
-        nc.setPosition(p); // Position it leaving 50% space at the top
-        //soChartf.add(nc, toolbox);
-        soChartf.add(bc, toolbox, title);
-        HorizontalLayout getCharts=new HorizontalLayout();
-        //getCharts.
-        getCharts.addClassName("chartsLayout1");
-        getCharts.setWidthFull();
-        //getCharts.setHeight("10px");
-        soChartf.setWidthFull();
-        getCharts.add(soChartf);
-        return soChartf;
-    }
-    private Component createHeaderContent() {
-   	 //Button but=new Button("Login");
-       loginbutton.addClickListener(e->loginOverlay.setOpened(true));
-       Header header = new Header();
-       header.addClassNames(BoxSizing.BORDER, Display.FLEX, FlexDirection.COLUMN, Width.FULL);
-
-       Div layout = new Div();
-       layout.addClassNames(Display.FLEX, AlignItems.CENTER, Padding.Horizontal.LARGE);
-
-       H1 appName = new H1("Unauthenticated");
-       appName.addClassNames(Margin.Vertical.MEDIUM, Margin.End.AUTO, FontSize.LARGE);
-       layout.add(appName, loginbutton);
-
-       Nav nav = new Nav();
-       nav.addClassNames(Display.FLEX, Overflow.AUTO, Padding.Horizontal.MEDIUM, Padding.Vertical.XSMALL);
-
-       // Wrap the links in a list; improves accessibility
-       UnorderedList list = new UnorderedList();
-       list.addClassNames(Display.FLEX, Gap.SMALL, ListStyleType.NONE, Margin.NONE, Padding.NONE);
-       nav.add(list);
-
-		/*
-		 * for (MenuItemInfo menuItem : createMenuItems()) { list.add(menuItem);
-		 * 
-		 * }
-		 */
-      
-       header.add(layout, nav);
-       return header;
-   }
-	
+  
 	@Override
 	public void onComponentEvent(AbstractLogin.LoginEvent loginEvent) {
-		if (captcha.checkUserAnswer(captchatext.getValue())) {
+
+		try {
 			Authentication authentication = new UsernamePasswordAuthenticationToken(loginEvent.getUsername(),
 					loginEvent.getPassword());
 			Authentication authenticated = authenticationManager.authenticate(authentication);
@@ -240,14 +170,17 @@ public class CustomLoginView extends Div implements BeforeEnterObserver, Compone
 			securityRepo.saveContext(context, VaadinServletRequest.getCurrent(), VaadinServletResponse.getCurrent());
 			if (authenticated.isAuthenticated()) {
 				loginOverlay.setOpened(false);
+				audit.saveLoginAudit("Login Successfull", loginEvent.getUsername());
 				UI.getCurrent().navigate(DashboardView.class);
 			} else {
+				// audit.saveLoginAudit("Login Failure", loginEvent.getUsername());
 				loginOverlay.setError(true);
 			}
-		}else {
-			Notification.show("Invalid Captcha Entered");
+		} catch (AuthenticationException e) {
+			// TODO Auto-generated catch block
 			loginOverlay.setError(true);
 		}
+
 	}
 	
 	@Override

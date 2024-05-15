@@ -102,9 +102,9 @@ public class StatsView extends HorizontalLayout {
 	ComboBox<District> district = new ComboBox("");
 	ComboBox<Block> block = new ComboBox("");
 	ComboBox<Village> village = new ComboBox();
-	// RadioButtonGroup<String> radioGroup = new RadioButtonGroup<>();
+	ComboBox<String> list=new ComboBox<>("Select","Districts","Blocks", "Villages");
 	HeaderRow headerRow;
-	Button getDataButton = new Button("Search");
+	Button getDataButton = new Button("Show");
 	Button expButton = new Button("Export");
 	VerticalLayout vlx = new VerticalLayout();
 	H6 totallabel = new H6();
@@ -123,7 +123,7 @@ public class StatsView extends HorizontalLayout {
 		setSizeFull();
 		ConfigureCombo();
 		add(getContent());
-
+		getDistrictGrid();
 	}
 	
 	public void getVillageGrid() {
@@ -132,23 +132,29 @@ public class StatsView extends HorizontalLayout {
 		vgrid.addColumn(array -> ((District) array[2]).getDistrictName()).setHeader("District").setSortable(true);
 		vgrid.addColumn(array -> ((Block) array[1]).getBlockName()).setHeader("Block Name").setSortable(true);
 		vgrid.addColumn(array -> ((Village) array[0]).getVillageName()).setHeader("Village Name").setSortable(true);
-		vgrid.addColumn(array -> array[4]).setHeader("Total Pbr");
+		vgrid.addColumn(array -> array[4]).setHeader("Pbr Entered");
 		List<Object[]> data = dbservice.getVillageCount();
 		vgrid.setItems(data);
 		
 	}
-	public void getBlockGrid(District district) {
+	public void getBlockGrid() {
 		vgrid.removeAllColumns();
-		vgrid.addColumn(array -> array[0]).setHeader("Block");
-		vgrid.addColumn(array -> array[1]).setHeader("Pbr Entered");
+		
+		vgrid.addColumn(array -> ((State) array[2]).getStateName()).setHeader("State").setSortable(true);
+		vgrid.addColumn(array -> ((District) array[1]).getDistrictName()).setHeader("District").setSortable(true);
+		vgrid.addColumn(array -> ((Block) array[0]).getBlockName()).setHeader("Block Name").setSortable(true);
+		vgrid.addColumn(array -> array[3]).setHeader("Pbr Entered");
 		List<Object[]> data = dbservice.getBlockCount();
 		vgrid.setItems(data);
 	}
-	public Component getDistrictGrid() {
+	public void getDistrictGrid() {
+		vgrid.removeAllColumns();
 		vgrid.addColumn(array -> array[0]).setHeader("District");
 		vgrid.addColumn(array -> array[1]).setHeader("Pbr Entered");
 		List<Object[]> data = dbservice.getDistrictCount();
 		vgrid.setItems(data);
+	}
+	public Component getGrid() {
 		vgrid.setSizeFull();
 		return vgrid;
 	}
@@ -176,7 +182,7 @@ public class StatsView extends HorizontalLayout {
 
 	private Component getMainContent() {
 
-		vlx.add(getToolBar2(), getDistrictGrid(), getToolBar3());
+		vlx.add(getToolBar2(), getGrid(), getToolBar3());
 		// grid.setSizeFull();
 		vlx.setSizeFull();
 		return vlx;
@@ -195,11 +201,13 @@ public class StatsView extends HorizontalLayout {
 	
 
 	public Component getToolBar2() {
+		
 		FormLayout formx = new FormLayout();
 		formx.add(state, 2);
 		formx.add(district, 2);
 		formx.add(block, 2);
 		formx.add(village, 2);
+		formx.add(list, 2);
 		formx.add(getDataButton, 1);
 		// formx.add(expButton, 1);
 		formx.setResponsiveSteps(new ResponsiveStep("0", 4),
@@ -240,6 +248,8 @@ public class StatsView extends HorizontalLayout {
 		block.setClearButtonVisible(true);
 		village.setClearButtonVisible(true);
 		village.setVisible(false);
+		block.setVisible(false);
+		district.setVisible(false);
 		state.setValue(dbservice.getLoggedUser().getState());
 		state.setVisible(false);
 		expButton.addClickListener(e -> GridExporter.newWithDefaults(vgrid).open());
@@ -247,11 +257,11 @@ public class StatsView extends HorizontalLayout {
 	}
 
 	public void populateGrid() {
-		if(district.getValue()==null||district.getValue().equals(null)) {
-			
-		}else if(district.getValue()!=null &&block.getValue()==null) {
-			getBlockGrid(district.getValue());
-		}else if(block.getValue()!=null) {
+		if(list.getValue()=="Districts") {
+			getDistrictGrid();
+		}else if(list.getValue()=="Blocks") {
+			getBlockGrid();
+		}else if(list.getValue()=="Villages") {
 			getVillageGrid();
 		}
 	}

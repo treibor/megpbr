@@ -35,7 +35,7 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 
 //@Route("loginss")
-@PageTitle("Login")
+@PageTitle("Loginxxxx")
 @AnonymousAllowed
 
 public class CustomView extends Div implements BeforeEnterObserver{

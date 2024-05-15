@@ -170,6 +170,7 @@ public class Dbservice {
 		return vrepo.findByBlockAndInUse(block, inUse);
 	}
 	public List <Object[]> getVillageCount(){
+		//System.out.println(block.getBlockName());
 		return vrepo.villageCount();
 	}
 	public List <Object[]> getBlockCount(){

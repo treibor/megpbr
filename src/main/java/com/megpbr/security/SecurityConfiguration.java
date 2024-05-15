@@ -23,6 +23,8 @@ import org.springframework.security.web.header.writers.XXssProtectionHeaderWrite
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.megpbr.views.login.CustomLoginView;
+import com.megpbr.views.login.CustomLoginViewNoCaptcha;
+import com.megpbr.views.login.CustomView;
 import com.megpbr.views.login.LoginView;
 import com.megpbr.views.unauthenticated.AboutView;
 import com.vaadin.flow.spring.security.VaadinWebSecurity;
@@ -88,8 +90,9 @@ public class SecurityConfiguration extends VaadinWebSecurity {
 				
 
 		;
-		setLoginView(http, LoginView.class);
+		//setLoginView(http, LoginView.class);
 		//setLoginView(http, CustomLoginView.class);
+		setLoginView(http, CustomLoginViewNoCaptcha.class);
 		super.configure(http);
 	}
 	

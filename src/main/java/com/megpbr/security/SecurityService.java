@@ -17,6 +17,9 @@ import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import com.megpbr.audit.Audit;
+import com.megpbr.data.service.AuditService;
+import com.megpbr.data.service.UserService;
 import com.vaadin.flow.server.VaadinServletRequest;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.spring.security.AuthenticationContext;
@@ -28,7 +31,7 @@ public class SecurityService {
 	private final AuthenticationContext authenticationContext;
 	@Autowired UserDetailsServiceImpl userdetails;
 	@Autowired BCryptPasswordEncoder passwordEncoder;	
-	
+	//@Autowired Audit audit;
 	public SecurityService(AuthenticationContext authenticationContext) {
 		this.authenticationContext = authenticationContext;
 	}
@@ -57,6 +60,7 @@ public class SecurityService {
 		if (auth != null && auth.isAuthenticated()) {
 			Object principal = auth.getPrincipal();
 			if (principal instanceof UserDetails) {
+				//audit.saveLoginAudit("Login Success", "");
 				return (UserDetails) principal;
 			}
 		}

@@ -1,5 +1,6 @@
 package com.megpbr.views;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
 import com.megpbr.audit.Audit;
@@ -79,7 +80,7 @@ public class MainLayout extends AppLayout {
     private Dbservice dbservice;
     private UserService userservice;
     private SecurityService securityService;
-    private Audit auditobject; 
+    @Autowired private Audit auditobject; 
     //private final transient AuthenticationContext authContext;
 
     public MainLayout(Dbservice dbservice, UserService userservice, SecurityService securityService) {
@@ -167,7 +168,7 @@ public class MainLayout extends AppLayout {
 		subMenu.addItem("About", e->createAboutSection());
 		subMenu.addItem("Change Password", e->changePassword());
 		subMenu.addItem("Create User",e->createUser()).setVisible(isAdmin());
-		subMenu.addItem("Logout", e -> securityService.logout());
+		subMenu.addItem("Logout", e -> logout());
         DrawerToggle toggle = new DrawerToggle();
         toggle.setAriaLabel("Menu toggle");
         Image img = new Image("images/emblem-dark.png", "placeholder plant");
@@ -330,7 +331,12 @@ public class MainLayout extends AppLayout {
     	final UserView user=new UserView(dbservice, userservice);
 		user.createAbout();
 	}
-	
+
+	public void logout() {
+		//auditobject=new Au
+		auditobject.saveAudit("Logged Out", userservice.getLoggedUserName());
+		securityService.logout();
+	}
 	public void createUser() {
 		final UserView user=new UserView(dbservice, userservice);
 		user.createUser();
