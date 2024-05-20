@@ -102,8 +102,8 @@ import com.vaadin.flow.theme.lumo.LumoUtility.Padding;
 import com.vaadin.flow.theme.lumo.LumoUtility.Width;
 
 
-@Route("customlogin")
-@PageTitle("Loginsxx")
+//@Route("login")
+@PageTitle("Login")
 @AnonymousAllowed
 
 public class CustomLoginView extends Div implements BeforeEnterObserver, ComponentEventListener<AbstractLogin.LoginEvent> {

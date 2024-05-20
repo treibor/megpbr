@@ -2,6 +2,7 @@ package com.megpbr.data.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Year;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -197,19 +198,21 @@ public class DashboardService {
 	    List<String> yearlist = new ArrayList<>();
 	    DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	    int startYear = 2020;
-	    int endYear = 2040;
+	    //int endYear = 2030;
+	    int endYear = Year.now().getValue();
 	    for (int i = startYear; i < endYear; i++) {
-	        LocalDateTime startdate = LocalDate.parse("01/01/" + i, df).atStartOfDay();
-	        LocalDateTime enddate = LocalDate.parse("31/12/" + i, df).atTime(23, 59, 59);
-	        int count1 = crepo.getCropsCountYearly(false, startdate, enddate);
-	        int count2 = mrepo.getMarketsCountYearly(false, startdate, enddate);
-	        int count3 = srepo.getScapesCountYearly(false, startdate, enddate);
-	        
-	        int count=count1+count2+count3;
-	        if (count > 0) {
-	        	//System.out.println("Year:"+i+"- Count:"+count1);
-	            yearlist.add(String.valueOf(i));
-	        }
+	        yearlist.add(String.valueOf(i));
+			/*
+			 * LocalDateTime startdate = LocalDate.parse("01/01/" + i, df).atStartOfDay();
+			 * LocalDateTime enddate = LocalDate.parse("31/12/" + i, df).atTime(23, 59, 59);
+			 * int count1 = crepo.getCropsCountYearly(false, startdate, enddate); int count2
+			 * = mrepo.getMarketsCountYearly(false, startdate, enddate); int count3 =
+			 * srepo.getScapesCountYearly(false, startdate, enddate);
+			 * 
+			 * int count=count1+count2+count3; if (count > 0) {
+			 * //System.out.println("Year:"+i+"- Count:"+count1);
+			 * yearlist.add(String.valueOf(i)); }
+			 */
 	    }
 	    return yearlist;
 	}

@@ -93,6 +93,6 @@ public class MasterService {
 		userrepo.delete(status);
 	}
 	public List<AuditTrail> getAuditTrail() {
-		return auditrepo.findAll();
+		return auditrepo.findAllByOrderByIdDesc();
 	}
 }

@@ -135,7 +135,7 @@ public class MasterView extends HorizontalLayout{
 		tabSheet.add("Management Regime",getRegimeTab());
 		tabSheet.add("Local Language",getLanguageTab());
 		tabSheet.add("Users",getUserTab()).setVisible(isStateAdmin());;
-		tabSheet.add("Audit Trail",getAuditTab()).setVisible(isStateAdmin());;
+		//tabSheet.add("Audit Trail",getAuditTab()).setVisible(isStateAdmin());;
 		tabSheet.setSizeFull();
 		return tabSheet;
 	}

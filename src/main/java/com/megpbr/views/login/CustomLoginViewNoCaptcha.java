@@ -103,7 +103,7 @@ import com.vaadin.flow.theme.lumo.LumoUtility.Padding;
 import com.vaadin.flow.theme.lumo.LumoUtility.Width;
 
 
-@Route("customlogins")
+@Route("login")
 @PageTitle("Login")
 @AnonymousAllowed
 

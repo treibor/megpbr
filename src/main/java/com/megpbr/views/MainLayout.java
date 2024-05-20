@@ -212,7 +212,7 @@ public class MainLayout extends AppLayout {
         SideNavItem dashboardItems=new SideNavItem("Dashboard");
         dashboardItems.setPrefixComponent(LineAwesomeIcon.ACCUSOFT.create());
         SideNavItem dashboardItem1=new SideNavItem("General ", DashboardView.class, LineAwesomeIcon.ADDRESS_BOOK.create());
-        SideNavItem dashboardItem2=new SideNavItem(" Year ", YearDashboardView.class, LineAwesomeIcon.ALGOLIA.create());
+        SideNavItem dashboardItem2=new SideNavItem(" Yearly Data", YearDashboardView.class, LineAwesomeIcon.ALGOLIA.create());
         SideNavItem dashboardItem3=new SideNavItem(" Statistics ", StatsView.class, LineAwesomeIcon.AIR_FRESHENER_SOLID.create());
         dashboardItems.addItem(dashboardItem1, dashboardItem2, dashboardItem3);
         nav.addItem(dashboardItems);
@@ -299,6 +299,8 @@ public class MainLayout extends AppLayout {
         nav.addItem(master);
         SideNavItem lgd=new SideNavItem("LGD Data", lgd.class, LineAwesomeIcon.ZHIHU.create());
         nav.addItem(lgd);
+        SideNavItem audit=new SideNavItem("Audit Trail", AuditView.class, LineAwesomeIcon.DOCKER.create());
+        nav.addItem(audit);
         crowd.setVisible(isVerifiers());
         master.setVisible(isStateAdmin());
         preverify.setVisible(isStateUser());
@@ -308,6 +310,7 @@ public class MainLayout extends AppLayout {
         category3.setVisible(!isVerifier());
         village.setVisible(!isVerifier());
         lgd.setVisible(isSuperAdmin());
+        audit.setVisible(isSuperAdmin());
         return nav;
     }
 
