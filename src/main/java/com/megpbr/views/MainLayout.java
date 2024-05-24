@@ -51,9 +51,11 @@ import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.html.H6;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.menubar.MenuBarVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -76,7 +78,7 @@ import jakarta.annotation.security.PermitAll;
  */
 
 public class MainLayout extends AppLayout {
-	private H2 viewTitle;
+	//private H2 viewTitle;
     private Dbservice dbservice;
     private UserService userservice;
     private SecurityService securityService;
@@ -165,25 +167,27 @@ public class MainLayout extends AppLayout {
 		menuBar.addThemeVariants(MenuBarVariant.LUMO_TERTIARY_INLINE);
 		MenuItem item = menuBar.addItem(avatarImage);
 		SubMenu subMenu = item.getSubMenu();
+		//createIconItem(subMenu, VaadinIcon.SHARE, "By Email", null, true);
 		subMenu.addItem("About", e->createAboutSection());
+		//a.add(LineAwesomeIcon.ADDRESS_BOOK.create());
 		subMenu.addItem("Change Password", e->changePassword());
 		subMenu.addItem("Create User",e->createUser()).setVisible(isAdmin());
 		subMenu.addItem("Logout", e -> logout());
         DrawerToggle toggle = new DrawerToggle();
         toggle.setAriaLabel("Menu toggle");
         Image img = new Image("images/emblem-dark.png", "placeholder plant");
-        img.setWidth("60px");
-        img.setHeight("100px");
+        img.setWidth("50px");
+        img.setHeight("80px");
         var header=new HorizontalLayout();
         
         var viewTitle1 = new H6("Government of Meghalaya");
-        viewTitle = new H2("MEGHALAYA BIODIVERSITY BOARD");
+        H4 viewTitle = new H4("MEGHALAYA BIODIVERSITY BOARD");
         viewTitle.getStyle().set("font-size", "20px");
         var viewTitle2 = new H6("People's Biodiversity Register");
         var headerText=new VerticalLayout(viewTitle1, viewTitle, viewTitle2);
         //header.add(img, new VerticalLayout());
         header.setJustifyContentMode(JustifyContentMode.BETWEEN);
-        viewTitle.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
+        viewTitle.addClassNames(LumoUtility.FontSize.MEDIUM, LumoUtility.Margin.NONE);
         header.addClassNames(Margin.Top.SMALL, Margin.Bottom.SMALL);
         header.addClassName(Padding.Left.XLARGE);
         if (securityService.getAuthenticatedUser() != null) {

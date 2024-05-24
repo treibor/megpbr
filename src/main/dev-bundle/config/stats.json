@@ -295,7 +295,7 @@
   "megpbr": "{\n  \"lumoImports\" : [ \"typography\", \"color\", \"spacing\", \"badge\", \"utility\" ]\n}"
  },
  "entryScripts": [
-  "VAADIN/build/indexhtml-fdce86da.js"
+  "VAADIN/build/indexhtml-49cd641e.js"
  ],
  "webComponents": [],
  "cvdlModules": {
@@ -330,6 +330,6 @@
  },
  "packageJsonHash": "079c0c9726f12d2dff981f36285dff057f6c6aef4c5626e16f3d947a5c9b3d02",
  "indexHtmlGenerated": [
-  "  <script type=\"module\" crossorigin src=\"./VAADIN/build/indexhtml-fdce86da.js\"></script>"
+  "  <script type=\"module\" crossorigin src=\"./VAADIN/build/indexhtml-49cd641e.js\"></script>"
  ]
 }
