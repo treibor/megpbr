@@ -10,6 +10,7 @@ import org.springframework.web.filter.HiddenHttpMethodFilter;
 
 import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.component.page.Push;
+import com.vaadin.flow.server.AppShellSettings;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 
@@ -25,7 +26,7 @@ import jakarta.servlet.ServletContext;
 @SpringBootApplication
 @Theme(value = "megpbr")
 @Push
-@PWA(name = "MegPbr", shortName = "MegPbr")
+@PWA(name = "MegPbr", shortName = "MegPbr", iconPath = "/icons/logo.png")
 public class Application extends SpringBootServletInitializer implements AppShellConfigurator {
 
 	public static void main(String[] args) {
@@ -33,5 +34,11 @@ public class Application extends SpringBootServletInitializer implements AppShel
 	}
 
 	
-
+	  @Override public void configurePage(AppShellSettings settings) {
+	  settings.addFavIcon("icon", "icons/logo.png", "192x192");
+	  settings.addLink("shortcut icon", "icons/logo.png");
+	  
+	  }
+	 
+	 
 }

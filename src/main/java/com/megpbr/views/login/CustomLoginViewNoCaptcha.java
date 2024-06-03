@@ -45,6 +45,7 @@ import com.megpbr.security.captcha.Captcha;
 import com.megpbr.security.captcha.CapthaImpl;
 import com.megpbr.views.dashboard.DashboardView;
 import com.megpbr.views.dashboard.HierarchicalEntity;
+import com.megpbr.views.dashboard.HomeView;
 import com.storedobject.chart.BarChart;
 import com.storedobject.chart.CategoryData;
 import com.storedobject.chart.Data;
@@ -171,7 +172,7 @@ public class CustomLoginViewNoCaptcha extends Div implements BeforeEnterObserver
 			if (authenticated.isAuthenticated()) {
 				loginOverlay.setOpened(false);
 				audit.saveLoginAudit("Login Successfull", loginEvent.getUsername());
-				UI.getCurrent().navigate(DashboardView.class);
+				UI.getCurrent().navigate(HomeView.class);
 			} else {
 				// audit.saveLoginAudit("Login Failure", loginEvent.getUsername());
 				loginOverlay.setError(true);
