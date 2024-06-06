@@ -10,8 +10,8 @@ import java.io.*;
 import java.util.Random;
 public class CapthaImpl implements Captcha {
     private static final int COUNT_NUM = 6;
-    private static final int WIDTH_IMG = 250;
-    private static final int HEIGHT_IMG = 50;
+    private static final int WIDTH_IMG = 200;
+    private static final int HEIGHT_IMG = 40;
     private String genStr;
     private String charsInImg = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890";
     private Random random = new Random(System.nanoTime());

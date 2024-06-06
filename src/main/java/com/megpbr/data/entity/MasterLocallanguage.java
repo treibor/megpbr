@@ -2,6 +2,8 @@ package com.megpbr.data.entity;
 
 import java.util.List;
 
+import org.hibernate.validator.constraints.Length;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,6 +26,7 @@ public class MasterLocallanguage {
 	@SequenceGenerator(name="llanguage_generator", sequenceName = "llanguage_seq", allocationSize=1)
 	private long id;
 	@NotBlank
+	@Length(min=1, max = 255, message="Character Limit Exceeded")
 	private String languageName;
 	public long getId() {
 		return id;

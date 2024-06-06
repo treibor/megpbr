@@ -2,6 +2,8 @@ package com.megpbr.data.entity;
 
 import java.util.List;
 
+import org.hibernate.validator.constraints.Length;
+
 import com.megpbr.data.entity.pbr.Crops;
 
 import jakarta.persistence.CascadeType;
@@ -23,7 +25,9 @@ public class MasterStatus {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "status_generator")
 	@SequenceGenerator(name="status_generator", sequenceName = "status_seq", allocationSize=1)
 	private long id;
+	@Length(min=1, max = 255, message="Character Limit Exceeded")
 	private String status;
+	@Length(min=1, max = 255, message="Character Limit Exceeded")
 	private String statusName;
 	
 	

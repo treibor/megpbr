@@ -2,6 +2,8 @@ package com.megpbr.data.entity;
 
 import java.util.List;
 
+import org.hibernate.validator.constraints.Length;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,6 +25,7 @@ public class State {
 	@Column(unique=true)
 	private long stateCode;
 	@Column(unique=true)
+	@Length(min=1, max = 255, message="Character Limit Exceeded")
 	private String stateName;
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "state")
 	private List<District> district;

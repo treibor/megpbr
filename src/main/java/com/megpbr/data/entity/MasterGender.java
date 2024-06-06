@@ -1,5 +1,7 @@
 package com.megpbr.data.entity;
 
+import org.hibernate.validator.constraints.Length;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,7 +16,9 @@ public class MasterGender {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gender_generator")
 	@SequenceGenerator(name="gender_generator", sequenceName = "gender_seq", allocationSize=1)
 	private long id;
+	@Length(min=1, max = 255, message="Character Limit Exceeded")
 	private String genderName;
+	@Length(min=1, max = 255, message="Character Limit Exceeded")
 	private String gender;
 	public long getId() {
 		return id;

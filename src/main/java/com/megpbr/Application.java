@@ -2,19 +2,13 @@ package com.megpbr;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.web.filter.HiddenHttpMethodFilter;
 
 import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.server.AppShellSettings;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
-
-import jakarta.servlet.ServletContext;
 
 /**
  * The entry point of the Spring Boot application.
@@ -33,12 +27,13 @@ public class Application extends SpringBootServletInitializer implements AppShel
 		SpringApplication.run(Application.class, args);
 	}
 
+	@Override
+	public void configurePage(AppShellSettings settings) {
+		settings.addFavIcon("icon", "icons/logo.png", "192x192");
+		settings.addLink("shortcut icon", "icons/logo.png");
+		
+	}
+
 	
-	  @Override public void configurePage(AppShellSettings settings) {
-	  settings.addFavIcon("icon", "icons/logo.png", "192x192");
-	  settings.addLink("shortcut icon", "icons/logo.png");
-	  
-	  }
-	 
-	 
+
 }

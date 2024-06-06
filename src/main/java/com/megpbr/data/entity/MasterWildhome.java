@@ -2,6 +2,8 @@ package com.megpbr.data.entity;
 
 import java.util.List;
 
+import org.hibernate.validator.constraints.Length;
+
 import com.megpbr.data.entity.pbr.Crops;
 
 import jakarta.persistence.CascadeType;
@@ -20,6 +22,7 @@ public class MasterWildhome {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "wildhome_generator")
 	@SequenceGenerator(name="wildhome_generator", sequenceName = "wildhome_seq", allocationSize=1)
 	private long id;
+	@Length(min=1, max = 255, message="Character Limit Exceeded")
 	private String wname;
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "wildhome")
 	private List<Crops> crops;

@@ -3,6 +3,7 @@ package com.megpbr.data.entity;
 
 import java.util.List;
 
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.UniqueElements;
 
 import jakarta.persistence.CascadeType;
@@ -31,8 +32,10 @@ public class District {
 	@SequenceGenerator(name="district_generator", sequenceName = "district_seq", allocationSize=1)
 	private long id;
 	@NotBlank
+	@Length(max = 100, message="Character Limit Exceeded")
 	private String districtName;
 	@Column(unique=true)
+	
 	private long districtCode;
 	@NotNull
 	@ManyToOne

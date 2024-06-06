@@ -1,5 +1,7 @@
 package com.megpbr.data.entity;
 
+import org.hibernate.validator.constraints.Length;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,7 +16,9 @@ public class MasterPosition {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "position_generator")
 	@SequenceGenerator(name="position_generator", sequenceName = "position_seq", allocationSize=1)
 	private long id;
+	@Length(min=1, max = 255, message="Character Limit Exceeded")
 	private String positionName;
+	@Length(min=1, max = 255, message="Character Limit Exceeded")
 	private String position;
 	
 	public String getPosition() {

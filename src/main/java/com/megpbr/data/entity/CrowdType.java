@@ -2,6 +2,8 @@ package com.megpbr.data.entity;
 
 import java.util.List;
 
+import org.hibernate.validator.constraints.Length;
+
 import com.megpbr.data.entity.pbr.Crops;
 import com.megpbr.data.entity.pbr.Crowd;
 
@@ -25,6 +27,7 @@ public class CrowdType {
 	@SequenceGenerator(name="crowdtype_generator", sequenceName = "crowdtype_seq", allocationSize=1)
 	private long id;
 	private int type;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String typeName;
 	@ManyToOne
 	@JoinColumn(name="category", referencedColumnName = "id")

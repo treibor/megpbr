@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.validator.constraints.Length;
+
 import com.megpbr.data.entity.pbr.Crops;
 import com.megpbr.data.entity.pbr.Crowd;
 import com.megpbr.data.entity.pbr.Markets;
@@ -40,7 +42,9 @@ public class Village {
 	@SequenceGenerator(name="village_generator", sequenceName = "village_seq", allocationSize=1)
 	private long id;
 	@Column(unique=true)
+
 	private long villageCode;
+	@Length(min=1, max = 255, message="Character Limit Exceeded")
 	private String villageName;
 	@ManyToOne
 	@JoinColumn(name="block", referencedColumnName = "blockCode")

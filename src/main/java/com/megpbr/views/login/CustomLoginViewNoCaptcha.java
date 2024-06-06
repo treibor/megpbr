@@ -104,7 +104,7 @@ import com.vaadin.flow.theme.lumo.LumoUtility.Padding;
 import com.vaadin.flow.theme.lumo.LumoUtility.Width;
 
 
-@Route("login")
+//@Route("logins")
 @PageTitle("Login")
 @AnonymousAllowed
 
@@ -126,11 +126,6 @@ public class CustomLoginViewNoCaptcha extends Div implements BeforeEnterObserver
     private static final String LOGIN_SUCCESS_URL = "/";
     TextField code = new TextField("");
     public LoginOverlay loginOverlay = new LoginOverlay();
-    //TreeGrid<District> grid=new TreeGrid<>();
-    //TreeGrid<Block> treeGrid=new TreeGrid<>();
-    //Captcha captcha = new CapthaImpl();
-   // District district;
-   // private final AuthenticatedUser authenticatedUser;
     public CustomLoginViewNoCaptcha(AuthenticatedUser authenticatedUser, DashboardService dservice, Dbservice dbservice) {
     	this.authenticatedUser=authenticatedUser;
     	this.dservice=dservice;
@@ -148,20 +143,12 @@ public class CustomLoginViewNoCaptcha extends Div implements BeforeEnterObserver
 		loginOverlay.getElement().setAttribute("no-autofocus", "");
 		
 	}
-    public List<Block> getBlock(District district) {
-        return dbservice.getBlocks(district);
-    }
-   
-
     
-
-	
-	
-	
   
 	@Override
 	public void onComponentEvent(AbstractLogin.LoginEvent loginEvent) {
-
+		System.out.println(loginEvent.getUsername());
+		System.out.println(loginEvent.getPassword());
 		try {
 			Authentication authentication = new UsernamePasswordAuthenticationToken(loginEvent.getUsername(),
 					loginEvent.getPassword());
@@ -169,16 +156,22 @@ public class CustomLoginViewNoCaptcha extends Div implements BeforeEnterObserver
 			SecurityContextHolder.getContext().setAuthentication(authenticated);
 			SecurityContext context = SecurityContextHolder.getContext();
 			securityRepo.saveContext(context, VaadinServletRequest.getCurrent(), VaadinServletResponse.getCurrent());
+			//System.out.println("AUTHEN");
 			if (authenticated.isAuthenticated()) {
 				loginOverlay.setOpened(false);
 				audit.saveLoginAudit("Login Successfull", loginEvent.getUsername());
+				System.out.println("Login SAXX");
 				UI.getCurrent().navigate(HomeView.class);
+				
 			} else {
-				// audit.saveLoginAudit("Login Failure", loginEvent.getUsername());
+				//audit.saveLoginAudit("Login Failure", loginEvent.getUsername());
+				//System.out.println("Login Failure");
 				loginOverlay.setError(true);
 			}
-		} catch (AuthenticationException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			System.out.println("Login Failuresss");
+			audit.saveLoginAudit("Login Failure", loginEvent.getUsername());
 			loginOverlay.setError(true);
 		}
 
@@ -191,7 +184,8 @@ public class CustomLoginViewNoCaptcha extends Div implements BeforeEnterObserver
             loginOverlay.setOpened(false);
             event.forwardTo("");
         }
-
+        //audit.saveLoginAudit("Login Failure", loginEvent.getUsername());
+		//System.out.println("Login Failurex");
         loginOverlay.setError(event.getLocation().getQueryParameters().getParameters().containsKey("error"));
     }
 	

@@ -2,6 +2,8 @@ package com.megpbr.data.entity;
 
 import java.util.List;
 
+import org.hibernate.validator.constraints.Length;
+
 import com.megpbr.data.entity.pbr.Crops;
 import com.megpbr.data.entity.villages.VillageDetails;
 
@@ -21,7 +23,9 @@ public class MasterManagementRegime {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "regime_generator")
 	@SequenceGenerator(name="regime_generator", sequenceName = "regime_seq", allocationSize=1)
 	private long id;
+	@Length(min=1, max = 255, message="Character Limit Exceeded")
 	private String managementregime;
+	@Length(min=1, max = 255, message="Character Limit Exceeded")
 	private String managerregime;
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "managementregime")
 	private List<VillageDetails> villagedetails;

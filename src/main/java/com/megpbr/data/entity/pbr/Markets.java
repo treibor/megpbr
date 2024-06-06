@@ -2,6 +2,8 @@ package com.megpbr.data.entity.pbr;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.validator.constraints.Length;
+
 import com.megpbr.data.entity.MasterApproval;
 import com.megpbr.data.entity.MasterCommercial;
 import com.megpbr.data.entity.MasterFormat;
@@ -31,27 +33,43 @@ public class Markets {
 	private long id;
 	
 	@NotBlank(message = "This Cannot Be Blank")
-	//private String scientificName;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String name;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String frequency;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String month;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String day;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String animalType;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String transactions;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String placesFrom;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String placesTo;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String fishLocation;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String fishType;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String fishSource;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String remarks;
 	//private String associatedTk;
 	private byte[] photo1;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String photo1Source;
 	private byte[] photo2;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String photo2Source;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private byte[] photo3;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String photo3Source;
 	private byte[] photo4;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String photo4Source;
 	private boolean master;
 	private boolean crowdData;
@@ -59,7 +77,9 @@ public class Markets {
 	@JoinColumn(name = "enteredBy", referencedColumnName = "id")
 	private UserLogin enteredBy;
 	private LocalDateTime enteredOn;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String latitude;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String longitude;
 	@ManyToOne
 	@JoinColumn(name = "approved", referencedColumnName = "id")

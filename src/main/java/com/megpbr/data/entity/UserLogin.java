@@ -3,6 +3,8 @@ package com.megpbr.data.entity;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.validator.constraints.Length;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
@@ -32,8 +34,11 @@ public class UserLogin {
 	@SequenceGenerator(name="userlogin_generator", sequenceName = "userlogin_seq", allocationSize=1)
 	private long id;
 	@Column(unique=true)
+	@Length(min=1, max = 255, message="Character Limit Exceeded")
 	private String userName;
+	@Length(min=1, max = 255, message="Character Limit Exceeded")
 	private String name;
+	@Length(min=1, max = 255, message="Character Limit Exceeded")
 	private String email;
 	private boolean enabled;
 	//@JsonIgnore

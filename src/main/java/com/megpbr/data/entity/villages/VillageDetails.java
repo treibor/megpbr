@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.validator.constraints.Length;
+
 import com.megpbr.data.entity.MasterManagementRegime;
 import com.megpbr.data.entity.UserLogin;
 import com.megpbr.data.entity.Village;
@@ -44,9 +46,13 @@ public class VillageDetails {
     private Integer malePopn=0;
     private Integer femalePopn=0;
     @Column(length = 1000)
+    @Length(max = 999, message="Character Limit Exceeded")
     private String habitat;
+    @Length(max = 255, message="Character Limit Exceeded")
     private String rainfall;
+    @Length(max = 255, message="Character Limit Exceeded")
     private String temperature;
+    @Length(max = 255, message="Character Limit Exceeded")
     private String weatherPatterns;
     private BigDecimal  forestArea;
     private BigDecimal nonagriArea;

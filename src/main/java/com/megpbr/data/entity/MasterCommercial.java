@@ -2,6 +2,8 @@ package com.megpbr.data.entity;
 
 import java.util.List;
 
+import org.hibernate.validator.constraints.Length;
+
 import com.megpbr.data.entity.pbr.Crops;
 
 import jakarta.persistence.CascadeType;
@@ -20,6 +22,7 @@ public class MasterCommercial {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "commercial_generator")
 	@SequenceGenerator(name="commercial_generator", sequenceName = "commercial_seq", allocationSize=1)
 	private long id;
+	@Length(min=1, max = 255, message="Character Limit Exceeded")
 	private String cname;
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "commercial")
 	private List<Crops> crops;

@@ -2,6 +2,8 @@ package com.megpbr.data.entity.pbr;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.validator.constraints.Length;
+
 import com.megpbr.data.entity.MasterApproval;
 import com.megpbr.data.entity.MasterCommercial;
 import com.megpbr.data.entity.MasterFormat;
@@ -23,55 +25,76 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
-@Table(name="Scapes", schema = "megpbr")
+@Table(name = "Scapes", schema = "megpbr")
 public class Scapes {
-	//For format 7-10
+	// For format 7-10
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "scape_generator")
-	@SequenceGenerator(name="scape_generator", sequenceName = "scape_seq", allocationSize=1)
+	@SequenceGenerator(name = "scape_generator", sequenceName = "scape_seq", allocationSize = 1)
 	private long id;
 
 	@NotBlank(message = "This Cannot Be Blank")
-	//private String scientificName;
-	@Column(length =1000)
+	// private String scientificName;
+	@Column(length = 1000)
+	@Length(max = 999, message = "Character Limit Exceeded")
 	private String faunaPopulation;
 	@Column(length = 1000)
+	@Length(max = 999, message = "Character Limit Exceeded")
 	private String floraOccupation;
 	@Column(length = 1000)
+	@Length(max = 999, message = "Character Limit Exceeded")
 	private String typeAgriOccupation;
 	@Column(length = 2000)
+	@Length(max = 1999, message = "Character Limit Exceeded")
 	private String landscape;
+	@Length(max = 255, message = "Character Limit Exceeded")
 	private String subLandscape;
 	@Column(length = 500)
+	@Length(max = 499, message = "Character Limit Exceeded")
 	private String fallow;
 	@Column(length = 500)
+	@Length(max = 499, message = "Character Limit Exceeded")
 	private String forest;
+	@Length(max = 255, message = "Character Limit Exceeded")
 	private String wetLand;
+	@Length(max = 255, message = "Character Limit Exceeded")
 	private String features;
+	@Length(max = 255, message = "Character Limit Exceeded")
 	private String ownerHouse;
+	@Length(max = 255, message = "Character Limit Exceeded")
 	private String userGroups;
-	 @Column(length = 1000)
+	@Column(length = 1000)
+	@Length(max = 999, message = "Character Limit Exceeded")
 	private String management;
-	 @Column(length = 1000)
+	@Column(length = 1000)
+	@Length(max = 999, message = "Character Limit Exceeded")
 	private String generalResources;
+	@Length(max = 255, message = "Character Limit Exceeded")
 	private String socialCommunity;
+	@Length(max = 255, message = "Character Limit Exceeded")
 	private String otherDetails;
+	@Length(max = 255, message = "Character Limit Exceeded")
 	private String localLanguage;
-	//private String otherLanguage;
+	// private String otherLanguage;
+	@Length(max = 255, message = "Character Limit Exceeded")
 	private String remarks;
 	@Column(length = 1000)
+	@Length(max = 999, message = "Character Limit Exceeded")
 	private String associatedTk;
 	private byte[] photo1;
+	@Length(max = 255, message = "Character Limit Exceeded")
 	private String photo1Source;
 	private byte[] photo2;
+	@Length(max = 255, message = "Character Limit Exceeded")
 	private String photo2Source;
 	private byte[] photo3;
+	@Length(max = 255, message = "Character Limit Exceeded")
 	private String photo3Source;
 	private byte[] photo4;
+	@Length(max = 255, message = "Character Limit Exceeded")
 	private String photo4Source;
 	private boolean master;
 	private boolean crowdData;
-
 
 	@ManyToOne
 	@JoinColumn(name = "enteredBy", referencedColumnName = "id")
@@ -88,7 +111,7 @@ public class Scapes {
 	@ManyToOne
 	@JoinColumn(name = "village", referencedColumnName = "villageCode")
 	private Village village;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "approved", referencedColumnName = "id")
 	private MasterApproval approved;
@@ -100,9 +123,6 @@ public class Scapes {
 	public void setId(long id) {
 		this.id = id;
 	}
-
-	
-	
 
 	public String getFaunaPopulation() {
 		return faunaPopulation;
@@ -224,8 +244,6 @@ public class Scapes {
 		this.localLanguage = localLanguage;
 	}
 
-	
-
 	public String getRemarks() {
 		return remarks;
 	}
@@ -241,8 +259,6 @@ public class Scapes {
 	public void setAssociatedTk(String associatedTk) {
 		this.associatedTk = associatedTk;
 	}
-
-	
 
 	public byte[] getPhoto1() {
 		return photo1;
@@ -316,10 +332,6 @@ public class Scapes {
 		this.master = master;
 	}
 
-	
-
-	
-
 	public boolean isCrowdData() {
 		return crowdData;
 	}
@@ -368,8 +380,6 @@ public class Scapes {
 		this.format = format;
 	}
 
-	
-
 	public Village getVillage() {
 		return village;
 	}
@@ -377,9 +387,6 @@ public class Scapes {
 	public void setVillage(Village village) {
 		this.village = village;
 	}
-
-	
-	
 
 	public State getState() {
 		return state;
@@ -404,7 +411,5 @@ public class Scapes {
 	public void setWetLand(String wetLand) {
 		this.wetLand = wetLand;
 	}
-	
-	
-	
+
 }

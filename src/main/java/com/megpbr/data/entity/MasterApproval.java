@@ -1,5 +1,7 @@
 package com.megpbr.data.entity;
 
+import org.hibernate.validator.constraints.Length;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,7 +15,9 @@ public class MasterApproval {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "approv_generator")
 	@SequenceGenerator(name="approv_generator", sequenceName = "approv_seq", allocationSize=1)
 	private long id;
+	@Length(min=1, max = 255, message="Character Limit Exceeded")
 	private String approvalName;
+	@Length(min=1, max = 255, message="Character Limit Exceeded")
 	private String approval;
 	
 	

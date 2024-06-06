@@ -2,6 +2,7 @@ package com.megpbr.data.entity;
 
 import java.util.List;
 
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.UniqueElements;
 
 import jakarta.persistence.CascadeType;
@@ -28,8 +29,10 @@ public class Block {
 	@SequenceGenerator(name="block_generator", sequenceName = "block_seq", allocationSize=1)
 	private long id;
 	@Column(unique=true)
+	
 	private long blockCode;
 	@NotEmpty
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String blockName;
 	@ManyToOne
 	@JoinColumn(name="district", referencedColumnName = "districtCode")

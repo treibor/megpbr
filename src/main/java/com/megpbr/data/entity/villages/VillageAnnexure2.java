@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.validator.constraints.Length;
+
 import com.megpbr.data.entity.MasterGender;
 import com.megpbr.data.entity.MasterPosition;
 import com.megpbr.data.entity.UserLogin;
@@ -40,18 +42,25 @@ public class VillageAnnexure2 {
 	@NotNull(message = "Please Select a Village")
 	private Village village;
 	@NotEmpty(message = "Please Enter The Name")
+	@Length(min=1, max = 255, message="Character Limit Exceeded")
 	private String name;
+	
 	private int age;
 	@ManyToOne
 	@NotNull(message = "Please Select the Gender")
 	@JoinColumn(name="gender", referencedColumnName = "id")
 	private MasterGender gender;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String address;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String specialization;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String location;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String perception;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String medicinalUse;
-	
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String remarks;
 	@ManyToOne
 	@JoinColumn(name = "enteredBy", referencedColumnName = "id")

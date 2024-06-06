@@ -1,5 +1,7 @@
 package com.megpbr.data.entity;
 
+import org.hibernate.validator.constraints.Length;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,6 +16,7 @@ public class MasterSeason {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "season_generator")
 	@SequenceGenerator(name="season_generator", sequenceName = "season_seq", allocationSize=1)
 	private long id;
+	@Length(min=1, max = 255, message="Character Limit Exceeded")
 	private String fruitseason;
 	
 	public long getId() {

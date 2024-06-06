@@ -32,7 +32,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
-//@Route("defaultlogin")
+//@Route("login")
 @PageTitle("Login")
 @AnonymousAllowed
 
@@ -52,6 +52,7 @@ public class LoginView extends Div implements BeforeEnterObserver{
 		//code.getElement().setAttribute("name", "code");
 		//loginOverlay.getCustomFormArea().add(code);
 		loginOverlay.setOpened(true);
+		//loginOverlay.
 		loginOverlay.setAction("login");
 		//loginOverlay.addLoginListener(loginEventComponentEventListener());
 	}

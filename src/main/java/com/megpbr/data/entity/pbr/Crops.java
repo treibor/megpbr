@@ -2,6 +2,8 @@ package com.megpbr.data.entity.pbr;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.validator.constraints.Length;
+
 import com.megpbr.data.entity.MasterApproval;
 import com.megpbr.data.entity.MasterCommercial;
 import com.megpbr.data.entity.MasterFormat;
@@ -30,44 +32,70 @@ public class Crops {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "crop_generator")
 	@SequenceGenerator(name="crop_generator", sequenceName = "crop_seq", allocationSize=1)
 	private long id;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String type;
 	@NotBlank(message = "Scientific Name Cannot Be Blank")
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String scientificName;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String localName;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String variety;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String habitat;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String partsUsed;
 	//private String presentStatus;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String otherDetails;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String localLanguage;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String area;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String fruitSeason;
+	@Length(max = 255, message="Character Limit Exceeded")
 	//private String commercial;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String uses;
 	 @Column(length = 1000)
+	 @Length(max = 999, message="Character Limit Exceeded")
 	private String specialFeatures;
 	//common fields
 	 @Column(length = 1000)
+	 @Length(max = 999, message="Character Limit Exceeded")
 	private String associatedTk;
+	 @Length(max = 255, message="Character Limit Exceeded")
 	private String knowledgeHolder;
+	 @Length(max = 255, message="Character Limit Exceeded")
 	private String source;
 	private byte[] photo1;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String photo1Source;
 	private byte[] photo2;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String photo2Source;
 	private byte[] photo3;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String photo3Source;
 	private byte[] photo4;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String photo4Source;
 	private boolean master;
 	private boolean crowdData;
 	//private String enteredBy;
 	private LocalDateTime enteredOn;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String latitude;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String longitude;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String management;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String xfield1;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String xfield2;
+	@Length(max = 255, message="Character Limit Exceeded")
 	private String remarks;
 	@ManyToOne
 	@JoinColumn(name = "format", referencedColumnName = "id")
