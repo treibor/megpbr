@@ -75,6 +75,8 @@ import com.vaadin.flow.theme.lumo.LumoUtility.Overflow;
 import com.vaadin.flow.theme.lumo.LumoUtility.Padding;
 import com.vaadin.flow.theme.lumo.LumoUtility.Width;
 
+import elemental.json.JsonObject;
+
 @Route("login")
 @PageTitle("Login")
 @AnonymousAllowed
@@ -117,7 +119,7 @@ public class CustomLoginView extends Div
 		this.dservice = dservice;
 		this.dbservice = dbservice;
 		captchatext.setPlaceholder("ENTER CAPTCHA");
-
+		
 		loginOverlay.setTitle("Meghalaya Biodiversity Board");
 		loginOverlay.setDescription("People's Biodiversity Register Ver. 2.0");
 		// loginOverlay.getCustomFormArea().add(code);
@@ -150,150 +152,63 @@ public class CustomLoginView extends Div
 		image = captcha.getCaptchaImg();
 		captchacontainer.add(image, refreshButton);
 	}
+	
+	
 	@Override
 	public void onComponentEvent(AbstractLogin.LoginEvent loginEvent) {
-	    if (captcha.checkUserAnswer(captchatext.getValue())) {
-	        try {
-	            Authentication authentication = new UsernamePasswordAuthenticationToken(
-	                loginEvent.getUsername(),
-	                loginEvent.getPassword()
-	            );
-	            Authentication authenticated = authenticationManager.authenticate(authentication);
-	            SecurityContextHolder.getContext().setAuthentication(authenticated);
-
-	            if (authenticated.isAuthenticated()) {
-	                loginOverlay.setOpened(false);
-	                audit.saveLoginAudit("Login Successful", loginEvent.getUsername());
-	                // Save the SecurityContext to the SecurityContextRepository
-	                SecurityContext context = SecurityContextHolder.getContext();
-	                securityRepo.saveContext(context, VaadinServletRequest.getCurrent(), VaadinServletResponse.getCurrent());
-	                UI.getCurrent().navigate(HomeView.class);
-	            } else {
-	            	
-	                loginOverlay.setError(true);
-	                
-	            }
-	        } catch (Exception e) {
-	            audit.saveLoginAudit("Login Failure", loginEvent.getUsername());
-	            loginOverlay.setError(true);
-	        }
-	    } else {
-	        Notification.show("Please Enter The Correct Captcha Text").addThemeVariants(NotificationVariant.LUMO_ERROR);
-	        loginOverlay.setEnabled(true);
-	    }
+		String username = loginEvent.getUsername();
+        String password = loginEvent.getPassword();
+        UI.getCurrent().getPage().executeJs(
+            "var key = 'iadei';" +
+            "var encryptedUsername = '';" +
+            "for (var i = 0; i < $0.length; i++) {" +
+            "    encryptedUsername += String.fromCharCode($0.charCodeAt(i) ^ key.charCodeAt(i % key.length));" +
+            "}" +
+            "var encryptedPassword = '';" +
+            "for (var j = 0; j < $1.length; j++) {" +
+            "    encryptedPassword += String.fromCharCode($1.charCodeAt(j) ^ key.charCodeAt(j % key.length));" +
+            "}" +
+            "return { username: btoa(encryptedUsername), password: btoa(encryptedPassword) };",
+            username, password).then(response -> {
+                JsonObject data = (JsonObject) response;
+                String encryptedUsername = data.getString("username");
+                String encryptedPassword = data.getString("password");
+                doLogin(encryptedUsername, encryptedPassword);
+            });
 	}
 	
-	
-
-
-
-
-
-	
-//	@Override
-//	public void onComponentEvent(AbstractLogin.LoginEvent loginEvent) {
-//	    if (captcha.checkUserAnswer(captchatext.getValue())) {
-//	        try {
-//	            Authentication authentication = new UsernamePasswordAuthenticationToken(
-//	                loginEvent.getUsername(),
-//	                loginEvent.getPassword()
-//	            );
-//	            Authentication authenticated = authenticationManager.authenticate(authentication);
-//	            SecurityContextHolder.getContext().setAuthentication(authenticated);
-//	            SecurityContext context = SecurityContextHolder.getContext();
-//	            securityRepo.saveContext(context, VaadinServletRequest.getCurrent(), VaadinServletResponse.getCurrent());
-//	            
-//	            if (authenticated.isAuthenticated()) {
-//	                loginOverlay.setOpened(false);
-//	                audit.saveLoginAudit("Login Successful", loginEvent.getUsername());
-//	                UI.getCurrent().navigate(HomeView.class);
-//	            } else {
-//	                // audit.saveLoginAudit("Login Failure", loginEvent.getUsername());
-//	                loginOverlay.setError(true);
-//	            }
-//	        } catch (Exception e) {
-//	            // TODO Auto-generated catch block
-//	            // System.out.println("Login Failuresss");
-//	            // e.printStackTrace();
-//	            audit.saveLoginAudit("Login Failure", loginEvent.getUsername());
-//	            loginOverlay.setError(true);
-//	        }
-//	    } else {
-//	        Notification.show("Please Enter The Correct Captcha Text").addThemeVariants(NotificationVariant.LUMO_ERROR);
-//	        loginOverlay.setEnabled(true);
-//	    }
-//	}
-
-	public Component getCharts3() {
-		SOChart soChartf = new SOChart();
-		// SOChart soChartf = new SOChart();
-		CategoryData labels = new CategoryData();
-		Data data = new Data();
-		int i = dservice.getFormats().size();
-		// System.out.println("Formats "+i);
-		for (int index = 0; index < i; index++) {
-			labels.add(dservice.getFormats().get(index).getFormat() + " - "
-					+ dservice.getFormats().get(index).getFormatName());
-			// District dist=dservice.getDistricts().get(index);
-			MasterFormat format = dservice.getFormats().get(index);
-			data.add(dservice.getFormatCount(format, false));
-		}
-		BarChart bc = new BarChart(labels, data);
-
-		RectangularCoordinate rc;
-		rc = new RectangularCoordinate(new XAxis(DataType.CATEGORY), new YAxis(DataType.NUMBER));
-		Position p = new Position();
-		bc.plotOn(rc); // Bar chart needs to be plotted on a coordinate system
-		bc.setName("PBR Entered");
-		Toolbox toolbox = new Toolbox();
-		toolbox.addButton(new Toolbox.Download(), new Toolbox.Zoom());
-		Title title = new Title("Format Wise PBR");
-
-		NightingaleRoseChart nc = new NightingaleRoseChart(labels, data);
-		nc.setName("PBR Entered");
-		nc.setPosition(p); // Position it leaving 50% space at the top
-		// soChartf.add(nc, toolbox);
-		soChartf.add(bc, toolbox, title);
-		HorizontalLayout getCharts = new HorizontalLayout();
-		// getCharts.
-		getCharts.addClassName("chartsLayout1");
-		getCharts.setWidthFull();
-		// getCharts.setHeight("10px");
-		soChartf.setWidthFull();
-		getCharts.add(soChartf);
-		return soChartf;
+	private void doLogin(String encryptedUsername, String encryptedPassword) {
+		if (captcha.checkUserAnswer(captchatext.getValue())) {
+            String username = CryptUtils.decryptUsername(encryptedUsername);
+            String password = CryptUtils.decryptPassword(encryptedPassword);
+            try {
+                Authentication authentication = new UsernamePasswordAuthenticationToken(username, password);
+                Authentication authenticated = authenticationManager.authenticate(authentication);
+                SecurityContextHolder.getContext().setAuthentication(authenticated);
+                SecurityContext context = SecurityContextHolder.getContext();
+                securityRepo.saveContext(context, VaadinServletRequest.getCurrent(), VaadinServletResponse.getCurrent());
+                if (authenticated.isAuthenticated()) {
+                   System.out.println("UI is "+UI.getCurrent());
+                    UI.getCurrent().navigate(HomeView.class);
+                } else {
+                    Notification.show("Error");
+                    //clearFields();
+                }
+            } catch (Exception e) {
+                Notification.show("Authentication failed");
+                //clearFields();
+            }
+        } else {
+            Notification.show("Invalid captcha");
+            //clearFields();
+        }
 	}
 
-	private Component createHeaderContent() {
-		// Button but=new Button("Login");
-		loginbutton.addClickListener(e -> loginOverlay.setOpened(true));
-		Header header = new Header();
-		header.addClassNames(BoxSizing.BORDER, Display.FLEX, FlexDirection.COLUMN, Width.FULL);
 
-		Div layout = new Div();
-		layout.addClassNames(Display.FLEX, AlignItems.CENTER, Padding.Horizontal.LARGE);
 
-		H1 appName = new H1("Unauthenticated");
-		appName.addClassNames(Margin.Vertical.MEDIUM, Margin.End.AUTO, FontSize.LARGE);
-		layout.add(appName, loginbutton);
 
-		Nav nav = new Nav();
-		nav.addClassNames(Display.FLEX, Overflow.AUTO, Padding.Horizontal.MEDIUM, Padding.Vertical.XSMALL);
 
-		// Wrap the links in a list; improves accessibility
-		UnorderedList list = new UnorderedList();
-		list.addClassNames(Display.FLEX, Gap.SMALL, ListStyleType.NONE, Margin.NONE, Padding.NONE);
-		nav.add(list);
-
-		/*
-		 * for (MenuItemInfo menuItem : createMenuItems()) { list.add(menuItem);
-		 * 
-		 * }
-		 */
-
-		header.add(layout, nav);
-		return header;
-	}
+	
 
 	@Override
 	public void beforeEnter(BeforeEnterEvent event) {
