@@ -5,15 +5,20 @@ import java.io.IOException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.session.ConcurrentSessionControlAuthenticationStrategy;
+import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.context.DelegatingSecurityContextRepository;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
@@ -25,6 +30,7 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 import com.megpbr.views.login.CryptLogin;
 import com.megpbr.views.login.CustomLoginView;
+import com.megpbr.views.login.LoginView;
 import com.vaadin.flow.spring.security.VaadinWebSecurity;
 
 import jakarta.servlet.Filter;
@@ -48,34 +54,49 @@ public class SecurityConfiguration extends VaadinWebSecurity {
 	SessionRegistry sessionRegistry() {
 		return new SessionRegistryImpl();
 	}
-
-	
 	@Bean
-    AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+    public SessionAuthenticationStrategy sessionAuthenticationStrategy() {
+        ConcurrentSessionControlAuthenticationStrategy concurrentStrategy = 
+                new ConcurrentSessionControlAuthenticationStrategy(sessionRegistry());
+        concurrentStrategy.setMaximumSessions(1);
+        return new RegisterSessionAuthenticationStrategy(sessionRegistry());
     }
+	@Bean
+	HttpSessionEventPublisher httpSessionEventPublisher() {
+	    return new HttpSessionEventPublisher();
+	}
+	
+	
+	  @Bean AuthenticationManager authenticationManager(AuthenticationConfiguration
+	  authenticationConfiguration) throws Exception { return
+	  authenticationConfiguration.getAuthenticationManager(); }
+	 
 	/*
-	 * @Bean AuthenticationManager authenticationManager(UserDetailsServiceImpl
+	 * @Bean AuthenticationManager authenticationManager( UserDetailsService
 	 * userDetailsService, PasswordEncoder passwordEncoder) {
 	 * DaoAuthenticationProvider authenticationProvider = new
 	 * DaoAuthenticationProvider();
 	 * authenticationProvider.setUserDetailsService(userDetailsService);
-	 * authenticationProvider.setPasswordEncoder(passwordEncoder); return new
-	 * ProviderManager(authenticationProvider); }
+	 * authenticationProvider.setPasswordEncoder(passwordEncoder);
+	 * 
+	 * ProviderManager providerManager = new
+	 * ProviderManager(authenticationProvider);
+	 * providerManager.setEraseCredentialsAfterAuthentication(false);
+	 * 
+	 * return providerManager; }
 	 */
-
+	
+	  @Bean SecurityContextRepository securityContextRepository() { return new
+	  DelegatingSecurityContextRepository(new
+	  RequestAttributeSecurityContextRepository(), new
+	  HttpSessionSecurityContextRepository()); }
+	 
 	/*
 	 * @Bean SecurityContextRepository securityContextRepository() { return new
-	 * DelegatingSecurityContextRepository(new
-	 * RequestAttributeSecurityContextRepository(), new
-	 * HttpSessionSecurityContextRepository()); }
+	 * HttpSessionSecurityContextRepository(); }
 	 */
 	@Bean
-	SecurityContextRepository securityContextRepository() {
-	    return new HttpSessionSecurityContextRepository();
-	}
-	@Bean
-	public Filter disableOptionsMethodFilter() {
+	Filter disableOptionsMethodFilter() {
 		return new Filter() {
 			@Override
 			public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
@@ -101,45 +122,19 @@ public class SecurityConfiguration extends VaadinWebSecurity {
 				.xssProtection(xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
 				.frameOptions(frame -> frame.sameOrigin())
 				.referrerPolicy(referrer -> referrer.policy(ReferrerPolicy.SAME_ORIGIN)))
+				
 				.sessionManagement(session -> session
+						.requireExplicitAuthenticationStrategy(false)
 						.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
 						.invalidSessionUrl("/").maximumSessions(1).expiredUrl("/").maxSessionsPreventsLogin(false)
-						.sessionRegistry(sessionRegistry()));
+						
+						//.sessionRegistry(sessionRegistry())
+						);
 		setLoginView(http, CryptLogin.class);
 		//setLoginView(http, CustomLoginView.class);
 		//setLoginView(http, LoginView.class);
 		super.configure(http);
 	}
 
-	/*
-	 * @Override protected void configure(HttpSecurity http) throws Exception {
-	 * 
-	 * http.authorizeHttpRequests(authorize -> authorize
-	 * .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET,
-	 * "/images/*.png")).permitAll() .requestMatchers(new
-	 * AntPathRequestMatcher("/**", HttpMethod.DELETE.toString())).denyAll()
-	 * .requestMatchers(new AntPathRequestMatcher("/**",
-	 * HttpMethod.OPTIONS.toString())).denyAll()
-	 * .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.OPTIONS,
-	 * "/**")).denyAll()
-	 * 
-	 * ).headers(headers -> headers .xssProtection(xss ->
-	 * xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
-	 * .frameOptions(frame -> frame.sameOrigin()) .referrerPolicy(referrer ->
-	 * referrer.policy(ReferrerPolicy.SAME_ORIGIN))
-	 * 
-	 * ).sessionManagement(session -> session
-	 * 
-	 * .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).invalidSessionUrl(
-	 * "/").maximumSessions(1)
-	 * .expiredUrl("/").maxSessionsPreventsLogin(false).sessionRegistry(
-	 * sessionRegistry())
-	 * 
-	 * )
-	 * 
-	 * ; // setLoginView(http, LoginView.class); setLoginView(http,
-	 * CustomLoginView.class); // setLoginView(http,
-	 * CustomLoginViewNoCaptcha.class); super.configure(http); }
-	 */
 	
 }

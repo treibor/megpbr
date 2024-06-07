@@ -77,7 +77,7 @@ import com.vaadin.flow.theme.lumo.LumoUtility.Width;
 
 import elemental.json.JsonObject;
 
-@Route("login")
+//@Route("loginc")
 @PageTitle("Login")
 @AnonymousAllowed
 
@@ -182,18 +182,7 @@ public class CustomLoginView extends Div
             String username = CryptUtils.decryptUsername(encryptedUsername);
             String password = CryptUtils.decryptPassword(encryptedPassword);
             try {
-                Authentication authentication = new UsernamePasswordAuthenticationToken(username, password);
-                Authentication authenticated = authenticationManager.authenticate(authentication);
-                SecurityContextHolder.getContext().setAuthentication(authenticated);
-                SecurityContext context = SecurityContextHolder.getContext();
-                securityRepo.saveContext(context, VaadinServletRequest.getCurrent(), VaadinServletResponse.getCurrent());
-                if (authenticated.isAuthenticated()) {
-                   System.out.println("UI is "+UI.getCurrent());
-                    UI.getCurrent().navigate(HomeView.class);
-                } else {
-                    Notification.show("Error");
-                    //clearFields();
-                }
+            	getElement().setProperty("action", "login");
             } catch (Exception e) {
                 Notification.show("Authentication failed");
                 //clearFields();
