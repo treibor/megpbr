@@ -2,20 +2,17 @@ package com.megpbr.security;
 
 import java.io.IOException;
 
+import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.session.ConcurrentSessionControlAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
@@ -29,8 +26,6 @@ import org.springframework.security.web.header.writers.XXssProtectionHeaderWrite
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 import com.megpbr.views.login.CryptLogin;
-import com.megpbr.views.login.CustomLoginView;
-import com.megpbr.views.login.LoginView;
 import com.vaadin.flow.spring.security.VaadinWebSecurity;
 
 import jakarta.servlet.Filter;
@@ -46,57 +41,43 @@ import jakarta.servlet.http.HttpServletResponse;
 public class SecurityConfiguration extends VaadinWebSecurity {
 
 	@Bean
-	BCryptPasswordEncoder passwordEncoder() {
+	public BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 
 	@Bean
-	SessionRegistry sessionRegistry() {
+	public SessionRegistry sessionRegistry() {
 		return new SessionRegistryImpl();
 	}
+
 	@Bean
-    public SessionAuthenticationStrategy sessionAuthenticationStrategy() {
-        ConcurrentSessionControlAuthenticationStrategy concurrentStrategy = 
-                new ConcurrentSessionControlAuthenticationStrategy(sessionRegistry());
-        concurrentStrategy.setMaximumSessions(1);
-        return new RegisterSessionAuthenticationStrategy(sessionRegistry());
-    }
-	@Bean
-	HttpSessionEventPublisher httpSessionEventPublisher() {
-	    return new HttpSessionEventPublisher();
+	public ServletListenerRegistrationBean<HttpSessionEventPublisher> httpSessionEventPublisher() {
+		return new ServletListenerRegistrationBean<>(new HttpSessionEventPublisher());
 	}
-	
-	
-	  @Bean AuthenticationManager authenticationManager(AuthenticationConfiguration
-	  authenticationConfiguration) throws Exception { return
-	  authenticationConfiguration.getAuthenticationManager(); }
-	 
-	/*
-	 * @Bean AuthenticationManager authenticationManager( UserDetailsService
-	 * userDetailsService, PasswordEncoder passwordEncoder) {
-	 * DaoAuthenticationProvider authenticationProvider = new
-	 * DaoAuthenticationProvider();
-	 * authenticationProvider.setUserDetailsService(userDetailsService);
-	 * authenticationProvider.setPasswordEncoder(passwordEncoder);
-	 * 
-	 * ProviderManager providerManager = new
-	 * ProviderManager(authenticationProvider);
-	 * providerManager.setEraseCredentialsAfterAuthentication(false);
-	 * 
-	 * return providerManager; }
-	 */
-	
-	  @Bean SecurityContextRepository securityContextRepository() { return new
-	  DelegatingSecurityContextRepository(new
-	  RequestAttributeSecurityContextRepository(), new
-	  HttpSessionSecurityContextRepository()); }
-	 
-	/*
-	 * @Bean SecurityContextRepository securityContextRepository() { return new
-	 * HttpSessionSecurityContextRepository(); }
-	 */
+
 	@Bean
-	Filter disableOptionsMethodFilter() {
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+			throws Exception {
+		return authenticationConfiguration.getAuthenticationManager();
+	}
+
+	@Bean
+	public SecurityContextRepository securityContextRepository() {
+		return new DelegatingSecurityContextRepository(new RequestAttributeSecurityContextRepository(),
+				new HttpSessionSecurityContextRepository());
+	}
+
+	@Bean
+	public ConcurrentSessionControlAuthenticationStrategy concurrentSessionControlAuthenticationStrategy() {
+		ConcurrentSessionControlAuthenticationStrategy strategy = new ConcurrentSessionControlAuthenticationStrategy(
+				sessionRegistry());
+		strategy.setMaximumSessions(1); // Allow only one session per user
+		strategy.setExceptionIfMaximumExceeded(true); // Prevent new logins if maximum sessions are reached
+		return strategy;
+	}
+
+	@Bean
+	public Filter disableOptionsMethodFilter() {
 		return new Filter() {
 			@Override
 			public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
@@ -113,28 +94,21 @@ public class SecurityConfiguration extends VaadinWebSecurity {
 			}
 		};
 	}
-	
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.addFilterBefore(disableOptionsMethodFilter(), ChannelProcessingFilter.class)
-		
-		.headers(headers -> headers
+		http.addFilterBefore(disableOptionsMethodFilter(), ChannelProcessingFilter.class).headers(headers -> headers
 				.xssProtection(xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
 				.frameOptions(frame -> frame.sameOrigin())
 				.referrerPolicy(referrer -> referrer.policy(ReferrerPolicy.SAME_ORIGIN)))
-				
-				.sessionManagement(session -> session
-						.requireExplicitAuthenticationStrategy(false)
-						.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-						.invalidSessionUrl("/").maximumSessions(1).expiredUrl("/").maxSessionsPreventsLogin(false)
-						
-						//.sessionRegistry(sessionRegistry())
-						);
-		setLoginView(http, CryptLogin.class);
-		//setLoginView(http, CustomLoginView.class);
-		//setLoginView(http, LoginView.class);
-		super.configure(http);
-	}
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+						.invalidSessionUrl("/")
+						.sessionConcurrency(concurrency -> concurrency.maximumSessions(1).expiredUrl("/")
+								.maxSessionsPreventsLogin(true) // Prevent new logins if the max sessions are reached
+								.sessionRegistry(sessionRegistry())))
+				.securityContext(context -> context.securityContextRepository(securityContextRepository()));
 
-	
+		super.configure(http);
+		setLoginView(http, CryptLogin.class);
+	}
 }

@@ -77,7 +77,7 @@ import com.vaadin.flow.theme.lumo.LumoUtility.Width;
 
 import elemental.json.JsonObject;
 
-//@Route("loginc")
+//@Route("login")
 @PageTitle("Login")
 @AnonymousAllowed
 
