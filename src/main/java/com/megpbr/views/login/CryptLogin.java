@@ -121,9 +121,9 @@ public class CryptLogin extends VerticalLayout implements BeforeEnterObserver {
 		button.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 		button.addClickShortcut(Key.ENTER);
 		anchor.setText("Forgot Password?");
-		
 		anchor.getElement().addEventListener("click",
 				e -> Notification.show("To Be Implemented Via Email API in Production: Public IP required."));
+		anchor.getStyle().set("color", "hsla(119, 93%, 29%, 0.90)").set("padding-bottom", "20px");
 		var form = new FormLayout();
 		// form.add(title, 1);
 		// form.add(description, 1);
