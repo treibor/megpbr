@@ -53,7 +53,7 @@ import elemental.json.JsonObject;
 
 @Route("login")
 @AnonymousAllowed
-public class CryptLogin extends VerticalLayout implements BeforeEnterObserver {
+public class Login extends VerticalLayout implements BeforeEnterObserver {
 
 	@Autowired
 	Audit audit;
@@ -78,7 +78,7 @@ public class CryptLogin extends VerticalLayout implements BeforeEnterObserver {
 	private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder
 			.getContextHolderStrategy();
 
-	public CryptLogin(AuthenticatedUser authenticatedUser) {
+	public Login(AuthenticatedUser authenticatedUser) {
 		this.authenticatedUser = authenticatedUser;
 
 		button.addClickListener(e -> {
@@ -103,9 +103,9 @@ public class CryptLogin extends VerticalLayout implements BeforeEnterObserver {
 		setSizeFull();
 		add(createPasswordForm());
 		getStyle().set("background-color", "hsla(0, 0%, 95%, 0.69)");
-		//add(createLoginForm());
+		// add(createLoginForm());
 	}
-	
+
 	private Component createPasswordForm() {
 
 		// captchacontainer.add(getCaptcha(), refreshButton);
@@ -129,23 +129,20 @@ public class CryptLogin extends VerticalLayout implements BeforeEnterObserver {
 		// form.add(description, 1);
 		form.add(usernameField, 1);
 		form.add(passwordField, 1);
-		
+
 		form.add(getCaptcha(), 1);
 		form.add(new Span(), 1);
 		form.add(captchatext, 1);
-		//form.add(, 1);
+		// form.add(, 1);
 		form.add(button, 1);
-		//form.add(anchor, 1);
-		form.setResponsiveSteps
-			(new ResponsiveStep("0", 1), 
-					new ResponsiveStep("300px", 1)
-					);
+		// form.add(anchor, 1);
+		form.setResponsiveSteps(new ResponsiveStep("0", 1), new ResponsiveStep("300px", 1));
 		form.setWidth("320px");
 		form.getStyle().set("padding", "20px");
-		
+
 		var header = new VerticalLayout();
 		title.getStyle().set("color", "white");
-	    description.getStyle().set("color", "white");
+		description.getStyle().set("color", "white");
 		header.add(title, description);
 		header.getStyle().set("background-color", "hsla(119, 93%, 29%, 0.90)");
 		header.setAlignItems(Alignment.START);
@@ -155,7 +152,7 @@ public class CryptLogin extends VerticalLayout implements BeforeEnterObserver {
 		var container = new VerticalLayout();
 		container.setSizeUndefined();
 		container.getStyle().set("background-color", "white");
-		//container.getStyle().set("border", "2px solid black");
+		// container.getStyle().set("border", "2px solid black");
 		container.getStyle().set("border-radius", "10px");
 		container.getStyle().set("padding", "0px");
 		container.setAlignItems(Alignment.CENTER);
@@ -174,23 +171,22 @@ public class CryptLogin extends VerticalLayout implements BeforeEnterObserver {
 		String username;
 		String password;
 		try {
-			
+
 			username = CryptUtils.decryptUsername(encryptedUsername);
 			password = CryptUtils.decryptPassword(encryptedPassword);
 			invalidatePreviousSessionsForUser(username);
-			//System.out.println("Active Sessions: " + getActiveSessionCountForUser(username));
+			// System.out.println("Active Sessions: " +
+			// getActiveSessionCountForUser(username));
 			//
 		} catch (Exception e) {
-			//Notification.show("Error decrypting credentials");
-			//e.printStackTrace();
+			// Notification.show("Error decrypting credentials");
+			// e.printStackTrace();
 			clearFields();
 			return;
 		}
 
 		if (captcha.checkUserAnswer(captchatext.getValue())) {
-			
 
-			
 			try {
 				UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
 				Authentication authentication = this.authenticationManager.authenticate(token);
@@ -201,30 +197,31 @@ public class CryptLogin extends VerticalLayout implements BeforeEnterObserver {
 				securityRepo.saveContext(context, VaadinServletRequest.getCurrent(),
 						VaadinServletResponse.getCurrent());
 				// registerSession(ServletContext, (UserDetails) authentication.getPrincipal());
-				registerSession(VaadinService.getCurrentRequest().getWrappedSession(), (UserDetails) authentication.getPrincipal());
+				registerSession(VaadinService.getCurrentRequest().getWrappedSession(),
+						(UserDetails) authentication.getPrincipal());
 				audit.saveAudit("Login Successful", username);
 				UI.getCurrent().navigate(HomeView.class);
 
 			} catch (Exception e) {
-				
-				//e.printStackTrace();
-				Notification.show("Authentication failed: " + e.getMessage()).addThemeVariants(NotificationVariant.LUMO_ERROR);
+
+				// e.printStackTrace();
+				Notification.show("Authentication failed: " + e.getMessage())
+						.addThemeVariants(NotificationVariant.LUMO_ERROR);
 				clearFields();
-				
+
 				audit.saveAudit("Login Failure- Credentials", username);
 			}
 		} else {
 			Notification.show("Invalid captcha").addThemeVariants(NotificationVariant.LUMO_ERROR);
 			clearFields();
 			audit.saveAudit("Captcha Failure", username);
-			
-			
+
 		}
 	}
+
 	private void registerSession(WrappedSession session, UserDetails userDetails) {
-        sr.registerNewSession(session.getId(), userDetails);
-    }
-	
+		sr.registerNewSession(session.getId(), userDetails);
+	}
 
 	public int getActiveSessionCountForUser(String username) {
 		int count = 0;

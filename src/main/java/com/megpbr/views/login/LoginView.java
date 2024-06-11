@@ -8,8 +8,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.megpbr.security.CaptchaCheck;
 import com.megpbr.security.UserDetailsServiceImpl;
+import com.megpbr.security.captcha.CaptchaCheck;
 import com.megpbr.views.MainLayout;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;

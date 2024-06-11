@@ -25,7 +25,7 @@ import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWrite
 import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
-import com.megpbr.views.login.CryptLogin;
+import com.megpbr.views.login.Login;
 import com.vaadin.flow.spring.security.VaadinWebSecurity;
 
 import jakarta.servlet.Filter;
@@ -109,6 +109,6 @@ public class SecurityConfiguration extends VaadinWebSecurity {
 				.securityContext(context -> context.securityContextRepository(securityContextRepository()));
 
 		super.configure(http);
-		setLoginView(http, CryptLogin.class);
+		setLoginView(http, Login.class);
 	}
 }
