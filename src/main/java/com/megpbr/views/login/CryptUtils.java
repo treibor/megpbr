@@ -1,6 +1,6 @@
 package com.megpbr.views.login;
 
-
+//Encrypting UserName & Password
 import java.util.Base64;
 
 public class CryptUtils {
