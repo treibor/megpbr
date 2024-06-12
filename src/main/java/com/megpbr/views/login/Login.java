@@ -20,14 +20,12 @@ import com.megpbr.security.captcha.Captcha;
 import com.megpbr.security.captcha.CapthaImpl;
 import com.megpbr.views.dashboard.HomeView;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.html.Anchor;
-import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Image;
@@ -119,7 +117,7 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 		captchatext.setMaxLength(6);
 		captchatext.setMinLength(6);
 		button.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-		button.addClickShortcut(Key.ENTER);
+		//button.addClickShortcut(Key.ENTER);
 		anchor.setText("Forgot Password?");
 		anchor.getElement().addEventListener("click",
 				e -> Notification.show("To Be Implemented Via Email API in Production: Public IP required."));
@@ -168,26 +166,14 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 	}
 
 	private void doLogin(String encryptedUsername, String encryptedPassword) {
-		String username;
-		String password;
-		try {
-
-			username = CryptUtils.decryptUsername(encryptedUsername);
-			password = CryptUtils.decryptPassword(encryptedPassword);
-			invalidatePreviousSessionsForUser(username);
-			// System.out.println("Active Sessions: " +
-			// getActiveSessionCountForUser(username));
-			//
-		} catch (Exception e) {
-			// Notification.show("Error decrypting credentials");
-			// e.printStackTrace();
-			clearFields();
-			return;
-		}
-
+		String username="";
+		String password="";
 		if (captcha.checkUserAnswer(captchatext.getValue())) {
-
 			try {
+				
+				username = CryptUtils.decryptUsername(encryptedUsername);
+				password = CryptUtils.decryptPassword(encryptedPassword);
+				invalidatePreviousSessionsForUser(username);
 				UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
 				Authentication authentication = this.authenticationManager.authenticate(token);
 
@@ -199,7 +185,7 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 				// registerSession(ServletContext, (UserDetails) authentication.getPrincipal());
 				registerSession(VaadinService.getCurrentRequest().getWrappedSession(),
 						(UserDetails) authentication.getPrincipal());
-				audit.saveAudit("Login Successful", username);
+				audit.saveLoginAudit("Login Successfully", username);
 				UI.getCurrent().navigate(HomeView.class);
 
 			} catch (Exception e) {
@@ -209,12 +195,12 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 						.addThemeVariants(NotificationVariant.LUMO_ERROR);
 				clearFields();
 
-				audit.saveAudit("Login Failure- Credentials", username);
+				audit.saveLoginAudit("Login Failure - Authentication", username);
 			}
 		} else {
 			Notification.show("Invalid captcha").addThemeVariants(NotificationVariant.LUMO_ERROR);
 			clearFields();
-			audit.saveAudit("Captcha Failure", username);
+			audit.saveLoginAudit("Login Failure- Captcha", username);
 
 		}
 	}
