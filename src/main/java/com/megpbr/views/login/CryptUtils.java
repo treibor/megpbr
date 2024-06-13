@@ -1,24 +1,21 @@
 package com.megpbr.views.login;
 
-//Encrypting UserName & Password
 import java.util.Base64;
 
 public class CryptUtils {
 
-    private static final String SECRET_KEY = "iadei"; // Change this to your secret key
-
-    public static String decryptUsername(String encryptedUsername) {
-        return decrypt(encryptedUsername);
+    public static String decryptUsername(String encryptedUsername, String key) {
+        return decrypt(encryptedUsername, key);
     }
 
-    public static String decryptPassword(String encryptedPassword) {
-        return decrypt(encryptedPassword);
+    public static String decryptPassword(String encryptedPassword, String key) {
+        return decrypt(encryptedPassword, key);
     }
 
-    private static String decrypt(String encryptedText) {
+    private static String decrypt(String encryptedText, String key) {
         try {
             // Convert the key to bytes
-            byte[] keyBytes = SECRET_KEY.getBytes("UTF-8");
+            byte[] keyBytes = key.getBytes("UTF-8");
 
             // Convert the encrypted text (Base64) to bytes
             byte[] encryptedBytes = Base64.getDecoder().decode(encryptedText);

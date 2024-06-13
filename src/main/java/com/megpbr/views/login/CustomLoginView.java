@@ -182,8 +182,8 @@ public class CustomLoginView extends Div
 	
 	private void doLogin(String encryptedUsername, String encryptedPassword) {
 		if (captcha.checkUserAnswer(captchatext.getValue())) {
-            String username = CryptUtils.decryptUsername(encryptedUsername);
-            String password = CryptUtils.decryptPassword(encryptedPassword);
+            String username = CryptUtils.decryptUsername(encryptedUsername, "" );
+            String password = CryptUtils.decryptPassword(encryptedPassword, "");
             try {
             	getElement().setProperty("action", "login");
             } catch (Exception e) {
