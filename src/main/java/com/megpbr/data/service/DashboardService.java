@@ -63,6 +63,7 @@ import com.megpbr.data.repository.VillageAnnexure5Repository;
 import com.megpbr.data.repository.VillageDetailsRepository;
 import com.megpbr.data.repository.VillageRepository;
 import com.megpbr.data.repository.pbr.CropsRepository;
+import com.megpbr.data.repository.pbr.CrowdRepository;
 import com.megpbr.data.repository.pbr.MarketsRepository;
 import com.megpbr.data.repository.pbr.ScapeRepository;
 import com.megpbr.security.SecurityService;
@@ -70,6 +71,8 @@ import com.megpbr.security.SecurityService;
 import jakarta.transaction.Transactional;
 @Service
 public class DashboardService {
+	@Autowired
+	CrowdRepository crowdrepo;
 	@Autowired
 	private StateRepository st_repo; 
 	@Autowired
@@ -132,6 +135,13 @@ public class DashboardService {
 		
 		
 	}
+	public long getVillageDetailsCount() {
+		return vdrepo.getVillageDetailsCount();
+	}
+	public long getCrowdCount() {
+		return crowdrepo.getCrowdCount();
+	}
+	
 	public State getState() {
 		return dbservice.getState();
 	}
@@ -161,6 +171,12 @@ public class DashboardService {
 		return crepo.getCropsCountYear(district, master, startdate, enddate);
 	}
 	
+	public long getAllCountByMaster(boolean master) {
+		long cropscount=crepo.getCropsCountMaster(master);
+		long marketcount=mrepo.getMarketsCountMaster(master);
+		long scapecount=srepo.getScapesCountMaster(master);
+		return cropscount+marketcount+scapecount;
+	}
 	
 	
 	public List<MasterFormat> getFormats() {

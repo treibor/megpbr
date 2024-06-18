@@ -184,7 +184,9 @@ public class MainLayout extends AppLayout {
         var viewTitle1 = new H6("Government of Meghalaya");
         H4 viewTitle = new H4("MEGHALAYA BIODIVERSITY BOARD");
         viewTitle.getStyle().set("font-size", "20px");
+        //viewTitle.getStyle().set("background-color", "hsla(119, 93%, 29%, 0.90)");
         var viewTitle2 = new H6("People's Biodiversity Register");
+        viewTitle2.getStyle().set("color", "hsla(119, 93%, 29%, 0.90)");
         var headerText=new VerticalLayout(viewTitle1, viewTitle, viewTitle2);
         //header.add(img, new VerticalLayout());
         header.setJustifyContentMode(JustifyContentMode.BETWEEN);

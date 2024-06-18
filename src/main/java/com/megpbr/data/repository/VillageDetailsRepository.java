@@ -18,6 +18,9 @@ public interface VillageDetailsRepository extends JpaRepository<VillageDetails, 
 	
 	List <VillageDetails> findByVillage(Village village);
 	
+	@Query("select  count(*) from VillageDetails c ")
+	int getVillageDetailsCount();
+	
 	@Query("select  c from VillageDetails c join c.village d join d.block e join e.district f where  (c.village=:village or :village is null ) and (d.block=:block or :block is null) and (district=:district or :district is null)  and(lower(d.villageName) like lower(concat('%', :searchTerm, '%')))" )
 	List<VillageDetails> getFilterVillageDetails( @Param("village") Village village, @Param ("block") Block block, @Param("district") District district, @Param("searchTerm") String searchTerm);
 	//Village Data

@@ -19,7 +19,7 @@ public interface CropsRepository extends JpaRepository<Crops, Long> {
 	long countByFormat(MasterFormat format);
 
 	Crops findTopByScientificNameOrderByIdAsc(String scientificName);
-
+	List<Crops> findByMaster(boolean master);
 	// Crops findTopByScientificName(String scientificName);
 	List<Crops> findByFormatOrderByScientificName(MasterFormat format);
 
@@ -29,7 +29,7 @@ public interface CropsRepository extends JpaRepository<Crops, Long> {
 	List<Crops> findAllByOrderByHabitat();
 
 	List<Crops> findByFormat(MasterFormat format);
-
+	
 	// For Pbr2 Report
 	List<Crops> findByFormatAndVillage(MasterFormat format, Village village);
 
@@ -38,7 +38,9 @@ public interface CropsRepository extends JpaRepository<Crops, Long> {
 	List<Crops> findByVillageAndApproved(Village village, MasterApproval approved);
 
 	List<Crops> findDistinctByFormat(MasterFormat format);
-
+	
+	@Query("select  count(*) from Crops c where c.master =:master ")
+	int getCropsCountMaster(@Param("master") boolean master);
 	// List<Crops> findByFormat(MasterFormat format);
 	// MasterData
 	@Query("select c from Crops c where c.state=:state and c.master=true and c.format= :format and (lower(c.scientificName) like lower(concat('%', :searchTerm, '%'))or lower(c.localName) like lower(concat('%', :searchTerm, '%'))or lower(c.type) like lower(concat('%', :searchTerm, '%'))) order by c.id Desc")

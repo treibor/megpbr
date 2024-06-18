@@ -19,11 +19,16 @@ import com.megpbr.data.entity.pbr.Markets;
 public interface MarketsRepository extends JpaRepository<Markets, Long>{
 	long countByFormat(MasterFormat format);
 	Markets findTopByName(String fauna);
+	
+	List<Markets> findByMaster(boolean master);
 	List<Markets> findByFormatOrderByName(MasterFormat format);
 	List<Markets> findByStateAndFormatAndMaster(State state, MasterFormat format, boolean master);
 	List<Markets>  findByFormatAndVillage(MasterFormat format, Village village);
 	List<Markets>  findByVillage(Village village);
 	List<Markets>  findByVillageAndApproved(Village village, MasterApproval approved);
+	@Query("select  count(*) from Markets c where c.master =:master ")
+	int getMarketsCountMaster(@Param("master") boolean master);
+	
 	//Markets Count
 	@Query("select  count(*) from Markets c join c.village d join d.block e join e.district f where c.master=:master and district=:district " )
 	int getMarketsCount(@Param("district") District district, @Param("master") boolean master);

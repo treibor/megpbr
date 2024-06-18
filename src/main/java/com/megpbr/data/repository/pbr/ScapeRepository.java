@@ -20,11 +20,14 @@ import com.megpbr.data.entity.pbr.Scapes;
 public interface ScapeRepository extends JpaRepository<Scapes, Long>{
 	long countByFormat(MasterFormat format);
 	Scapes findTopByFaunaPopulation(String fauna);
+	List<Scapes> findByMaster(boolean master);
 	List<Scapes> findByFormatOrderByFaunaPopulation(MasterFormat format);
 	List<Scapes> findByStateAndFormatAndMasterOrderByFaunaPopulation(State state, MasterFormat format, boolean master);
 	List<Scapes>  findByFormatAndVillage(MasterFormat format, Village village);
 	List<Scapes>  findByVillage(Village village);
 	List<Scapes>  findByVillageAndApproved(Village village, MasterApproval approved);
+	@Query("select  count(*) from Scapes c where c.master =:master ")
+	int getScapesCountMaster(@Param("master") boolean master);
 	//Scapes Count
 	@Query("select  count(*) from Scapes c join c.village d join d.block e join e.district f where  c.master=:master and district=:district " )
 	int getScapesCount(@Param("district") District district, @Param("master") boolean master);
