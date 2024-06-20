@@ -2,44 +2,21 @@ package com.megpbr.data.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.Year;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.megpbr.data.dto.SampleDTO;
-import com.megpbr.data.entity.Block;
 import com.megpbr.data.entity.District;
-import com.megpbr.data.entity.MasterApproval;
-import com.megpbr.data.entity.MasterCategory;
-import com.megpbr.data.entity.MasterCommercial;
 import com.megpbr.data.entity.MasterFormat;
-import com.megpbr.data.entity.MasterGender;
-import com.megpbr.data.entity.MasterLocallanguage;
-import com.megpbr.data.entity.MasterManagementRegime;
-import com.megpbr.data.entity.MasterPosition;
-import com.megpbr.data.entity.MasterSeason;
-import com.megpbr.data.entity.MasterStatus;
-import com.megpbr.data.entity.MasterWildhome;
 import com.megpbr.data.entity.State;
-import com.megpbr.data.entity.UserLogin;
-import com.megpbr.data.entity.UserLoginLevel;
-import com.megpbr.data.entity.Village;
 import com.megpbr.data.entity.pbr.Crops;
-import com.megpbr.data.entity.villages.VillageAnnexure1;
-import com.megpbr.data.entity.villages.VillageAnnexure2;
-import com.megpbr.data.entity.villages.VillageAnnexure3;
-import com.megpbr.data.entity.villages.VillageAnnexure4;
-import com.megpbr.data.entity.villages.VillageAnnexure5;
-import com.megpbr.data.entity.villages.VillageDetails;
 import com.megpbr.data.repository.BlockRepository;
 import com.megpbr.data.repository.DistrictRepository;
 import com.megpbr.data.repository.LocalLanguageRepository;
@@ -67,8 +44,6 @@ import com.megpbr.data.repository.pbr.CrowdRepository;
 import com.megpbr.data.repository.pbr.MarketsRepository;
 import com.megpbr.data.repository.pbr.ScapeRepository;
 import com.megpbr.security.SecurityService;
-
-import jakarta.transaction.Transactional;
 @Service
 public class DashboardService {
 	@Autowired
@@ -137,6 +112,9 @@ public class DashboardService {
 	}
 	public long getVillageDetailsCount() {
 		return vdrepo.getVillageDetailsCount();
+	}
+	public long getVillagesCount() {
+		return vrepo.getVillagesCount();
 	}
 	public long getCrowdCount() {
 		return crowdrepo.getCrowdCount();
@@ -238,6 +216,47 @@ public class DashboardService {
 		DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		LocalDateTime startdate = LocalDate.parse("01/01/" + year, df).atStartOfDay();
 		LocalDateTime enddate = LocalDate.parse("31/12/" + year, df).atTime(23, 59, 59);
+		int count1 = crepo.getCropsCountYearly(false, startdate, enddate);
+		int count2 = mrepo.getMarketsCountYearly(false, startdate, enddate);
+		int count3 = srepo.getScapesCountYearly(false, startdate, enddate);
+		return count1+count2+count3;
+	}
+	public int getMonthData(){
+		//List<Integer> yearData = new ArrayList<>();
+		//int yeardata;
+		//String month="";
+		int year = Year.now().getValue();
+		int currentMonth = YearMonth.now().getMonthValue();
+
+        // Calculate the previous month
+        int previousMonth = currentMonth - 1;
+
+        // Adjust for wrap-around from January to December
+        if (previousMonth == 0) {
+            previousMonth = 12;
+            year=year-1;
+        }
+
+        // Get the Month enum for the previous month
+        Month monthEnum = Month.of(previousMonth);
+
+        // Get the month name from the Month enum
+        String monthName = monthEnum.name();
+
+        // Format the month name to proper case (e.g., "January" instead of "JANUARY")
+        monthName = monthName.charAt(0) + monthName.substring(1).toLowerCase();
+
+        // Print the formatted month name
+        //System.out.println("Previous month name: " + monthName);
+
+        // Format the month number as a two-digit string with leading zero if necessary
+        String month = (previousMonth < 10) ? "0" + previousMonth : String.valueOf(previousMonth);
+
+        // Print the formatted month number
+        //System.out.println("Formatted previous month number: " + formattedMonthNumber);
+		DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		LocalDateTime startdate = LocalDate.parse("01/"+month+"/" + year, df).atStartOfDay();
+		LocalDateTime enddate = LocalDate.parse("31/"+month+"/" + year, df).atTime(23, 59, 59);
 		int count1 = crepo.getCropsCountYearly(false, startdate, enddate);
 		int count2 = mrepo.getMarketsCountYearly(false, startdate, enddate);
 		int count3 = srepo.getScapesCountYearly(false, startdate, enddate);

@@ -1,6 +1,11 @@
 package com.megpbr.views.dashboard;
 
-import com.megpbr.data.entity.villages.VillageDetails;
+import java.time.Month;
+import java.time.Year;
+import java.time.YearMonth;
+
+import org.vaadin.lineawesome.LineAwesomeIcon;
+
 import com.megpbr.data.service.DashboardService;
 import com.megpbr.data.service.Dbservice;
 import com.megpbr.data.service.UserService;
@@ -13,7 +18,6 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
@@ -27,14 +31,15 @@ import jakarta.annotation.security.PermitAll;
 @Route(value = "", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
 public class HomeView extends VerticalLayout {
-	
+	private static final long serialVersionUID = 1L;
+
 	DashboardService dservice;
 	
 	public HomeView(DashboardService dservice,Dbservice dbservice, UserService uservice) {
 		this.dservice=dservice;
 		Image img = new Image("images/logo.png", "image");
 		// img.setWidth("200px");
-		add(getCards());
+		add(getCards(), getCards2());
 		setSizeFull();
 		setJustifyContentMode(JustifyContentMode.CENTER);
 		setDefaultHorizontalComponentAlignment(Alignment.CENTER);
@@ -46,11 +51,16 @@ public class HomeView extends VerticalLayout {
 		VerticalLayout card1 = createCard(1);
 		VerticalLayout card2 = createCard(2);
 		VerticalLayout card3 = createCard(3);
+		VerticalLayout card5 = createCard(5);
+		return new HorizontalLayout(card1, card2,card5, card3);
+	}
+	private Component getCards2() {
 		VerticalLayout card4 = createCard(4);
+		VerticalLayout card6 = createCard(6);
 		card4.addClickListener(e -> {
            UI.getCurrent().navigate(VillageView.class);
         });
-		return new HorizontalLayout(card1, card2, card3, card4);
+		return new HorizontalLayout( card4, card6);
 	}
 
 	private VerticalLayout createCard(int type) {
@@ -72,6 +82,7 @@ public class HomeView extends VerticalLayout {
 			break;
 		case 2:
 			 icon = VaadinIcon.ARCHIVE.create();
+			 //icon=LineAwesomeIcon.BICYCLE_SOLID.create();
 			long title2=dservice.getAllCountByMaster(false);
 			title = ""+title2;
 			description = "Village PBR Entered";
@@ -87,6 +98,33 @@ public class HomeView extends VerticalLayout {
 			long title4=dservice.getVillageDetailsCount();
 			title = ""+title4;
 			description = "Village Details Entered";
+			break;
+		case 5:
+			int year = Year.now().getValue();
+			int currentMonth = YearMonth.now().getMonthValue();
+			// Calculate the previous month
+			int previousMonth = currentMonth - 1;
+			// Adjust for wrap-around from January to December
+			if (previousMonth == 0) {
+				previousMonth = 12;
+				year=year-1;
+			}
+			Month monthEnum = Month.of(previousMonth);
+			// Get the month name from the Month enum
+			String monthName = monthEnum.name();
+
+			// Format the month name to proper case (e.g., "January" instead of "JANUARY")
+			monthName = monthName.charAt(0) + monthName.substring(1).toLowerCase();
+			icon = VaadinIcon.BOAT.create();
+			long title5=dservice.getMonthData();
+			title = ""+title5;
+			description = "PBR Entered for the Month of "+monthName+", "+year;
+			break;
+		case 6:
+			 icon = VaadinIcon.FILE_PICTURE.create();
+			long title6=dservice.getVillagesCount()-dservice.getVillageDetailsCount();
+			title = ""+title6;
+			description = "Village Details To Be Entered";
 			break;
 		default:
 			 icon = VaadinIcon.BARCODE.create();

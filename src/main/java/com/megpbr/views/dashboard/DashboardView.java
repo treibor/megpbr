@@ -62,31 +62,7 @@ public class DashboardView extends VerticalLayout {
         getStyle().set("text-align", "center");
         
     }
-    private VerticalLayout createCard(String title, String description, String imageUrl) {
-        VerticalLayout card = new VerticalLayout();
-        card.addClassName("card");
-
-        // Create image component
-        Image image = new Image(imageUrl, "Image");
-        image.addClassName("card-image");
-
-        // Create title component
-        Label titleLabel = new Label(title);
-        titleLabel.addClassName("card-title");
-
-        // Create description component
-        Label descriptionLabel = new Label(description);
-        descriptionLabel.addClassName("card-description");
-
-        // Create a button
-        Button actionButton = new Button("Learn More");
-        actionButton.addClassName("card-button");
-
-        // Add components to the card layout
-        card.add(image, titleLabel, descriptionLabel, actionButton);
-
-        return card;
-    }
+    
 
     private Component getFilterBar() {
     	

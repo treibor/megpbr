@@ -101,18 +101,21 @@ vaadin-radio-group vaadin-radio-group > label{
 .card-icon {
     width: 50px;
     height: 50px;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
     color: hsla(119, 93%, 29%, 0.90);
 }
 
 .card-title {
     font-size: 1.5em;
-    margin-top: 16px;
+    font-family: "Copperplate";
+    margin-top: 10px;
     text-align: center;
 }
 
 .card-description {
     margin: 16px 0;
+     font-family: "Copperplate";
+     font-size: var(--lumo-font-size-xs);
     text-align: center;
      color: hsla(119, 93%, 29%, 0.90);
 }

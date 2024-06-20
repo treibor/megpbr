@@ -22,7 +22,9 @@ public interface VillageRepository extends JpaRepository<Village, Long> {
 
 	List<Village> findByBlockAndInUse(Block block, boolean inUse);
 	// List<Village> findByVillagedetailsIn(List<VillageDetails> villagedetails);
-
+	@Query("select  count(*) from Village c ")
+	int getVillagesCount();
+	
 	@Query("select c from Village c  where c.villagedetails Not in :villagedetails")
 	List<String> VillageList(@Param("villagedetails") List<VillageDetails> villagedetails);
 
