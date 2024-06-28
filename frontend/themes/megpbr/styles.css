@@ -7,7 +7,9 @@
 @import url('./views/gridwith-filters-view.css');
 @import url('./views/checkout-form-view.css');
 @import url('./views/card-list2-view.css');
-@import url('./views/collaborative-master-detail2-view.css');    html {
+@import url('./views/collaborative-master-detail2-view.css');   
+
+ html {
       --lumo-primary-color: hsl(120, 62%, 39%);
       --lumo-primary-color-50pct: hsla(120, 62%, 39%, 0.5);
       --lumo-primary-color-10pct: hsla(120, 62%, 39%, 0.1);

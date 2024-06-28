@@ -207,6 +207,7 @@ public class MainLayout extends AppLayout {
    
 	private void addDrawerContent() {
         H1 appName = new H1("Hi, "+ userservice.getLoggedUser().getName());
+        appName.getStyle().set("color", "hsla(119, 93%, 29%, 0.90)").set("padding-bottom", "20px");
         appName.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
         //appName.add
         Header header = new Header(appName);
@@ -220,8 +221,8 @@ public class MainLayout extends AppLayout {
         dashboardItems.setPrefixComponent(LineAwesomeIcon.ACCUSOFT.create());
         SideNavItem dashboardItem=new SideNavItem("Home ", HomeView.class, LineAwesomeIcon.HOME_SOLID.create());
         SideNavItem dashboardItem1=new SideNavItem("General ", DashboardView.class, LineAwesomeIcon.ADDRESS_BOOK.create());
-        SideNavItem dashboardItem2=new SideNavItem(" Yearly Data", YearDashboardView.class, LineAwesomeIcon.ALGOLIA.create());
-        SideNavItem dashboardItem3=new SideNavItem(" Statistics ", StatsView.class, LineAwesomeIcon.AIR_FRESHENER_SOLID.create());
+        SideNavItem dashboardItem2=new SideNavItem(" Yearly Data", YearDashboardView.class, LineAwesomeIcon.CALENDAR.create());
+        SideNavItem dashboardItem3=new SideNavItem(" Statistics ", StatsView.class, LineAwesomeIcon.SYMFONY.create());
         dashboardItems.addItem(dashboardItem,dashboardItem1, dashboardItem2, dashboardItem3);
         nav.addItem(dashboardItems);
         //nav.addItem(new SideNavItem("Dashboard", DashboardView.class, LineAwesomeIcon.ACCUSOFT.create()));
@@ -303,7 +304,7 @@ public class MainLayout extends AppLayout {
         SideNavItem verify=new SideNavItem("Verification", CrowdView.class, LineAwesomeIcon.ACCESSIBLE_ICON.create());
         crowd.addItem(preverify, verify);
         nav.addItem(crowd);
-        SideNavItem master=new SideNavItem("Master", MasterView.class, LineAwesomeIcon.ACCESSIBLE_ICON.create());
+        SideNavItem master=new SideNavItem("Master Data", MasterView.class, LineAwesomeIcon.ACCESSIBLE_ICON.create());
         nav.addItem(master);
         SideNavItem lgd=new SideNavItem("LGD Data", lgd.class, LineAwesomeIcon.ZHIHU.create());
         nav.addItem(lgd);
@@ -324,6 +325,7 @@ public class MainLayout extends AppLayout {
 
     private Footer createFooter() {
         Footer layout = new Footer();
+        
         return layout;
     }
 

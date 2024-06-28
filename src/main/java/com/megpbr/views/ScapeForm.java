@@ -757,13 +757,13 @@ public class ScapeForm extends Div {
 		upload.setMaxFiles(1);
 		
 		upload.setMaxFileSize(1000000);
-		Button uploadButton=new Button("Upload Photo");
+		Button uploadButton=new Button("Select Image");
 		//upload.setDropLabel(uploadButton);
 		uploadButton.getStyle().set("font-size", "12px");
 		upload.setUploadButton(uploadButton);
 		//upload.setDropLabel(new Label("Drop Photo"));
 		upload.setAcceptedFileTypes("image/tiff", "image/jpeg", "image/jpg");
-		upload.addFileRejectedListener(e -> Notification.show("Invalid File: Please select only image files less than 1Mb",3000, Position.TOP_END));
+		upload.addFileRejectedListener(e -> Notification.show("Invalid File: Please select only image files which are less than 1Mb",3000, Position.TOP_END));
 		//upload.addSucceededListener(event -> showPicture());
 		
 		return upload;

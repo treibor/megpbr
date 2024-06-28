@@ -235,9 +235,7 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 			if (principal instanceof UserDetails) {
 				UserDetails userDetails = (UserDetails) principal;
 				if (userDetails.getUsername().equals(username)) {
-					List<SessionInformation> sessionInfoList = sr.getAllSessions(userDetails, true); // Invalidate
-																										// previous
-																										// sessions
+					List<SessionInformation> sessionInfoList = sr.getAllSessions(userDetails, true); 
 					count += sessionInfoList.size();
 				}
 			}

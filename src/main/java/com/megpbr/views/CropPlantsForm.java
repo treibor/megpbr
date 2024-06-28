@@ -977,13 +977,13 @@ public class CropPlantsForm extends Div {
 		upload.setMaxFiles(1);
 		
 		upload.setMaxFileSize(1000000);
-		Button uploadButton=new Button("Upload Photo");
+		Button uploadButton=new Button("Select Image");
 		//upload.setDropLabel(uploadButton);
 		uploadButton.getStyle().set("font-size", "12px");
 		upload.setUploadButton(uploadButton);
 		//upload.setDropLabel(new Label("Drop Photo"));
 		upload.setAcceptedFileTypes("image/tiff", "image/jpeg", "image/jpg");
-		upload.addFileRejectedListener(e -> Notification.show("Invalid File: Please select only image files less than 1Mb",3000, Position.TOP_END).addThemeVariants(NotificationVariant.LUMO_WARNING));
+		upload.addFileRejectedListener(e -> Notification.show("Invalid File: Please select only Image files which are less than 1Mb",3000, Position.TOP_END).addThemeVariants(NotificationVariant.LUMO_WARNING));
 		//Notification.show("Error. Please Check").addThemeVariants(NotificationVariant.LUMO_ERROR);
 		//upload.addSucceededListener(event -> showPicture());
 		

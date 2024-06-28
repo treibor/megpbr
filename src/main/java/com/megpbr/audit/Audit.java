@@ -19,22 +19,29 @@ public class Audit {
 	private AuditService auditservice;
 	private UserService uservice;
 	AuditTrail audit;
-	//private String ipAddress;
+	
 	public Audit(AuditService auditservice, UserService uservice) {
 		//super();
 		this.auditservice = auditservice;
 		this.uservice = uservice;
-		 //ipAddress= VaadinSession.getCurrent().getBrowser().getAddress() ;
+		//ipAddress= getRealClientIp();
 	}
-
+	public String getRealClientIp() {
+	    VaadinRequest request = VaadinRequest.getCurrent();
+	    String xForwardedForHeader = request.getHeader("X-Forwarded-For");
+	    if (xForwardedForHeader == null || xForwardedForHeader.isEmpty()) {
+	        return request.getRemoteAddr();
+	    } else {
+	        return xForwardedForHeader.split(",")[0].trim();
+	    }
+	}
 
 	public void saveAudit(Crops crop, String action) {
 		audit=new AuditTrail();
 		audit.setAction(action);
 		audit.setActionBy(uservice.getLoggedUserName());
 		audit.setActionOn(LocalDateTime.now());
-		String ipAddress=VaadinRequest.getCurrent().getRemoteAddr();
-		audit.setIpAddress(ipAddress);
+		audit.setIpAddress(getRealClientIp());
 		String villageText=crop.getVillage() == null ? "Master Data" : crop.getVillage().getVillageName();
 		audit.setDetails(crop.getId()+"-" +crop.getFormat().getFormatName() +", S. Name-"+crop.getScientificName()+",Village-"+ villageText+", Previous User-"+crop.getEnteredBy().getUserName()+", Previous Entry Date-"+crop.getEnteredOn());
 		auditservice.updateAudit(audit);
@@ -44,8 +51,7 @@ public class Audit {
 		audit.setAction(action);
 		audit.setActionBy(uservice.getLoggedUserName());
 		audit.setActionOn(LocalDateTime.now());
-		String ipAddress=VaadinRequest.getCurrent().getRemoteAddr();
-		audit.setIpAddress(ipAddress);
+		audit.setIpAddress(getRealClientIp());
 		String villageText=market.getVillage() == null ? "Master Data" : market.getVillage().getVillageName();
 		audit.setDetails(market.getId()+"-" +market.getFormat().getFormatName() +", S. Name-"+market.getName()+",Village-"+ villageText+", Previous User-"+market.getEnteredBy().getUserName()+", Previous Entry Date-"+market.getEnteredOn());
 		auditservice.updateAudit(audit);
@@ -55,8 +61,7 @@ public class Audit {
 		audit.setAction(action);
 		audit.setActionBy(uservice.getLoggedUserName());
 		audit.setActionOn(LocalDateTime.now());
-		String ipAddress=VaadinRequest.getCurrent().getRemoteAddr();
-		audit.setIpAddress(ipAddress);
+		audit.setIpAddress(getRealClientIp());
 		String villageText=scape.getVillage() == null ? "Master Data" : scape.getVillage().getVillageName();
 		audit.setDetails(scape.getId()+"-" +scape.getFormat().getFormatName() +", S. Name-"+scape.getFaunaPopulation()+",Village-"+ villageText+", Previous User-"+scape.getEnteredBy().getUserName()+", Previous Entry Date-"+scape.getEnteredOn());
 		auditservice.updateAudit(audit);
@@ -66,8 +71,7 @@ public class Audit {
 		audit.setAction(action);
 		audit.setActionBy(uservice.getLoggedUserName());
 		audit.setActionOn(LocalDateTime.now());
-		String ipAddress=VaadinRequest.getCurrent().getRemoteAddr();
-		audit.setIpAddress(ipAddress);
+		audit.setIpAddress(getRealClientIp());
 		//String villageText="";
 		audit.setDetails(vill.getId()+"-"+vill.getVillage().getVillageName()+",Habitat-"+vill.getHabitat()+", Previous User-"+vill.getEnteredBy().getUserName()+", Previous Entry Date-"+vill.getEnteredOn());
 		auditservice.updateAudit(audit);
@@ -78,20 +82,15 @@ public class Audit {
 		audit.setActionBy(uservice.getLoggedUserName());
 		audit.setActionOn(LocalDateTime.now());
 		audit.setDetails(details);
-		String ipAddress=VaadinRequest.getCurrent().getRemoteAddr();
-		audit.setIpAddress(ipAddress);
+		audit.setIpAddress(getRealClientIp());
 		auditservice.updateAudit(audit);
 	}
 	public void saveLoginAudit(String action, String details) {
 		audit=new AuditTrail();
 		audit.setAction(action);
-		//audit.setActionBy(uservice.getLoggedUserName());
 		audit.setActionOn(LocalDateTime.now());
 		audit.setDetails(details);
-		//String ipAddress = VaadinSession.getCurrent().getBrowser().getAddress() ;
-		String ipAddress=VaadinRequest.getCurrent().getRemoteAddr();
-		
-		audit.setIpAddress(ipAddress);
+		audit.setIpAddress(getRealClientIp());
 		auditservice.updateAudit(audit);
 	}
 }
