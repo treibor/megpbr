@@ -128,6 +128,7 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 
 		// captchacontainer.add(getCaptcha(), refreshButton);
 		usernameField.setRequired(true);
+		usernameField.setAllowedCharPattern("[0-9A-Za-z@]");
 		usernameField.setMinLength(5);
 		usernameField.setMaxLength(40);
 		passwordField.setRequired(true);

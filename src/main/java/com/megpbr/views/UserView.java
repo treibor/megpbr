@@ -153,6 +153,7 @@ public class UserView {
 	}
 	public FormLayout getFields() {
 		var form=new FormLayout();
+		userName.setAllowedCharPattern("[0-9A-Za-z@]");
 		form.add(userlevel, 2);
 		form.add(state, 1);
 		form.add(district, 1);
