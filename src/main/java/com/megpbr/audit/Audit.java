@@ -16,6 +16,7 @@ import com.vaadin.flow.server.VaadinSession;
 
 @Service
 public class Audit {
+	private static final long serialVersionUID = 1L;
 	private AuditService auditservice;
 	private UserService uservice;
 	AuditTrail audit;

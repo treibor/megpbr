@@ -190,24 +190,28 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 		String password="";
 		if (captcha.checkUserAnswer(captchatext.getValue())) {
 			try {
-				
 				username = CryptUtils.decryptUsername(encryptedUsername, dynamicKey);
 				password = CryptUtils.decryptPassword(encryptedPassword, dynamicKey);
-				invalidatePreviousSessionsForUser(username);
-				UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
-				Authentication authentication = this.authenticationManager.authenticate(token);
+				int activeSessionCount = getActiveSessionCountForUser(username);
+				if (activeSessionCount == 0) {
+					// invalidatePreviousSessionsForUser(username);
+					UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username,
+							password);
+					Authentication authentication = this.authenticationManager.authenticate(token);
 
-				SecurityContext context = this.securityContextHolderStrategy.createEmptyContext();
-				context.setAuthentication(authentication);
-				this.securityContextHolderStrategy.setContext(context);
-				securityRepo.saveContext(context, VaadinServletRequest.getCurrent(),
-						VaadinServletResponse.getCurrent());
-				// registerSession(ServletContext, (UserDetails) authentication.getPrincipal());
-				registerSession(VaadinService.getCurrentRequest().getWrappedSession(),
-						(UserDetails) authentication.getPrincipal());
-				audit.saveLoginAudit("Login Successfully", username);
-				UI.getCurrent().navigate(HomeView.class);
-
+					SecurityContext context = this.securityContextHolderStrategy.createEmptyContext();
+					context.setAuthentication(authentication);
+					this.securityContextHolderStrategy.setContext(context);
+					securityRepo.saveContext(context, VaadinServletRequest.getCurrent(),
+							VaadinServletResponse.getCurrent());
+					// registerSession(ServletContext, (UserDetails) authentication.getPrincipal());
+					registerSession(VaadinService.getCurrentRequest().getWrappedSession(),
+							(UserDetails) authentication.getPrincipal());
+					audit.saveLoginAudit("Login Successfully", username);
+					UI.getCurrent().navigate(HomeView.class);
+				}else {
+					Notification.show("User Is Already Logged In. Please login with a different User").addThemeVariants(NotificationVariant.LUMO_ERROR);
+				}
 			} catch (Exception e) {
 
 				// e.printStackTrace();
