@@ -186,6 +186,7 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 	}
 
 	private void doLogin(String encryptedUsername, String encryptedPassword) {
+		button.setEnabled(false);
 		String username="";
 		String password="";
 		if (captcha.checkUserAnswer(captchatext.getValue())) {
@@ -215,8 +216,11 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 			} catch (Exception e) {
 
 				// e.printStackTrace();
-				Notification.show("Authentication failed: " + e.getMessage())
-						.addThemeVariants(NotificationVariant.LUMO_ERROR);
+				//Notification.show("Authentication failed: " + e.getMessage())
+					//	.addThemeVariants(NotificationVariant.LUMO_ERROR);
+				Notification.show("Authentication failed: Wrong User Name and Password" )
+				.addThemeVariants(NotificationVariant.LUMO_ERROR);
+		
 				clearFields();
 
 				audit.saveLoginAudit("Login Failure- Authentication", username);
@@ -297,6 +301,8 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 	}
 
 	private void clearFields() {
+		regenerateCaptcha();
+		button.setEnabled(true);
 		passwordField.setValue("");
 		usernameField.setValue("");
 		captchatext.setValue("");

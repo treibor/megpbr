@@ -4,6 +4,8 @@ package com.megpbr.security;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,6 +47,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 public class SecurityConfiguration extends VaadinWebSecurity {
+	@Autowired
+	private RateLimitingFilter rateLimitingFilter;
+	
 	@Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -117,11 +122,14 @@ public class SecurityConfiguration extends VaadinWebSecurity {
 			}
 		};
 	}
-	
+
+
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.addFilterBefore(disableOptionsMethodFilter(), ChannelProcessingFilter.class)
+		http
+		.addFilterBefore(rateLimitingFilter, ChannelProcessingFilter.class)
+        .addFilterBefore(disableOptionsMethodFilter(), ChannelProcessingFilter.class)
 		
 		.headers(headers -> headers
 				.addHeaderWriter(new StaticHeadersWriter("Strict-Transport-Security", "max-age=31536000"))
