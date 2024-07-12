@@ -8,6 +8,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.stereotype.Component;
 
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.Notification.Position;
+import com.vaadin.flow.component.notification.NotificationVariant;
+
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Bucket4j;
@@ -37,20 +41,24 @@ public class RateLimitingFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         String requestURI = httpRequest.getRequestURI();
+        String contextPath = httpRequest.getContextPath();
 
-        // Apply rate limiting only to specific URLs
-        if (!shouldRateLimit(requestURI)) {
+        // Remove context path to normalize the URI
+        String normalizedURI = requestURI.substring(contextPath.length());
+
+        // Exclude specific URLs from rate limiting
+        if (!shouldRateLimit(normalizedURI)) {
             chain.doFilter(request, response);
             return;
         }
 
-        Bucket bucket = buckets.computeIfAbsent(requestURI, this::createNewBucket);
+        Bucket bucket = buckets.computeIfAbsent(normalizedURI, this::createNewBucket);
 
         if (bucket.tryConsume(1)) {
             // Log the request count
             long availableTokens = bucket.getAvailableTokens();
-            //System.out.println("Request count for URL " + requestURI + ": " + (getThreshold(requestURI) - availableTokens));
-
+            //System.out.println("Request count for URL " + normalizedURI + ": " + (getThreshold(normalizedURI) - availableTokens));
+            //Notification.show("Too Many Requests. All requests are now Limited",5000, Position.TOP_CENTER).addThemeVariants(NotificationVariant.LUMO_WARNING);
             chain.doFilter(request, response);
         } else {
             httpResponse.setStatus(429); // Too Many Requests
@@ -64,7 +72,7 @@ public class RateLimitingFilter implements Filter {
 
     private boolean shouldRateLimit(String requestURI) {
         // Rate limit only specific URLs
-        return requestURI.equals("/login") ||requestURI.endsWith("/login")|| requestURI.equals("/")|| requestURI.equals("/dashboard")|| requestURI.endsWith("/")|| requestURI.endsWith("/dashboard");
+        return requestURI.equals("/login") || requestURI.equals("/")|| requestURI.equals("/dashboard")|| requestURI.endsWith("/")|| requestURI.endsWith("/dashboard");
     }
 
     private Bucket createNewBucket(String requestURI) {
@@ -78,13 +86,13 @@ public class RateLimitingFilter implements Filter {
         // Define different thresholds for different URLs
         switch (requestURI) {
             case "/login":
-                return 250; // Max 5 requests per minute for /login
+                return 50; // Max 5 requests per minute for /login
             case "/dashboard":
                 return 10; // Max 10 requests per minute for /home
             case "/":
-                return 50; // Max 10 requests per minute for /home
+                return 100; // Max 10 requests per minute for /home
             default:
-                return 50; // Default threshold
+                return 10; // Default threshold
         }
     }
 }
