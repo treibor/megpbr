@@ -92,7 +92,7 @@ public class RateLimitingFilter implements Filter {
             case "/":
                 return 100; // Max 10 requests per minute for /home
             default:
-                return 10; // Default threshold
+                return 50; // Default threshold
         }
     }
 }

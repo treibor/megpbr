@@ -81,7 +81,7 @@ public class CultureFisheriesView extends HorizontalLayout {
 	private UserService uservice;
 
 	Crops crop;
-	AuditTrail audit;
+	//AuditTrail audit;
 	Grid<Crops> grid = new Grid<>(Crops.class);
 	CropPlantsForm form;
 	MasterFormat format;

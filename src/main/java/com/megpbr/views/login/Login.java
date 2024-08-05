@@ -193,9 +193,9 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 			try {
 				username = CryptUtils.decryptUsername(encryptedUsername, dynamicKey);
 				password = CryptUtils.decryptPassword(encryptedPassword, dynamicKey);
-				int activeSessionCount = getActiveSessionCountForUser(username);
-				if (activeSessionCount == 0) {
-					// invalidatePreviousSessionsForUser(username);
+				//int activeSessionCount = getActiveSessionCountForUser(username);
+				//if (activeSessionCount == 0) {
+					 invalidatePreviousSessionsForUser(username);
 					UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username,
 							password);
 					Authentication authentication = this.authenticationManager.authenticate(token);
@@ -210,9 +210,9 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 							(UserDetails) authentication.getPrincipal());
 					audit.saveLoginAudit("Login Successfully", username);
 					UI.getCurrent().navigate(HomeView.class);
-				}else {
-					Notification.show("User Is Already Logged In. Please login with a different User").addThemeVariants(NotificationVariant.LUMO_ERROR);
-				}
+				//}else {
+					//Notification.show("User Is Already Logged In. Please login with a different User").addThemeVariants(NotificationVariant.LUMO_ERROR);
+				//}
 			} catch (Exception e) {
 
 				// e.printStackTrace();
