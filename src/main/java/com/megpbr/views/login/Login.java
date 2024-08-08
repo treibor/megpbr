@@ -46,6 +46,8 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinRequest;
+import com.vaadin.flow.server.VaadinResponse;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinServletRequest;
 import com.vaadin.flow.server.VaadinServletResponse;
@@ -53,6 +55,8 @@ import com.vaadin.flow.server.WrappedSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 import elemental.json.JsonObject;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Route("login")
 @AnonymousAllowed
@@ -114,6 +118,8 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 		getStyle().set("background-color", "hsla(0, 0%, 95%, 0.69)");
 		// add(createLoginForm());
 	}
+	
+    
 	private String generateDynamicKey() {
 	    String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 	    StringBuilder key = new StringBuilder();
@@ -328,6 +334,7 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 
 	@Override
 	public void beforeEnter(BeforeEnterEvent event) {
+		//setCustomCookie();
 		if (authenticatedUser.get().isPresent()) {
 			// Already logged in
 			// loginOverlay.setOpened(false);

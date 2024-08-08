@@ -1,11 +1,9 @@
 package com.megpbr.security;
 
-
 import java.io.IOException;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,7 +28,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.megpbr.views.login.Login;
 import com.vaadin.flow.spring.security.VaadinWebSecurity;
@@ -49,22 +46,19 @@ import jakarta.servlet.http.HttpServletResponse;
 public class SecurityConfiguration extends VaadinWebSecurity {
 	@Autowired
 	private RateLimitingFilter rateLimitingFilter;
-	
-	@Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "PUT", "POST"));
-        configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
-        configuration.setExposedHeaders(Arrays.asList("x-auth-token"));
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
-	
 
-	   
-	
+	@Bean
+	CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.setAllowedOrigins(Arrays.asList("*"));
+		configuration.setAllowedMethods(Arrays.asList("GET", "PUT", "POST"));
+		configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
+		configuration.setExposedHeaders(Arrays.asList("x-auth-token"));
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
+	}
+
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
@@ -97,7 +91,7 @@ public class SecurityConfiguration extends VaadinWebSecurity {
 		ConcurrentSessionControlAuthenticationStrategy strategy = new ConcurrentSessionControlAuthenticationStrategy(
 				sessionRegistry());
 		strategy.setMaximumSessions(1); // Allow only one session per user
-		strategy.setExceptionIfMaximumExceeded(true); // Prevent new logins if maximum sessions are reached 
+		strategy.setExceptionIfMaximumExceeded(true); // Prevent new logins if maximum sessions are reached
 		return strategy;
 	}
 
@@ -123,38 +117,44 @@ public class SecurityConfiguration extends VaadinWebSecurity {
 		};
 	}
 
-
+	
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
-		.addFilterBefore(rateLimitingFilter, ChannelProcessingFilter.class)
-        .addFilterBefore(disableOptionsMethodFilter(), ChannelProcessingFilter.class)
-		
-		.headers(headers -> headers
-				.addHeaderWriter(new StaticHeadersWriter("Strict-Transport-Security", "max-age=31536000"))
-	            .xssProtection(xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
-	            .addHeaderWriter(new StaticHeadersWriter("X-Content-Type-Options", "nosniff"))
-	            .addHeaderWriter(new StaticHeadersWriter("X-Frame-Options", "DENY"))
-	            .addHeaderWriter(new StaticHeadersWriter("X-XSS-Protection", "1; mode=block"))
-	            .addHeaderWriter(new StaticHeadersWriter("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; object-src 'none';"))
-	            .addHeaderWriter(new StaticHeadersWriter("Permissions-Policy", "geolocation=(self), microphone=()"))
-	            .addHeaderWriter(new StaticHeadersWriter("Set-Cookie", "SameSite=Strict; HttpOnly; Secure;"))
-	            .addHeaderWriter(new StaticHeadersWriter("Expect-CT", "max-age=86400, enforce"))
-	            .addHeaderWriter(new StaticHeadersWriter("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0"))
-	            .addHeaderWriter(new StaticHeadersWriter("Pragma", "no-cache"))
-	            .referrerPolicy(referrer -> referrer.policy(ReferrerPolicy.SAME_ORIGIN)))
+				// .addFilterBefore(rateLimitingFilter, ChannelProcessingFilter.class)
+				// .addFilterBefore(securecookie, ChannelProcessingFilter.class)
+				.addFilterBefore(disableOptionsMethodFilter(), ChannelProcessingFilter.class)
+
+				.headers(headers -> headers
+						.addHeaderWriter(new StaticHeadersWriter("Strict-Transport-Security", "max-age=31536000"))
+						.xssProtection(
+								xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
+						.addHeaderWriter(new StaticHeadersWriter("X-Content-Type-Options", "nosniff"))
+						.addHeaderWriter(new StaticHeadersWriter("X-Frame-Options", "DENY"))
+						.addHeaderWriter(new StaticHeadersWriter("X-XSS-Protection", "1; mode=block"))
+						.addHeaderWriter(new StaticHeadersWriter("Content-Security-Policy",
+								"default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; object-src 'none';"))
+						.addHeaderWriter(
+								new StaticHeadersWriter("Permissions-Policy", "geolocation=(self), microphone=()"))
+						.addHeaderWriter(new StaticHeadersWriter("Set-Cookie", "SameSite=Strict; HttpOnly; Secure;"))
+						.addHeaderWriter(new StaticHeadersWriter("Expect-CT", "max-age=86400, enforce"))
+						.addHeaderWriter(new StaticHeadersWriter("Cache-Control",
+								"no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0"))
+						.addHeaderWriter(new StaticHeadersWriter("Pragma", "no-cache"))
+						.referrerPolicy(referrer -> referrer.policy(ReferrerPolicy.SAME_ORIGIN)))
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
 						.invalidSessionUrl("/")
 						.sessionConcurrency(concurrency -> concurrency.maximumSessions(1).expiredUrl("/")
 								.maxSessionsPreventsLogin(true) // Prevent new logins if the max sessions are reached
 								.sessionRegistry(sessionRegistry())))
 				.securityContext(context -> context.securityContextRepository(securityContextRepository())
-						
-		);
+
+				);
 		http.authorizeHttpRequests(
 				authorize -> authorize.requestMatchers(new AntPathRequestMatcher("/images/*.png")).permitAll());
 		super.configure(http);
 		setLoginView(http, Login.class);
 	}
+
 }

@@ -1,5 +1,6 @@
 package com.megpbr.audit;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
@@ -15,7 +16,10 @@ import com.vaadin.flow.server.VaadinRequest;
 import com.vaadin.flow.server.VaadinSession;
 
 @Service
-public class Audit {
+public class Audit implements Serializable {
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
 	private AuditService auditservice;
 	private UserService uservice;
