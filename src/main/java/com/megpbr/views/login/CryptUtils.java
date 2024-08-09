@@ -4,6 +4,37 @@ import java.util.Base64;
 
 public class CryptUtils {
 
+    public static String encryptUsername(String username, String key) {
+        return encrypt(username, key);
+    }
+
+    public static String encryptPassword(String password, String key) {
+        return encrypt(password, key);
+    }
+
+    private static String encrypt(String plainText, String key) {
+        try {
+            // Convert the key to bytes
+            byte[] keyBytes = key.getBytes("UTF-8");
+
+            // Convert the plain text to bytes
+            byte[] plainTextBytes = plainText.getBytes("UTF-8");
+
+            // Perform XOR operation with the key
+            byte[] encryptedBytes = new byte[plainTextBytes.length];
+            for (int i = 0; i < plainTextBytes.length; i++) {
+                encryptedBytes[i] = (byte) (plainTextBytes[i] ^ keyBytes[i % keyBytes.length]);
+            }
+
+            // Convert the encrypted bytes to Base64 string
+            return Base64.getEncoder().encodeToString(encryptedBytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    // Decrypt methods remain the same
     public static String decryptUsername(String encryptedUsername, String key) {
         return decrypt(encryptedUsername, key);
     }
