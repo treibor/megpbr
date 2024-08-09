@@ -38,6 +38,7 @@ import com.megpbr.data.entity.Village;
 import com.megpbr.data.entity.pbr.Crops;
 import com.megpbr.data.service.CropService;
 import com.megpbr.data.service.Dbservice;
+import com.megpbr.utils.TextFieldUtil;
 import com.megpbr.views.CropPlantsForm.DeleteEvent;
 import com.megpbr.views.CropPlantsForm.SaveEvent;
 import com.megpbr.views.dashboard.DashboardView;
@@ -183,6 +184,10 @@ public class UserForm extends Div {
 		
 	}
 	public Component createBasicForm() {
+		TextFieldUtil.applyValidation(name);
+		TextFieldUtil.applyValidation(userName);
+		TextFieldUtil.applyValidation(email);
+		
 		userName.setEnabled(false);
 		form.add(name, 2);
 		form.add(userName, 2);

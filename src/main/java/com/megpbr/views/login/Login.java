@@ -77,6 +77,7 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 	Image image;
 	public TextField captchatext = new TextField();
 	TextField usernameField = new TextField("User Name");
+	
 	PasswordField passwordField = new PasswordField("Password");
 	Button button = new Button("Login");
 	H2 title = new H2("Meghalaya Biodiversity Board");
@@ -86,6 +87,8 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 			.getContextHolderStrategy();
 	String dynamicKey="";
 	public Login(AuthenticatedUser authenticatedUser) {
+		usernameField.getElement().setAttribute("autocomplete", "off");
+		passwordField.getElement().setAttribute("autocomplete", "off");
 		this.authenticatedUser = authenticatedUser;
 		dynamicKey = generateDynamicKey();
 		button.addClickListener(e -> {

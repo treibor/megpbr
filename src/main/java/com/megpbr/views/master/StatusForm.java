@@ -38,6 +38,7 @@ import com.megpbr.data.entity.Village;
 import com.megpbr.data.entity.pbr.Crops;
 import com.megpbr.data.service.CropService;
 import com.megpbr.data.service.Dbservice;
+import com.megpbr.utils.TextFieldUtil;
 import com.megpbr.views.CropPlantsForm.DeleteEvent;
 import com.megpbr.views.CropPlantsForm.SaveEvent;
 import com.megpbr.views.dashboard.DashboardView;
@@ -181,6 +182,8 @@ public class StatusForm extends Div {
 	
 
 	public Component createBasicForm() {
+		TextFieldUtil.applyValidation(status);
+		TextFieldUtil.applyValidation(statusName);
 		form.add(status, 2);
 		form.add(statusName, 2);
 		form.setResponsiveSteps(new ResponsiveStep("0", 2),

@@ -6,75 +6,53 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.megpbr.data.entity.Block;
 import com.megpbr.data.entity.District;
 import com.megpbr.data.entity.MasterApproval;
-import com.megpbr.data.entity.MasterCommercial;
 import com.megpbr.data.entity.MasterFormat;
-import com.megpbr.data.entity.MasterLocallanguage;
-import com.megpbr.data.entity.MasterSeason;
 import com.megpbr.data.entity.MasterStatus;
-import com.megpbr.data.entity.MasterWildhome;
 import com.megpbr.data.entity.State;
 import com.megpbr.data.entity.Village;
-import com.megpbr.data.entity.pbr.Crops;
 import com.megpbr.data.entity.pbr.Markets;
-import com.megpbr.data.service.CropService;
 import com.megpbr.data.service.Dbservice;
 import com.megpbr.data.service.MarketsService;
-import com.megpbr.data.service.ScapeService;
-import com.megpbr.views.CropPlantsForm.SaveEvent;
-import com.megpbr.views.dashboard.DashboardView;
+import com.megpbr.utils.TextFieldUtil;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.accordion.AccordionPanel;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H6;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.Scroller.ScrollDirection;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
-import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.shared.Registration;
 
@@ -374,6 +352,13 @@ public class MarketsForm extends Div {
 	}
 
 	public Component createBasicForm() {
+		TextFieldUtil.applyValidation(latitude);
+		TextFieldUtil.applyValidation(longitude);
+		TextFieldUtil.applyValidation(photo1Source);
+		TextFieldUtil.applyValidation(photo2Source);
+		TextFieldUtil.applyValidation(photo3Source);
+		TextFieldUtil.applyValidation(photo4Source);
+		
 		formbasic.add(name, 1);
 		formbasic.add(frequency, 1);
 		formbasic.add(month, 1);
@@ -428,77 +413,34 @@ public class MarketsForm extends Div {
 		approved.setItems(dbservice.getMasterApproval());
 		approved.setItemLabelGenerator(approved->approved.getApproval());
 		approved.setValue(dbservice.getMasterApproval().get(1));
-		name.setAllowCustomValue(true);
-		name.addCustomValueSetListener(e -> {
-			String customValue = e.getDetail();
-			name.setItems(customValue);
-			name.setValue(customValue);
-		});
-		frequency.setAllowCustomValue(true);
-		frequency.addCustomValueSetListener(e -> {
-			String customValuef = e.getDetail();
-			frequency.setItems(customValuef);
-			frequency.setValue(customValuef);
-		});
-		month.setAllowCustomValue(true);
-		month.addCustomValueSetListener(e -> {
-			String custommonth = e.getDetail();
-			month.setItems(custommonth);
-			month.setValue(custommonth);
-		});
-		day.setAllowCustomValue(true);
-		day.addCustomValueSetListener(e -> {
-			String customday = e.getDetail();
-			day.setItems(customday);
-			day.setValue(customday);
-		});
-		animalType.setAllowCustomValue(true);
-		animalType.addCustomValueSetListener(e -> {
-			String customsubLandmarket = e.getDetail();
-			animalType.setItems(customsubLandmarket);
-			animalType.setValue(customsubLandmarket);
-		});
-		transactions.setAllowCustomValue(true);
-		transactions.addCustomValueSetListener(e -> {
-			String customtransactions = e.getDetail();
-			transactions.setItems(customtransactions);
-			transactions.setValue(customtransactions);
-		});
-		
-		placesFrom.setAllowCustomValue(true);
-		placesFrom.addCustomValueSetListener(e -> {
-			String customplacesFrom = e.getDetail();
-			placesFrom.setItems(customplacesFrom);
-			placesFrom.setValue(customplacesFrom);
-		});
-		placesTo.setAllowCustomValue(true);
-		placesTo.addCustomValueSetListener(e -> {
-			String customplacesTo = e.getDetail();
-			placesTo.setItems(customplacesTo);
-			placesTo.setValue(customplacesTo);
-		});
-		fishLocation.setAllowCustomValue(true);
-		fishLocation.addCustomValueSetListener(e -> {
-			String customfishLocation = e.getDetail();
-			fishLocation.setItems(customfishLocation);
-			fishLocation.setValue(customfishLocation);
-		});
-		fishType.setAllowCustomValue(true);
-		fishType.addCustomValueSetListener(e -> {
-			String customfishType = e.getDetail();
-			fishType.setItems(customfishType);
-			fishType.setValue(customfishType);
-		});
-		fishSource.setAllowCustomValue(true);
-		fishSource.addCustomValueSetListener(e -> {
-			String customfishSource = e.getDetail();
-			fishSource.setItems(customfishSource);
-			fishSource.setValue(customfishSource);
-		});
+		addCustomValueSetListener(name);
+		addCustomValueSetListener(frequency);
+		addCustomValueSetListener(month);
+		addCustomValueSetListener(day);
+		addCustomValueSetListener(animalType);
+		addCustomValueSetListener(transactions);
+		addCustomValueSetListener(placesFrom);
+		addCustomValueSetListener(placesTo);
+		addCustomValueSetListener(fishLocation);
+		addCustomValueSetListener(fishType);
+		addCustomValueSetListener(fishSource);
 		initMasterFields(format);
 		initFormatFields(format);
 	}
-
+	private void addCustomValueSetListener(ComboBox<String> comboBox) {
+		comboBox.setAllowCustomValue(true);
+		comboBox.addCustomValueSetListener(event -> {
+			String customValue = event.getDetail();
+			if (customValue != null && !customValue.matches("[0-9A-Za-z@./-]+")) {
+				// Show an error notification or reset the value
+				Notification.show("Invalid input: Only letters, numbers, and '@', '.', '/', '-'  are allowed").addThemeVariants(NotificationVariant.LUMO_WARNING);
+				comboBox.clear();
+			} else {
+				comboBox.setItems(customValue);
+				comboBox.setValue(customValue);
+			}
+		});
+	}
 	private void showRemarks() {
 		if (approved.getValue() != null) {
 			if (approved.getValue().getId() == 2) {

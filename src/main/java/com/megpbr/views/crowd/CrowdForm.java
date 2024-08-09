@@ -27,6 +27,7 @@ import com.megpbr.data.entity.Village;
 import com.megpbr.data.entity.pbr.Crowd;
 import com.megpbr.data.service.CrowdService;
 import com.megpbr.data.service.Dbservice;
+import com.megpbr.utils.TextFieldUtil;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -198,6 +199,8 @@ public class CrowdForm extends Div {
 		
 	}
 	public Component createMasterForm() {
+		TextFieldUtil.applyValidation(latitude);
+		TextFieldUtil.applyValidation(longitude);
 		// state.setVisible(isSuperAdmin);
 		state.setPlaceholder("State");
 		district.setPlaceholder("District");

@@ -122,12 +122,13 @@ public class SecurityConfiguration extends VaadinWebSecurity {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
-				// .addFilterBefore(rateLimitingFilter, ChannelProcessingFilter.class)
+				
 				// .addFilterBefore(securecookie, ChannelProcessingFilter.class)
 				.addFilterBefore(disableOptionsMethodFilter(), ChannelProcessingFilter.class)
-
+				.addFilterBefore(rateLimitingFilter, ChannelProcessingFilter.class)
 				.headers(headers -> headers
-						.addHeaderWriter(new StaticHeadersWriter("Strict-Transport-Security", "max-age=31536000"))
+						//.addHeaderWriter(new StaticHeadersWriter("Strict-Transport-Security", "max-age=31536000"))
+						.addHeaderWriter(new StaticHeadersWriter("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload"))
 						.xssProtection(
 								xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
 						.addHeaderWriter(new StaticHeadersWriter("X-Content-Type-Options", "nosniff"))
@@ -135,8 +136,9 @@ public class SecurityConfiguration extends VaadinWebSecurity {
 						.addHeaderWriter(new StaticHeadersWriter("X-XSS-Protection", "1; mode=block"))
 						.addHeaderWriter(new StaticHeadersWriter("Content-Security-Policy",
 								"default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; object-src 'none';"))
-						.addHeaderWriter(
-								new StaticHeadersWriter("Permissions-Policy", "geolocation=(self), microphone=()"))
+//						.addHeaderWriter(new StaticHeadersWriter("Content-Security-Policy",
+//			                    "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none';"))
+						.addHeaderWriter(new StaticHeadersWriter("Permissions-Policy", "geolocation=(self), microphone=()"))
 						.addHeaderWriter(new StaticHeadersWriter("Set-Cookie", "SameSite=Strict; HttpOnly; Secure;"))
 						.addHeaderWriter(new StaticHeadersWriter("Expect-CT", "max-age=86400, enforce"))
 						.addHeaderWriter(new StaticHeadersWriter("Cache-Control",

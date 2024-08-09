@@ -36,6 +36,7 @@ import com.megpbr.data.entity.pbr.Crops;
 import com.megpbr.data.entity.villages.VillageDetails;
 import com.megpbr.data.service.CropService;
 import com.megpbr.data.service.Dbservice;
+import com.megpbr.utils.TextFieldUtil;
 import com.megpbr.views.CropPlantsForm.SaveEvent;
 import com.megpbr.views.dashboard.DashboardView;
 import com.vaadin.flow.component.Component;
@@ -261,6 +262,10 @@ public class VillagesForm extends Div {
 	}
 
 	public Component createBasicForm() {
+		TextFieldUtil.applyValidation(habitat);
+		TextFieldUtil.applyValidation(rainfall);
+		TextFieldUtil.applyValidation(temperature);
+		TextFieldUtil.applyValidation(weatherPatterns);
 		formbasic.add(geographicArea, 2);
 		formbasic.add(habitat, 2);
 		formbasic.add(pbrDate, 2);

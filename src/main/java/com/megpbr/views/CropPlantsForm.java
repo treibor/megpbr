@@ -27,6 +27,7 @@ import com.megpbr.data.entity.Village;
 import com.megpbr.data.entity.pbr.Crops;
 import com.megpbr.data.service.CropService;
 import com.megpbr.data.service.Dbservice;
+import com.megpbr.utils.TextFieldUtil;
 import com.megpbr.views.agrobiodiversity.CropPlantsView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
@@ -68,6 +69,10 @@ public class CropPlantsForm extends Div {
 	/**
 	 * 
 	 */
+	private static final long serialVersionUID = 1L;
+	/**
+	 * 
+	 */
 	
 	Dbservice dbservice;
 	CropService cservice;
@@ -96,10 +101,9 @@ public class CropPlantsForm extends Div {
 	ComboBox<String> knowledgeHolder = new ComboBox("Knowledge Holder");
 	ComboBox<String> uses = new ComboBox("Uses");
 	ComboBox<String> partsUsed = new ComboBox("Parts Used");
-	//TextField otherDetails = new TextField("Other Details");
 	ComboBox<String> otherDetails = new ComboBox("Other Details");
-	//TextField specialFeatures = new TextField("Special Features");
 	ComboBox<String> specialFeatures = new ComboBox("Special Features");
+	
 	TextField remarks = new TextField("");
 	TextField area = new TextField("Approx Area Sown");
 	MultiSelectComboBox<MasterLocallanguage> localLanguages = new MultiSelectComboBox("");
@@ -415,10 +419,23 @@ public class CropPlantsForm extends Div {
 
 	public Component createBasicForm() {
 		//scientificName.setPlaceholder("Scientific Name");
-		formbasic.add(scientificName, 3);
+		
 		// formbasic.add(scientificCheck, 3);
 		localLanguages.setPlaceholder("Local Language");
 		fruitSeasons.setPlaceholder("Cropping Season");
+		TextFieldUtil.applyValidation(area);
+		TextFieldUtil.applyValidation(fruitSeason);
+		TextFieldUtil.applyValidation(latitude);
+		TextFieldUtil.applyValidation(localLanguage);
+		TextFieldUtil.applyValidation(longitude);
+		TextFieldUtil.applyValidation(photo1Source);
+		TextFieldUtil.applyValidation(photo2Source);
+		TextFieldUtil.applyValidation(photo3Source);
+		TextFieldUtil.applyValidation(photo4Source);
+		TextFieldUtil.applyValidation(remarks);
+		//ComboBoxValidator.applyValidation(scientificName, "[0-9A-Za-z@]+");
+		
+		formbasic.add(scientificName, 3);
 		formbasic.add(type, 3);
 		formbasic.add(habitat, 3);
 		formbasic.add(localName, 3);
@@ -453,6 +470,8 @@ public class CropPlantsForm extends Div {
 
 	public Component createCommonForm() {
 		FormLayout formcommon = new FormLayout();
+		
+		
 		formcommon.add(associatedTk, 4);
 		formcommon.add(knowledgeHolder, 4);
 		formcommon.add(otherDetails, 2);
@@ -535,96 +554,39 @@ public class CropPlantsForm extends Div {
 			localLanguage.setValue(selectedLanguage);
 		});
 		
-		scientificName.setAllowCustomValue(true);
-		scientificName.addCustomValueSetListener(e -> {
-			String customValue = e.getDetail();
-			scientificName.setItems(customValue);
-			scientificName.setValue(customValue);
-		});
-		type.addCustomValueSetListener(e -> {
-			String customName = e.getDetail();
-			type.setItems(customName);
-			type.setValue(customName);
-		});
-		habitat.addCustomValueSetListener(e -> {
-			String customHabitat = e.getDetail();
-			habitat.setItems(customHabitat);
-			habitat.setValue(customHabitat);
-		});
-		localName.setAllowCustomValue(true);
-		localName.addCustomValueSetListener(e -> {
-			String customLocal = e.getDetail();
-			localName.setItems(customLocal);
-			localName.setValue(customLocal);
-		});
-		variety.setAllowCustomValue(true);
-		variety.addCustomValueSetListener(e -> {
-			String customVariety = e.getDetail();
-			variety.setItems(customVariety);
-			variety.setValue(customVariety);
-		});
-		source.setAllowCustomValue(true);
-		source.addCustomValueSetListener(e -> {
-			String customsource = e.getDetail();
-			source.setItems(customsource);
-			source.setValue(customsource);
-		});
-		associatedTk.setAllowCustomValue(true);
-		associatedTk.addCustomValueSetListener(e -> {
-			String customassociatedTk = e.getDetail();
-			associatedTk.setItems(customassociatedTk);
-			associatedTk.setValue(customassociatedTk);
-		});
-		knowledgeHolder.setAllowCustomValue(true);
-		knowledgeHolder.addCustomValueSetListener(e -> {
-			String customknowledgeHolder = e.getDetail();
-			knowledgeHolder.setItems(customknowledgeHolder);
-			knowledgeHolder.setValue(customknowledgeHolder);
-		});
-		uses.setAllowCustomValue(true);
-		uses.addCustomValueSetListener(e -> {
-			String customuses = e.getDetail();
-			uses.setItems(customuses);
-			uses.setValue(customuses);
-		});
-		partsUsed.setAllowCustomValue(true);
-		partsUsed.addCustomValueSetListener(e -> {
-			String custompartsUsed = e.getDetail();
-			partsUsed.setItems(custompartsUsed);
-			partsUsed.setValue(custompartsUsed);
-		});
-		management.setAllowCustomValue(true);
-		management.addCustomValueSetListener(e -> {
-			String custommanagement = e.getDetail();
-			management.setItems(custommanagement);
-			management.setValue(custommanagement);
-		});
-		xfield1.setAllowCustomValue(true);
-		xfield1.addCustomValueSetListener(e -> {
-			String customxfield1 = e.getDetail();
-			xfield1.setItems(customxfield1);
-			xfield1.setValue(customxfield1);
-		});
-		xfield2.setAllowCustomValue(true);
-		xfield2.addCustomValueSetListener(e -> {
-			String customxfield2 = e.getDetail();
-			xfield2.setItems(customxfield2);
-			xfield2.setValue(customxfield2);
-		});
-		otherDetails.setAllowCustomValue(true);
-		otherDetails.addCustomValueSetListener(e -> {
-			String customotherDetails = e.getDetail();
-			otherDetails.setItems(customotherDetails);
-			otherDetails.setValue(customotherDetails);
-		});
-		specialFeatures.setAllowCustomValue(true);
-		specialFeatures.addCustomValueSetListener(e -> {
-			String customspecialFeatures = e.getDetail();
-			specialFeatures.setItems(customspecialFeatures);
-			specialFeatures.setValue(customspecialFeatures);
-		});
+		addCustomValueSetListener(scientificName);
+		addCustomValueSetListener(type);
+		addCustomValueSetListener(habitat);
+		addCustomValueSetListener(localName);
+		addCustomValueSetListener(variety);
+		addCustomValueSetListener(source);
+		addCustomValueSetListener(associatedTk);
+		addCustomValueSetListener(knowledgeHolder);
+		addCustomValueSetListener(uses);
+		addCustomValueSetListener(partsUsed);
+		addCustomValueSetListener(management);
+		addCustomValueSetListener(xfield1);
+		addCustomValueSetListener(xfield2);
+		addCustomValueSetListener(otherDetails);
+		addCustomValueSetListener(specialFeatures);
+
 		initMasterFields(format);
 		initFormatFields(format);
+	}
+
+	private void addCustomValueSetListener(ComboBox<String> comboBox) {
+		comboBox.setAllowCustomValue(true);
+		comboBox.addCustomValueSetListener(event -> {
+			String customValue = event.getDetail();
+			if (customValue != null && !customValue.matches("[0-9A-Za-z@./-]+")) {
+				// Show an error notification or reset the value
+				Notification.show("Invalid input: Only letters, numbers, and '@', '.', '/', '-'  are allowed").addThemeVariants(NotificationVariant.LUMO_WARNING);
+				comboBox.clear();
+			} else {
+				comboBox.setItems(customValue);
+				comboBox.setValue(customValue);
+			}
+		});
 	}
 	
 	private void showRemarks() {

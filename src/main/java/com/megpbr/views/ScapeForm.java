@@ -37,6 +37,7 @@ import com.megpbr.data.entity.pbr.Scapes;
 import com.megpbr.data.service.CropService;
 import com.megpbr.data.service.Dbservice;
 import com.megpbr.data.service.ScapeService;
+import com.megpbr.utils.TextFieldUtil;
 import com.megpbr.views.MarketsForm.SaveEvent;
 import com.megpbr.views.agrobiodiversity.ScapeView;
 import com.megpbr.views.dashboard.DashboardView;
@@ -60,6 +61,7 @@ import com.vaadin.flow.component.html.H6;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -396,6 +398,15 @@ public class ScapeForm extends Div {
 
 	public Component createBasicForm() {
 		localLanguages.setPlaceholder("Local Language");
+		TextFieldUtil.applyValidation(features);
+		TextFieldUtil.applyValidation(latitude);
+		TextFieldUtil.applyValidation(localLanguage);
+		TextFieldUtil.applyValidation(longitude);
+		TextFieldUtil.applyValidation(otherDetails);
+		TextFieldUtil.applyValidation(photo1Source);
+		TextFieldUtil.applyValidation(photo2Source);
+		TextFieldUtil.applyValidation(photo3Source);
+		TextFieldUtil.applyValidation(photo4Source);
 		formbasic.add(faunaPopulation, 3);
 		formbasic.add(floraOccupation, 3);
 		formbasic.add(typeAgriOccupation, 3);
@@ -469,95 +480,40 @@ public class ScapeForm extends Div {
 			localLanguage.setValue(selectedLanguage);
 		});
 
-		faunaPopulation.setAllowCustomValue(true);
-		faunaPopulation.addCustomValueSetListener(e -> {
-			String customValue = e.getDetail();
-			faunaPopulation.setItems(customValue);
-			faunaPopulation.setValue(customValue);
-		});
-		floraOccupation.setAllowCustomValue(true);
-		floraOccupation.addCustomValueSetListener(e -> {
-			String customValuef = e.getDetail();
-			floraOccupation.setItems(customValuef);
-			floraOccupation.setValue(customValuef);
-		});
-		typeAgriOccupation.setAllowCustomValue(true);
-		typeAgriOccupation.addCustomValueSetListener(e -> {
-			String customtypeAgriOccupation = e.getDetail();
-			typeAgriOccupation.setItems(customtypeAgriOccupation);
-			typeAgriOccupation.setValue(customtypeAgriOccupation);
-		});
-		landscape.setAllowCustomValue(true);
-		landscape.addCustomValueSetListener(e -> {
-			String customlandscape = e.getDetail();
-			landscape.setItems(customlandscape);
-			landscape.setValue(customlandscape);
-		});
-		sublandscape.setAllowCustomValue(true);
-		sublandscape.addCustomValueSetListener(e -> {
-			String customsubLandscape = e.getDetail();
-			sublandscape.setItems(customsubLandscape);
-			sublandscape.setValue(customsubLandscape);
-		});
-		ownerHouse.setAllowCustomValue(true);
-		ownerHouse.addCustomValueSetListener(e -> {
-			String customownerHouse = e.getDetail();
-			ownerHouse.setItems(customownerHouse);
-			ownerHouse.setValue(customownerHouse);
-		});
-		
-		userGroups.setAllowCustomValue(true);
-		userGroups.addCustomValueSetListener(e -> {
-			String customuserGroups = e.getDetail();
-			userGroups.setItems(customuserGroups);
-			userGroups.setValue(customuserGroups);
-		});
-		management.setAllowCustomValue(true);
-		management.addCustomValueSetListener(e -> {
-			String custommanagement = e.getDetail();
-			management.setItems(custommanagement);
-			management.setValue(custommanagement);
-		});
-		socialCommunity.setAllowCustomValue(true);
-		socialCommunity.addCustomValueSetListener(e -> {
-			String customsocialCommunity = e.getDetail();
-			socialCommunity.setItems(customsocialCommunity);
-			socialCommunity.setValue(customsocialCommunity);
-		});
-		generalResources.setAllowCustomValue(true);
-		generalResources.addCustomValueSetListener(e -> {
-			String customgeneralResources = e.getDetail();
-			generalResources.setItems(customgeneralResources);
-			generalResources.setValue(customgeneralResources);
-		});
-		associatedTk.setAllowCustomValue(true);
-		associatedTk.addCustomValueSetListener(e -> {
-			String customassociatedTk = e.getDetail();
-			associatedTk.setItems(customassociatedTk);
-			associatedTk.setValue(customassociatedTk);
-		});
-		fallow.setAllowCustomValue(true);
-		fallow.addCustomValueSetListener(e -> {
-			String customfallow = e.getDetail();
-			fallow.setItems(customfallow);
-			fallow.setValue(customfallow);
-		});
-		wetLand.setAllowCustomValue(true);
-		wetLand.addCustomValueSetListener(e -> {
-			String customwetLand = e.getDetail();
-			wetLand.setItems(customwetLand);
-			wetLand.setValue(customwetLand);
-		});
-		forest.setAllowCustomValue(true);
-		forest.addCustomValueSetListener(e -> {
-			String customforest = e.getDetail();
-			forest.setItems(customforest);
-			forest.setValue(customforest);
-		});
+		addCustomValueSetListener(faunaPopulation);
+		addCustomValueSetListener(floraOccupation);
+		addCustomValueSetListener(typeAgriOccupation);
+		addCustomValueSetListener(landscape);
+		addCustomValueSetListener(sublandscape);
+		addCustomValueSetListener(ownerHouse);
+		addCustomValueSetListener(userGroups);
+		addCustomValueSetListener(management);
+		addCustomValueSetListener(socialCommunity);
+		addCustomValueSetListener(generalResources);
+		addCustomValueSetListener(associatedTk);
+		addCustomValueSetListener(fallow);
+		addCustomValueSetListener(wetLand);
+		addCustomValueSetListener(forest);
 		initMasterFields(format);
 		initFormatFields(format);
 	}
-
+	
+	private void addCustomValueSetListener(ComboBox<String> comboBox) {
+		comboBox.setAllowCustomValue(true);
+		comboBox.addCustomValueSetListener(event -> {
+			String customValue = event.getDetail();
+			if (customValue != null && !customValue.matches("[0-9A-Za-z@./-]+")) {
+				// Show an error notification or reset the value
+				Notification.show("Invalid input: Only letters, numbers, and '@', '.', '/', '-'  are allowed").addThemeVariants(NotificationVariant.LUMO_WARNING);
+				comboBox.clear();
+			} else {
+				comboBox.setItems(customValue);
+				comboBox.setValue(customValue);
+			}
+		});
+	}
+	
+	
 	private void showRemarks() {
 		if (approved.getValue() != null) {
 			if (approved.getValue().getId() == 2) {

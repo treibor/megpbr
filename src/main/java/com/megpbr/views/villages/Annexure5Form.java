@@ -38,6 +38,7 @@ import com.megpbr.data.entity.pbr.Crops;
 import com.megpbr.data.entity.villages.VillageAnnexure5;
 import com.megpbr.data.service.CropService;
 import com.megpbr.data.service.Dbservice;
+import com.megpbr.utils.TextFieldUtil;
 import com.megpbr.views.CropPlantsForm.SaveEvent;
 import com.megpbr.views.dashboard.DashboardView;
 import com.vaadin.flow.component.Component;
@@ -227,6 +228,12 @@ public class Annexure5Form extends Div {
 		resolutionDate.setTooltipText("Date and resolution of the BMC and endorsement by the village");
 		//resolutionPhoto.setDropLabel("ABC");
 		//feeCollectionPhoto
+		TextFieldUtil.applyTextAreaValidation(address);
+		TextFieldUtil.applyValidation(name);
+		TextFieldUtil.applyValidation(anticipatedMode);
+		TextFieldUtil.applyValidation(feeCollection);
+		TextFieldUtil.applyValidation(localName);
+		TextFieldUtil.applyValidation(scientificName);
 		formbasic.add(name, 2);
 		formbasic.add(localName, 2);
 		formbasic.add(scientificName, 2);

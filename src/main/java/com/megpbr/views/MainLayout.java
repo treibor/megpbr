@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
 import com.megpbr.audit.Audit;
-import com.megpbr.data.entity.UserLogin;
 import com.megpbr.data.service.Dbservice;
 import com.megpbr.data.service.UserService;
 import com.megpbr.security.SecurityService;
@@ -44,6 +43,7 @@ import com.megpbr.views.wilddiversity.WildPlantSpeciesView;
 import com.megpbr.views.wilddiversity.WildPlantsMedicinalView;
 import com.megpbr.views.wilddiversity.WildRelativesView;
 import com.megpbr.views.wilddiversity.WildTimberPlantsView;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
@@ -51,28 +51,24 @@ import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.html.H6;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.menubar.MenuBarVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.spring.security.AuthenticationContext;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
 import com.vaadin.flow.theme.lumo.LumoUtility.Padding;
-
-import jakarta.annotation.security.PermitAll;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -87,6 +83,7 @@ public class MainLayout extends AppLayout {
     //private final transient AuthenticationContext authContext;
 
     public MainLayout(Dbservice dbservice, UserService userservice, SecurityService securityService) {
+    	redirectOnError();
     	this.dbservice=dbservice;
     	this.securityService=securityService;
     	this.userservice=userservice;
@@ -94,7 +91,19 @@ public class MainLayout extends AppLayout {
         setPrimarySection(Section.NAVBAR);
         addDrawerContent();
         addHeaderContent();
+        
         //System.out.println("A:"+auth.getPrincipalName());
+    }
+    public void redirectOnError(){
+    	UI.getCurrent().setPollInterval(5000);
+        UI.getCurrent().addPollListener(event -> {
+            VaadinSession vaadinSession = VaadinSession.getCurrent();
+            if (vaadinSession == null || vaadinSession.getSession() == null) {
+                // Suppress error handling and redirect to login
+                UI.getCurrent().getPage().setLocation("/login");
+            }
+        });
+    	
     }
     public boolean isAdmin() {
     	String userLevel=userservice.getLoggedUserLevel();
@@ -341,7 +350,7 @@ public class MainLayout extends AppLayout {
     }
     private void createAboutSection() {
 		// TODO Auto-generated method stub
-    	final UserView user=new UserView(dbservice, userservice);
+    	final UserView user=new UserView(dbservice, userservice, securityService);
 		user.createAbout();
 	}
 
@@ -351,11 +360,11 @@ public class MainLayout extends AppLayout {
 		securityService.logout();
 	}
 	public void createUser() {
-		final UserView user=new UserView(dbservice, userservice);
+		final UserView user=new UserView(dbservice, userservice, securityService);
 		user.createUser();
 	}
 	public void changePassword() {
-		final UserView user=new UserView(dbservice, userservice);
+		final UserView user=new UserView(dbservice, userservice, securityService);
 		user.changePassword();
 	}
 }

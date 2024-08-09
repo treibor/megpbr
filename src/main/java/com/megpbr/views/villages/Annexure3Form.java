@@ -38,6 +38,7 @@ import com.megpbr.data.entity.pbr.Crops;
 import com.megpbr.data.entity.villages.VillageAnnexure3;
 import com.megpbr.data.service.CropService;
 import com.megpbr.data.service.Dbservice;
+import com.megpbr.utils.TextFieldUtil;
 import com.megpbr.views.CropPlantsForm.SaveEvent;
 import com.megpbr.views.dashboard.DashboardView;
 import com.vaadin.flow.component.Component;
@@ -202,6 +203,10 @@ public class Annexure3Form extends Div {
 	
 
 	public Component createBasicForm() {
+		TextFieldUtil.applyTextAreaValidation(specialization);
+		TextFieldUtil.applyTextAreaValidation(address);
+		TextFieldUtil.applyValidation(name);
+		TextFieldUtil.applyValidation(age);
 		formbasic.add(name, 2);
 		formbasic.add(age, 1);
 		formbasic.add(gender, 1);

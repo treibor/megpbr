@@ -15,6 +15,7 @@ import com.megpbr.security.SecurityService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
@@ -32,7 +33,7 @@ import com.vaadin.flow.component.textfield.TextField;
 public class UserView {
 	private Dbservice dbservice;
     private UserService userservice;
-    //private SecurityService securityService;
+    private SecurityService securityService;
     Button saveButton=new Button("Save");
     Button savePassButton=new Button("Save");
     Button cancelButton=new Button("Close");
@@ -49,10 +50,10 @@ public class UserView {
 	public ComboBox<Village> village = new ComboBox("Village");
 	final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 	
-	public UserView(Dbservice dbservice, UserService userservice) {
+	public UserView(Dbservice dbservice, UserService userservice, SecurityService securityService) {
 		this.dbservice = dbservice;
 		this.userservice = userservice;
-		//this.securityService = securityService;
+		this.securityService = securityService;
 	}
 	public void createAbout() {
 		Dialog aboutdialog=new Dialog();
@@ -123,13 +124,24 @@ public class UserView {
 		}else {
 			user.setHashedPassword(passwordEncoder.encode(password.getValue()));
 			userservice.update(user);
-			Notification.show("Password Changed Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-			password.setValue("");
-			oldpassword.setValue("");
-			confirmPassword.setValue("");
+			//Notification.show("Password Changed Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+			showConfirmationDialog();
+			
 		}
 	}
+	private void showConfirmationDialog() {
+        ConfirmDialog dialog = new ConfirmDialog();
+        dialog.setHeader("Password Changed");
+        dialog.setText("Password has been successfully changed. You will be now be logged out. Please Login again with your new Password");
+        
+        dialog.setConfirmText("OK");
+        dialog.addConfirmListener(event -> {
+            securityService.logout(); // Call the logout method
+            //getUI().ifPresent(ui -> ui.navigate("login")); // Redirect to the login page
+        });
 
+        dialog.open(); // Open the dialog
+    }
 	public void populateCombobox() { 
 		  int  level=userservice.getLoggedUser().getLevel().getLevel();
 		  userlevel.setItems(userservice.getUserLevels(level));
