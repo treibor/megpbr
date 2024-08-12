@@ -135,6 +135,7 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 		captchatext.setPlaceholder("ENTER CAPTCHA");
 		captchatext.setMaxLength(6);
 		captchatext.setMinLength(6);
+		//captchatext.setWidth("50px");
 		button.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 		button.setAutofocus(true);
 		anchor.setText("Forgot Password?");
@@ -215,7 +216,8 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 				UI.getCurrent().navigate(HomeView.class);
 			} catch (Exception e) {
 				// Handle login failure
-				Notification.show("Login failed: " + e.getMessage()).addThemeVariants(NotificationVariant.LUMO_ERROR);;
+				Notification.show("Login failed: " + e.getMessage()).addThemeVariants(NotificationVariant.LUMO_ERROR);
+				clearFields();
 			}
 		} else {
 			Notification.show("Invalid captcha").addThemeVariants(NotificationVariant.LUMO_ERROR);

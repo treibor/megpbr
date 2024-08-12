@@ -93,32 +93,29 @@ public class ScapeForm extends Div {
 	public Checkbox masterCheck = new Checkbox("Enter Master Data");
 	public Checkbox scientificCheck = new Checkbox("Autofill");
 	Checkbox localCheck = new Checkbox("Autofill");
-	public ComboBox<State> state = new ComboBox("");
-	public ComboBox<District> district = new ComboBox("");
-	public ComboBox<Block> block = new ComboBox("");
-	public ComboBox<Village> village = new ComboBox();
-	//ComboBox<MasterStatus> pastStatus = new ComboBox("Past Status");
-	//ComboBox<MasterStatus> presentStatus = new ComboBox("Present Status");
-	//ComboBox<MasterCommercial> commercial = new ComboBox("Commercial/Non Commercial");
-	//ComboBox<MasterWildhome> wildhome = new ComboBox("Wild/Home");
-	ComboBox<String> faunaPopulation = new ComboBox("General Fauna");
-	ComboBox<String> floraOccupation = new ComboBox("General Flora");
-	ComboBox<String> typeAgriOccupation = new ComboBox("Sub Occupation");
-	ComboBox<String> landscape = new ComboBox("Depending Landscape");
-	ComboBox<String> sublandscape = new ComboBox("Sub Landscape");
-	ComboBox<String> forest = new ComboBox("Forest");
-	ComboBox<String> fallow = new ComboBox("Major Resources & Season of Access");
-	ComboBox<String> wetLand = new ComboBox("Wet Land");
+	public ComboBox<State> state = new ComboBox<>("");
+	public ComboBox<District> district = new ComboBox<>("");
+	public ComboBox<Block> block = new ComboBox<>("");
+	public ComboBox<Village> village = new ComboBox<>();
+	ComboBox<String> faunaPopulation = new ComboBox<>("General Fauna");
+	ComboBox<String> floraOccupation = new ComboBox<>("General Flora");
+	ComboBox<String> typeAgriOccupation = new ComboBox<>("Sub Occupation");
+	ComboBox<String> landscape = new ComboBox<>("Depending Landscape");
+	ComboBox<String> sublandscape = new ComboBox<>("Sub Landscape");
+	ComboBox<String> forest = new ComboBox<>("Forest");
+	ComboBox<String> fallow = new ComboBox<>("Major Resources & Season of Access");
+	ComboBox<String> wetLand = new ComboBox<>("Wet Land");
 	TextField features = new TextField("Features");
-	ComboBox<String> ownerHouse = new ComboBox("Ownership");
-	ComboBox<String> userGroups = new ComboBox("User Groups");
+	ComboBox<String> ownerHouse = new ComboBox<>("Ownership");
+	ComboBox<String> userGroups = new ComboBox<>("User Groups");
 	//ComboBox<String> variety = new ComboBox("Variety");
-	ComboBox<String> management = new ComboBox("Management Practices");
-	ComboBox<String> socialCommunity = new ComboBox("Community Accessed");
-	MultiSelectComboBox<MasterLocallanguage> localLanguages = new MultiSelectComboBox("");
+	ComboBox<String> management = new ComboBox<>("Management Practices");
+	ComboBox<String> socialCommunity = new ComboBox<>("Community Accessed");
+	public ComboBox<MasterApproval> approved = new ComboBox<>("Approval Status");
+	MultiSelectComboBox<MasterLocallanguage> localLanguages = new MultiSelectComboBox<>("");
 	TextField localLanguage = new TextField();
-	ComboBox<String> generalResources = new ComboBox("General Uses");
-	ComboBox<String> associatedTk = new ComboBox("Associated Tk");
+	ComboBox<String> generalResources = new ComboBox<>("General Uses");
+	ComboBox<String> associatedTk = new ComboBox<>("Associated Tk");
 	TextField otherDetails = new TextField("Other Details");
 	TextField remarks = new TextField("");
 	FormLayout formbasic = new FormLayout();
@@ -130,7 +127,7 @@ public class ScapeForm extends Div {
 	public Button delete = new Button("Delete");
 	boolean isSuperAdmin;
 	//Checkbox approved = new Checkbox("Approved", true);
-	public ComboBox<MasterApproval> approved = new ComboBox("Approval Status");
+	
 	MasterFormat format;
 	MemoryBuffer buffer1 = new MemoryBuffer();
 	MemoryBuffer buffer2 = new MemoryBuffer();
@@ -562,6 +559,10 @@ public class ScapeForm extends Div {
 	}
 
 	public static abstract class ScapeFormEvent extends ComponentEvent<ScapeForm> {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		private Scapes scape;
 
 		protected ScapeFormEvent(ScapeForm source, Scapes scape) {
@@ -575,12 +576,22 @@ public class ScapeForm extends Div {
 	}
 
 	public static class SaveEvent extends ScapeFormEvent {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		SaveEvent(ScapeForm source, Scapes scape) {
 			super(source, scape);
 		}
 	}
 
 	public static class DeleteEvent extends ScapeFormEvent {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		DeleteEvent(ScapeForm source, Scapes scape) {
 			super(source, scape);
 		}
@@ -588,6 +599,11 @@ public class ScapeForm extends Div {
 	}
 
 	public static class CloseEvent extends ScapeFormEvent {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		CloseEvent(ScapeForm source) {
 			super(source, null);
 		}

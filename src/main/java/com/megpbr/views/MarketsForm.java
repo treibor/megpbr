@@ -68,21 +68,22 @@ public class MarketsForm extends Div {
 	public Checkbox masterCheck = new Checkbox("Enter Master Data");
 	public Checkbox scientificCheck = new Checkbox("Autofill");
 	Checkbox localCheck = new Checkbox("Autofill");
-	public ComboBox<State> state = new ComboBox("");
-	public ComboBox<District> district = new ComboBox("");
-	public ComboBox<Block> block = new ComboBox("");
-	public ComboBox<Village> village = new ComboBox();
-	ComboBox<String> name = new ComboBox("Market Name & Location");
-	ComboBox<String> frequency = new ComboBox("Day Month");
-	ComboBox<String> month = new ComboBox("Month (in case of Annual/Bi Annual)");
-	ComboBox<String> day = new ComboBox("Day Held");
-	ComboBox<String> animalType = new ComboBox("Types of Animal Bought & Sold");
-	ComboBox<String> transactions = new ComboBox("Types & Avg Transactions Per Day");
-	ComboBox<String> placesFrom = new ComboBox("Places From Which Animals are Brought");
-	ComboBox<String> placesTo = new ComboBox("Places To Which Animals are Sold");
-	ComboBox<String> fishLocation = new ComboBox("Name & Location of Fish Market");
-	ComboBox<String> fishType = new ComboBox("Types of Fishes Sold");
-	ComboBox<String> fishSource = new ComboBox("Sources of Fish");
+	public ComboBox<State> state = new ComboBox<>("");
+	public ComboBox<District> district = new ComboBox<>("");
+	public ComboBox<Block> block = new ComboBox<>("");
+	public ComboBox<Village> village = new ComboBox<>();
+	public ComboBox<MasterApproval> approved = new ComboBox<>("Approval Status");
+	ComboBox<String> name = new ComboBox<>("Market Name & Location");
+	ComboBox<String> frequency = new ComboBox<>("Day Month");
+	ComboBox<String> month = new ComboBox<>("Month (in case of Annual/Bi Annual)");
+	ComboBox<String> day = new ComboBox<>("Day Held");
+	ComboBox<String> animalType = new ComboBox<>("Types of Animal Bought & Sold");
+	ComboBox<String> transactions = new ComboBox<>("Types & Avg Transactions Per Day");
+	ComboBox<String> placesFrom = new ComboBox<>("Places From Which Animals are Brought");
+	ComboBox<String> placesTo = new ComboBox<>("Places To Which Animals are Sold");
+	ComboBox<String> fishLocation = new ComboBox<>("Name & Location of Fish Market");
+	ComboBox<String> fishType = new ComboBox<>("Types of Fishes Sold");
+	ComboBox<String> fishSource = new ComboBox<>("Sources of Fish");
 	FormLayout formbasic = new FormLayout();
 	public FormLayout frommaster = new FormLayout();
 	TextField latitude = new TextField("Latitude");
@@ -93,7 +94,7 @@ public class MarketsForm extends Div {
 	public Button delete = new Button("Delete");
 	boolean isSuperAdmin;
 	//Checkbox approved = new Checkbox("Approved", true);
-	public ComboBox<MasterApproval> approved = new ComboBox("Approval Status");
+	
 	MasterFormat format;
 	MemoryBuffer buffer1 = new MemoryBuffer();
 	MemoryBuffer buffer2 = new MemoryBuffer();
@@ -478,6 +479,10 @@ public class MarketsForm extends Div {
 	}
 
 	public static abstract class ScapeFormEvent extends ComponentEvent<MarketsForm> {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		private Markets market;
 		protected ScapeFormEvent(MarketsForm source, Markets market) {
 			super(source, false);
@@ -490,12 +495,22 @@ public class MarketsForm extends Div {
 	}
 
 	public static class SaveEvent extends ScapeFormEvent {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		SaveEvent(MarketsForm source, Markets market) {
 			super(source, market);
 		}
 	}
 
 	public static class DeleteEvent extends ScapeFormEvent {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		DeleteEvent(MarketsForm source, Markets market) {
 			super(source, market);
 		}
@@ -503,6 +518,11 @@ public class MarketsForm extends Div {
 	}
 
 	public static class CloseEvent extends ScapeFormEvent {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		CloseEvent(MarketsForm source) {
 			super(source, null);
 		}

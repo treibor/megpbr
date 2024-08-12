@@ -87,10 +87,10 @@ public class WildAnimalsView extends HorizontalLayout {
 	MasterFormat format;
 	TextField filterText = new TextField("");
 	Checkbox rejectedData = new Checkbox("Show Rejected Data");
-	ComboBox<State> state = new ComboBox("");
-	ComboBox<District> district = new ComboBox("");
-	ComboBox<Block> block = new ComboBox("");
-	ComboBox<Village> village = new ComboBox();
+	ComboBox<State> state = new ComboBox<>("");
+	ComboBox<District> district = new ComboBox<>("");
+	ComboBox<Block> block = new ComboBox<>("");
+	ComboBox<Village> village = new ComboBox<>();
 	Grid.Column<Crops> localColumn;
 	RadioButtonGroup<String> radioGroup = new RadioButtonGroup<>();
 	Grid.Column<Crops> stateColumn;

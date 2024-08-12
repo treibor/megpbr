@@ -83,31 +83,34 @@ public class CropPlantsForm extends Div {
 	public Checkbox masterCheck = new Checkbox("Enter Master Data");
 	public Checkbox scientificCheck = new Checkbox("Autofill");
 	Checkbox localCheck = new Checkbox("Autofill");
-	public ComboBox<State> state = new ComboBox("");
-	public ComboBox<District> district = new ComboBox("");
-	public ComboBox<Block> block = new ComboBox("");
-	public ComboBox<Village> village = new ComboBox();
-	ComboBox<MasterStatus> pastStatus = new ComboBox("Past Status");
-	ComboBox<MasterStatus> presentStatus = new ComboBox("Present Status");
-	ComboBox<MasterCommercial> commercial= new ComboBox("Commercial/Non Commercial");
-	ComboBox<MasterWildhome> wildhome= new ComboBox("Wild/Home");
-	ComboBox<String> habitat = new ComboBox("Landscape/Habitat");
-	ComboBox<String> type = new ComboBox("Plant Type");
-	ComboBox<String> scientificName = new ComboBox("Scientific Name");
-	ComboBox<String> localName = new ComboBox("Local Name");
-	ComboBox<String> source = new ComboBox("Plant/Seed Source");
-	ComboBox<String> variety = new ComboBox("Variety");
-	ComboBox<String> associatedTk = new ComboBox("Associated TK");
-	ComboBox<String> knowledgeHolder = new ComboBox("Knowledge Holder");
-	ComboBox<String> uses = new ComboBox("Uses");
-	ComboBox<String> partsUsed = new ComboBox("Parts Used");
-	ComboBox<String> otherDetails = new ComboBox("Other Details");
-	ComboBox<String> specialFeatures = new ComboBox("Special Features");
-	
+	public ComboBox<State> state = new ComboBox<>("");
+	public ComboBox<District> district = new ComboBox<>("");
+	public ComboBox<Block> block = new ComboBox<>("");
+	public ComboBox<Village> village = new ComboBox<>();
+	ComboBox<MasterStatus> pastStatus = new ComboBox<>("Past Status");
+	ComboBox<MasterStatus> presentStatus = new ComboBox<>("Present Status");
+	ComboBox<MasterCommercial> commercial= new ComboBox<>("Commercial/Non Commercial");
+	ComboBox<MasterWildhome> wildhome= new ComboBox<>("Wild/Home");
+	ComboBox<String> habitat = new ComboBox<>("Landscape/Habitat");
+	ComboBox<String> type = new ComboBox<>("Plant Type");
+	ComboBox<String> scientificName = new ComboBox<>("Scientific Name");
+	ComboBox<String> localName = new ComboBox<>("Local Name");
+	ComboBox<String> source = new ComboBox<>("Plant/Seed Source");
+	ComboBox<String> variety = new ComboBox<>("Variety");
+	ComboBox<String> associatedTk = new ComboBox<>("Associated TK");
+	ComboBox<String> knowledgeHolder = new ComboBox<>("Knowledge Holder");
+	ComboBox<String> uses = new ComboBox<>("Uses");
+	ComboBox<String> partsUsed = new ComboBox<>("Parts Used");
+	ComboBox<String> otherDetails = new ComboBox<>("Other Details");
+	ComboBox<String> specialFeatures = new ComboBox<>("Special Features");
+	ComboBox<String> management = new ComboBox<>("Management Options");
+	ComboBox<String> xfield1 = new ComboBox<>("");
+	ComboBox<String> xfield2 = new ComboBox<>("");
+	public ComboBox<MasterApproval> approved = new ComboBox<>("Approval Status");
+	MultiSelectComboBox<MasterLocallanguage> localLanguages = new MultiSelectComboBox<>("");
+	MultiSelectComboBox<MasterSeason> fruitSeasons = new MultiSelectComboBox<>("");
 	TextField remarks = new TextField("");
 	TextField area = new TextField("Approx Area Sown");
-	MultiSelectComboBox<MasterLocallanguage> localLanguages = new MultiSelectComboBox("");
-	MultiSelectComboBox<MasterSeason> fruitSeasons = new MultiSelectComboBox("");
 	TextField fruitSeason = new TextField();
 	TextField localLanguage = new TextField();
 	FormLayout formbasic = new FormLayout();
@@ -119,18 +122,13 @@ public class CropPlantsForm extends Div {
 	TextField latitude = new TextField("Latitude");
 	TextField longitude = new TextField("Longitude");
 	//TextField management = new TextField("Management Options");
-	ComboBox<String> management = new ComboBox("Management Options");
-	//TextField xfield1 = new TextField("");
-	ComboBox<String> xfield1 = new ComboBox("");
-	//TextField xfield2 = new TextField("");
-	ComboBox<String> xfield2 = new ComboBox("");
 	public Button save = new Button("Save");
 	Button cancel = new Button("Close");
 	public Button delete = new Button("Delete");
 	boolean isSuperAdmin;
 	
 	//Checkbox approved = new Checkbox("Approved", true);
-	public ComboBox<MasterApproval> approved = new ComboBox("Approval Status");
+	
 	MasterFormat format;
 	MemoryBuffer buffer1 = new MemoryBuffer();
 	MemoryBuffer buffer2 = new MemoryBuffer();
@@ -636,6 +634,10 @@ public class CropPlantsForm extends Div {
 	}
 
 	public static abstract class CropPlantsFormEvent extends ComponentEvent<CropPlantsForm> {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		private Crops crop;
 
 		protected CropPlantsFormEvent(CropPlantsForm source, Crops crop) {
@@ -649,6 +651,11 @@ public class CropPlantsForm extends Div {
 	}
 
 	public static class SaveEvent extends CropPlantsFormEvent {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		SaveEvent(CropPlantsForm source, Crops crop) {
 			super(source, crop);
 			
@@ -656,6 +663,11 @@ public class CropPlantsForm extends Div {
 	}
 
 	public static class DeleteEvent extends CropPlantsFormEvent {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		DeleteEvent(CropPlantsForm source, Crops crop) {
 			super(source, crop);
 		}
@@ -663,6 +675,11 @@ public class CropPlantsForm extends Div {
 	}
 
 	public static class CloseEvent extends CropPlantsFormEvent {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		CloseEvent(CropPlantsForm source) {
 			super(source, null);
 		}

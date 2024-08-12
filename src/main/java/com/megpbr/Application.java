@@ -27,6 +27,8 @@ import com.vaadin.flow.theme.Theme;
 @PWA(name = "MegPbr", shortName = "MegPbr", iconPath = "/icons/logo.png")
 public class Application extends SpringBootServletInitializer implements AppShellConfigurator {
 
+	private static final long serialVersionUID = 1L;
+
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
@@ -35,7 +37,7 @@ public class Application extends SpringBootServletInitializer implements AppShel
 	public void configurePage(AppShellSettings settings) {
 		settings.addFavIcon("icon", "icons/logo.png", "192x192");
 		settings.addLink("shortcut icon", "icons/logo.png");
-
+		settings.setPageTitle("MegPbr");
 	}
 
 	

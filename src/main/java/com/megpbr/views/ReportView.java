@@ -51,6 +51,10 @@ import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 @Route(value = "reports", layout = MainLayout.class)
 @Uses(Icon.class)
 public class ReportView extends VerticalLayout {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Dbservice dbservice;
 	private CropService cservice;
 	private final MarketsService mservice;
@@ -67,7 +71,7 @@ public class ReportView extends VerticalLayout {
 	}
 	private void generateAnnexReport() {
 		try {
-			String reportPath = "F:";
+			//String reportPath = "F:";
 			URL res = getClass().getClassLoader().getResource("report/pbr2report.jrxml");
 			File file = Paths.get(res.toURI()).toFile();
 			String absolutePath = file.getAbsolutePath();
@@ -93,7 +97,7 @@ public class ReportView extends VerticalLayout {
 			parameters.put("SUBREPORT_DATA4", crops4);
 			parameters.put("SUBREPORT_DATA5", crops5);
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters,jrBeanCollectionDataSource);
-			JasperExportManager.exportReportToPdfFile(jasperPrint, reportPath + "//annexures.pdf");
+			JasperExportManager.exportReportToPdfFile(jasperPrint, reportPathx + "//annexures.pdf");
 		} catch (Exception e) {
 			// notify.show("Error:" + e, 5000, Position.TOP_CENTER);
 			
@@ -102,7 +106,7 @@ public class ReportView extends VerticalLayout {
 	}
 	private void generatePbr2Report() {
 		try {
-			String reportPath = "F:";
+			//String reportPath = "F:";
 			URL res = getClass().getClassLoader().getResource("report/pbr2report.jrxml");
 			File file = Paths.get(res.toURI()).toFile();
 			String absolutePath = file.getAbsolutePath();
@@ -147,10 +151,10 @@ public class ReportView extends VerticalLayout {
 				parameters.put("SUBREPORT_DATA" + format.toString(), formatVsScapesMap.get(format));
 			}
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters,jrBeanCollectionDataSource);
-			JasperExportManager.exportReportToPdfFile(jasperPrint, reportPath + "//pbr2.pdf");
+			JasperExportManager.exportReportToPdfFile(jasperPrint, reportPathx + "//pbr2.pdf");
 			JRXlsxExporter exporter = new JRXlsxExporter();
 			exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-			exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(reportPath + "//pbr2.xlsx"));
+			exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(reportPathx + "//pbr2.xlsx"));
 			// Set input and output ...
 			SimpleXlsxReportConfiguration reportConfig
 			  = new SimpleXlsxReportConfiguration();
@@ -166,7 +170,7 @@ public class ReportView extends VerticalLayout {
 	}
 	private void generateAnnex1Report() {
 		try {
-			String reportPath = "F:";
+			//String reportPath = "F:";
 			URL res = getClass().getClassLoader().getResource("report/pbr2report.jrxml");
 			File file = Paths.get(res.toURI()).toFile();
 			String absolutePath = file.getAbsolutePath();
@@ -181,10 +185,10 @@ public class ReportView extends VerticalLayout {
 			JRBeanCollectionDataSource jrBeanCollectionDataSource = new JRBeanCollectionDataSource(villageannex1);
 			Map<String, Object> parameters = new HashMap<>();
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters,jrBeanCollectionDataSource);
-			JasperExportManager.exportReportToPdfFile(jasperPrint, reportPath + "//annexure1.pdf");
+			JasperExportManager.exportReportToPdfFile(jasperPrint, reportPathx + "//annexure1.pdf");
 			JRXlsxExporter exporter = new JRXlsxExporter();
 			exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-			exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(reportPath + "//annexure1.xlsx"));
+			exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(reportPathx + "//annexure1.xlsx"));
 			// Set input and output ...
 			SimpleXlsxReportConfiguration reportConfig
 			  = new SimpleXlsxReportConfiguration();
