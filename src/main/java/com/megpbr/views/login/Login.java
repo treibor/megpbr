@@ -37,6 +37,7 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -191,76 +192,37 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 		return container;
 	}
 
-//	private void doLogin(String encryptedUsername, String encryptedPassword) {
-//		button.setEnabled(false);
-//		String username="";
-//		String password="";
-//		if (captcha.checkUserAnswer(captchatext.getValue())) {
-//			try {
-//				username = CryptUtils.decryptUsername(encryptedUsername, dynamicKey);
-//				password = CryptUtils.decryptPassword(encryptedPassword, dynamicKey);
-//				//int activeSessionCount = getActiveSessionCountForUser(username);
-//				//if (activeSessionCount == 0) {
-//					 invalidatePreviousSessionsForUser(username);
-//					UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username,
-//							password);
-//					Authentication authentication = this.authenticationManager.authenticate(token);
-//
-//					SecurityContext context = this.securityContextHolderStrategy.createEmptyContext();
-//					context.setAuthentication(authentication);
-//					this.securityContextHolderStrategy.setContext(context);
-//					securityRepo.saveContext(context, VaadinServletRequest.getCurrent(),
-//							VaadinServletResponse.getCurrent());
-//					// registerSession(ServletContext, (UserDetails) authentication.getPrincipal());
-//					registerSession(VaadinService.getCurrentRequest().getWrappedSession(),
-//							(UserDetails) authentication.getPrincipal());
-//					audit.saveLoginAudit("Login Successfully", username);
-//					UI.getCurrent().navigate(HomeView.class);
-//				//}else {
-//					//Notification.show("User Is Already Logged In. Please login with a different User").addThemeVariants(NotificationVariant.LUMO_ERROR);
-//				//}
-//			} catch (Exception e) {
-//
-//				// e.printStackTrace();
-//				//Notification.show("Authentication failed: " + e.getMessage())
-//					//	.addThemeVariants(NotificationVariant.LUMO_ERROR);
-//				Notification.show("Authentication failed: Wrong User Name and Password" )
-//				.addThemeVariants(NotificationVariant.LUMO_ERROR);
-//		
-//				clearFields();
-//
-//				audit.saveLoginAudit("Login Failure- Authentication", username);
-//			}
-//		} else {
-//			Notification.show("Invalid captcha").addThemeVariants(NotificationVariant.LUMO_ERROR);
-//			clearFields();
-//			audit.saveLoginAudit("Login Failure- Captcha", username);
-//
-//		}
-//	}
-	private void doLogin(String encryptedUsername, String encryptedPassword) {
-        // Handle the authentication using Spring Security
-        try {
-            String username = decryptUsername(encryptedUsername, dynamicKey);
-            String password = decryptPassword(encryptedPassword, dynamicKey);
 
-            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
-            Authentication authentication = this.authenticationManager.authenticate(token);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            SecurityContext context = this.securityContextHolderStrategy.createEmptyContext();
-			context.setAuthentication(authentication);
-			this.securityContextHolderStrategy.setContext(context);
-			securityRepo.saveContext(context, VaadinServletRequest.getCurrent(),
-					VaadinServletResponse.getCurrent());
-			// registerSession(ServletContext, (UserDetails) authentication.getPrincipal());
-			registerSession(VaadinService.getCurrentRequest().getWrappedSession(),
-					(UserDetails) authentication.getPrincipal());
-            UI.getCurrent().navigate(HomeView.class);
-        } catch (Exception e) {
-            // Handle login failure
-            Notification.show("Login failed: " + e.getMessage());
-        }
-    }
+	private void doLogin(String encryptedUsername, String encryptedPassword) {
+		// Handle the authentication using Spring Security
+		if (captcha.checkUserAnswer(captchatext.getValue())) {
+			String username = decryptUsername(encryptedUsername, dynamicKey);
+			String password = decryptPassword(encryptedPassword, dynamicKey);
+
+			try {
+				invalidatePreviousSessionsForUser(username);
+				UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
+				Authentication authentication = this.authenticationManager.authenticate(token);
+				SecurityContextHolder.getContext().setAuthentication(authentication);
+				SecurityContext context = this.securityContextHolderStrategy.createEmptyContext();
+				context.setAuthentication(authentication);
+				this.securityContextHolderStrategy.setContext(context);
+				securityRepo.saveContext(context, VaadinServletRequest.getCurrent(),
+						VaadinServletResponse.getCurrent());
+				// registerSession(ServletContext, (UserDetails) authentication.getPrincipal());
+				registerSession(VaadinService.getCurrentRequest().getWrappedSession(),
+						(UserDetails) authentication.getPrincipal());
+				UI.getCurrent().navigate(HomeView.class);
+			} catch (Exception e) {
+				// Handle login failure
+				Notification.show("Login failed: " + e.getMessage()).addThemeVariants(NotificationVariant.LUMO_ERROR);;
+			}
+		} else {
+			Notification.show("Invalid captcha").addThemeVariants(NotificationVariant.LUMO_ERROR);
+			clearFields();
+			// audit.saveLoginAudit("Login Failure- Captcha", username);
+		}
+	}
 	private String encryptClientSide(String value, String key) {
         // Implement client-side encryption logic here
         return Base64.getEncoder().encodeToString(value.getBytes());
