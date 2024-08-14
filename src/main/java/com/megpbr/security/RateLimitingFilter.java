@@ -86,13 +86,13 @@ public class RateLimitingFilter implements Filter {
         // Define different thresholds for different URLs
         switch (requestURI) {
             case "/login":
-                return 50; // Max 5 requests per minute for /login
+                return 100; // Max 5 requests per minute for /login
             case "/dashboard":
-                return 50; // Max 10 requests per minute for /home
+                return 100; // Max 10 requests per minute for /home
             case "/":
                 return 100; // Max 10 requests per minute for /home
             default:
-                return 200; // Default threshold
+                return 1000; // Default threshold
         }
     }
 }

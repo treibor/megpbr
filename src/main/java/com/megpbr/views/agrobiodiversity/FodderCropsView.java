@@ -78,6 +78,10 @@ import software.xdev.vaadin.grid_exporter.GridExporter;
 @Route(value = "format-3", layout = MainLayout.class)
 @Uses(Icon.class)
 public class FodderCropsView extends HorizontalLayout{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Dbservice dbservice;
 	private CropService cservice;
 	private UserService uservice;
@@ -89,10 +93,10 @@ public class FodderCropsView extends HorizontalLayout{
 	MasterFormat format;
 	TextField filterText=new TextField("");
 	Checkbox rejectedData=new Checkbox("Show Rejected Data");
-	ComboBox<State> state = new ComboBox("");
-	ComboBox<District> district = new ComboBox("");
-	ComboBox<Block> block = new ComboBox("");
-	ComboBox<Village> village = new ComboBox();
+	ComboBox<State> state = new ComboBox<>("");
+	ComboBox<District> district = new ComboBox<>("");
+	ComboBox<Block> block = new ComboBox<>("");
+	ComboBox<Village> village = new ComboBox<>();
 	Grid.Column<Crops> localColumn;
 	RadioButtonGroup<String> radioGroup = new RadioButtonGroup<>();
 	Grid.Column<Crops> stateColumn;

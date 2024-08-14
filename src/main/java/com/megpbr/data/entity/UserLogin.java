@@ -1,5 +1,6 @@
 package com.megpbr.data.entity;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -63,8 +64,14 @@ public class UserLogin {
 	@ManyToOne
 	@JoinColumn(name = "state", referencedColumnName = "stateCode")
 	private State state;
+	private LocalDate pwdChangedDate;
 	
-	
+	public LocalDate getPwdChangedDate() {
+		return pwdChangedDate;
+	}
+	public void setPwdChangedDate(LocalDate pwdChangedDate) {
+		this.pwdChangedDate = pwdChangedDate;
+	}
 	public String getUserName() {
 		return userName;
 	}

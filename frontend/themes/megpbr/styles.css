@@ -109,14 +109,14 @@ vaadin-radio-group vaadin-radio-group > label{
 
 .card-title {
     font-size: 1.5em;
-    font-family: "Copperplate";
+    font-family: inherit;
     margin-top: 10px;
     text-align: center;
 }
 
 .card-description {
     margin: 16px 0;
-     font-family: "Copperplate";
+     font-family: inherit;
      font-size: var(--lumo-font-size-xs);
     text-align: center;
      color: hsla(119, 93%, 29%, 0.90);

@@ -499,7 +499,7 @@ public class ScapeForm extends Div {
 		comboBox.setAllowCustomValue(true);
 		comboBox.addCustomValueSetListener(event -> {
 			String customValue = event.getDetail();
-			if (customValue != null && !customValue.matches("[0-9A-Za-z@./-]+")) {
+			if (customValue != null && !customValue.matches("[0-9A-Za-z@./- ]+")) {
 				// Show an error notification or reset the value
 				Notification.show("Invalid input: Only letters, numbers, and '@', '.', '/', '-'  are allowed").addThemeVariants(NotificationVariant.LUMO_WARNING);
 				comboBox.clear();

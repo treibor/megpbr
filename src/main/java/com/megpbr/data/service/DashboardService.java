@@ -262,6 +262,39 @@ public class DashboardService {
 		int count3 = srepo.getScapesCountYearly(false, startdate, enddate);
 		return count1+count2+count3;
 	}
-	
+	public int getCurrentMonthData(){
+		//List<Integer> yearData = new ArrayList<>();
+		//int yeardata;
+		//String month="";
+		int year = Year.now().getValue();
+		int currentMonth = YearMonth.now().getMonthValue();
+
+        
+
+        // Get the Month enum for the previous month
+        Month monthEnum = Month.of(currentMonth);
+
+        // Get the month name from the Month enum
+        String monthName = monthEnum.name();
+
+        // Format the month name to proper case (e.g., "January" instead of "JANUARY")
+        monthName = monthName.charAt(0) + monthName.substring(1).toLowerCase();
+
+        // Print the formatted month name
+        //System.out.println("Previous month name: " + monthName);
+
+        // Format the month number as a two-digit string with leading zero if necessary
+        String month = (currentMonth < 10) ? "0" + currentMonth : String.valueOf(currentMonth);
+
+        // Print the formatted month number
+        //System.out.println("Formatted previous month number: " + formattedMonthNumber);
+		DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		LocalDateTime startdate = LocalDate.parse("01/"+month+"/" + year, df).atStartOfDay();
+		LocalDateTime enddate = LocalDate.parse("31/"+month+"/" + year, df).atTime(23, 59, 59);
+		int count1 = crepo.getCropsCountYearly(false, startdate, enddate);
+		int count2 = mrepo.getMarketsCountYearly(false, startdate, enddate);
+		int count3 = srepo.getScapesCountYearly(false, startdate, enddate);
+		return count1+count2+count3;
+	}
 	
 }

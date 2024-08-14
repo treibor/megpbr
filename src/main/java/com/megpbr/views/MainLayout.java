@@ -1,9 +1,14 @@
 package com.megpbr.views;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
 import com.megpbr.audit.Audit;
+import com.megpbr.data.entity.UserLogin;
 import com.megpbr.data.service.Dbservice;
 import com.megpbr.data.service.UserService;
 import com.megpbr.security.SecurityService;
@@ -47,16 +52,24 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.html.H6;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.menubar.MenuBarVariant;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -64,6 +77,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
+import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.LumoUtility;
@@ -80,8 +94,13 @@ public class MainLayout extends AppLayout {
     private UserService userservice;
     private SecurityService securityService;
     @Autowired private Audit auditobject; 
-    //private final transient AuthenticationContext authContext;
-
+    final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    Dialog dialog;
+    PasswordField oldpwd;
+	PasswordField newpwd;
+	PasswordField confirmpwd;
+	Button cancelButton = new Button("Cancel");
+	Button saveButton = new Button("Save");
     public MainLayout(Dbservice dbservice, UserService userservice, SecurityService securityService) {
     	redirectOnError();
     	this.dbservice=dbservice;
@@ -91,8 +110,122 @@ public class MainLayout extends AppLayout {
         setPrimarySection(Section.NAVBAR);
         addDrawerContent();
         addHeaderContent();
-        
+        checkPasswordExpiry();
         //System.out.println("A:"+auth.getPrincipalName());
+    }
+    private void checkPasswordExpiry() {
+		UserLogin user = userservice.getLoggedUser();
+		LocalDate expiryDate = user.getPwdChangedDate();
+		LocalDate expiryDatePlus180Days = expiryDate.plus(180, ChronoUnit.DAYS);
+		LocalDate today = LocalDate.now();
+		boolean isExpiryDateValid = expiryDatePlus180Days.isAfter(today);
+		if (!isExpiryDateValid) {
+			openMandatoryPasswordDialog();
+		}
+	}
+    private void openMandatoryPasswordDialog() {
+		if (dialog != null) {
+			dialog = null;
+		}
+		dialog = new Dialog();
+		dialog.setModal(true);
+		dialog.setCloseOnEsc(false);
+		dialog.setCloseOnOutsideClick(false);
+		//VerticalLayout dialogLayout = createDialogLayout(dialog);
+		H2 headline = new H2("Password Expired - Change Password");
+		headline.getStyle().set("margin", "var(--lumo-space-m) 0 0 0").set("font-size", "1.5em").set("font-weight",
+				"bold");
+		//newpwd.setMinLength(0);
+		oldpwd = new PasswordField("Old Password");
+		newpwd = new PasswordField("New Password");
+		confirmpwd = new PasswordField("Confirm New Password");
+		oldpwd.setRevealButtonVisible(false);
+		newpwd.setRevealButtonVisible(false);
+		confirmpwd.setRevealButtonVisible(false);
+		// oldpwd.setValue("");
+		//cancelButton.setText(//userType);
+		cancelButton.addClickListener(e -> securityService.logout());
+		saveButton.addClickListener(e -> forcechangePassword());
+		VerticalLayout fieldLayout = new VerticalLayout(oldpwd, newpwd, confirmpwd);
+		fieldLayout.setSpacing(false);
+		fieldLayout.setPadding(false);
+		fieldLayout.setAlignItems(FlexComponent.Alignment.STRETCH);
+
+		saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+		HorizontalLayout buttonLayout = new HorizontalLayout(cancelButton, saveButton);
+		buttonLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+		VerticalLayout dialogLayout = new VerticalLayout(headline, fieldLayout, buttonLayout);
+		dialogLayout.setPadding(false);
+		dialogLayout.setAlignItems(FlexComponent.Alignment.STRETCH);
+		dialogLayout.getStyle().set("width", "300px").set("max-width", "100%");
+		
+		dialog.add(dialogLayout);
+		dialog.open();
+	}
+    private boolean checkPasswordStrength(String password) {
+		boolean containsLowerChar= false, containsUpperChar = false;
+		boolean containsDigit = false, containsSpecialChar = false;
+		char[] ch= password.toCharArray();
+		//System.out.println(password);
+		String special_chars = "!(){}[]:;<>?,@#$%^&*+=_-~`|./'";
+		for (int i = 0; i < password.length(); i++) {
+			if (Character.isLowerCase(ch[i])) {
+				containsLowerChar= true;
+			}	
+			if (Character.isUpperCase(ch[i])) {
+				containsUpperChar= true;
+			}
+			if (Character.isDigit(ch[i])) {
+				containsDigit= true;
+			}
+			if (special_chars.contains(String.valueOf(ch[i]))) {
+				containsSpecialChar=true;
+			}
+		}
+		if(containsDigit && containsUpperChar && containsSpecialChar && containsLowerChar){
+			return true;
+		}
+		return false;
+	}
+    private void forcechangePassword() {
+		// notify.show("Under Development", 3000, Position.TOP_CENTER);
+		if (oldpwd.getValue() == "" || newpwd.getValue() == "" || confirmpwd.getValue() == "") {
+			Notification.show("Error: Enter All Values, Please", 3000, Position.TOP_CENTER);
+		} else if(!checkPasswordStrength(newpwd.getValue())){
+			Notification.show("Password is too weak. Please use a combination of Lower case, Upper case, Number and Special Charaters").addThemeVariants(NotificationVariant.LUMO_WARNING);
+		} else {
+			if (newpwd.getValue().trim().equals(confirmpwd.getValue().trim())) {
+				String pwd = oldpwd.getValue();
+
+				if (passwordEncoder.matches(pwd, userservice.getLoggedUser().getHashedPassword())) {
+					UserLogin user = userservice.getLoggedUser();
+					user.setHashedPassword(passwordEncoder.encode(newpwd.getValue().trim()));
+					user.setPwdChangedDate(LocalDate.now());
+					userservice.update(user);
+					showConfirmationDialog();
+
+				} else {
+
+					Notification.show("Unauthorised User", 3000, Position.TOP_CENTER);
+				}
+			} else {
+				Notification.show("Please check and confirm your passwords", 3000, Position.TOP_CENTER)
+						.addThemeVariants(NotificationVariant.LUMO_ERROR);
+			}
+		}
+	}
+    private void showConfirmationDialog() {
+        ConfirmDialog dialog = new ConfirmDialog();
+        dialog.setHeader("Password Changed");
+        dialog.setText("Password has been successfully changed. You will be now be logged out. Please Login again with your new Password");
+        
+        dialog.setConfirmText("OK");
+        dialog.addConfirmListener(event -> {
+            securityService.logout(); // Call the logout method
+            //getUI().ifPresent(ui -> ui.navigate("login")); // Redirect to the login page
+        });
+
+        dialog.open(); // Open the dialog
     }
     public void redirectOnError(){
     	UI.getCurrent().setPollInterval(5000);

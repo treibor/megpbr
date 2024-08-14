@@ -213,9 +213,11 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 				// registerSession(ServletContext, (UserDetails) authentication.getPrincipal());
 				registerSession(VaadinService.getCurrentRequest().getWrappedSession(),
 						(UserDetails) authentication.getPrincipal());
+				audit.saveLoginAudit("Login Successfully", username);
 				UI.getCurrent().navigate(HomeView.class);
 			} catch (Exception e) {
 				// Handle login failure
+				audit.saveLoginAudit("Login Failure", username);
 				Notification.show("Login failed: " + e.getMessage()).addThemeVariants(NotificationVariant.LUMO_ERROR);
 				clearFields();
 			}

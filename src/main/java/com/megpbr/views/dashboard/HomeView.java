@@ -50,17 +50,20 @@ public class HomeView extends VerticalLayout {
 	private Component getCards() {
 		VerticalLayout card1 = createCard(1);
 		VerticalLayout card2 = createCard(2);
-		VerticalLayout card3 = createCard(3);
 		VerticalLayout card5 = createCard(5);
-		return new HorizontalLayout(card1, card2,card5, card3);
+		VerticalLayout card7 = createCard(7);
+		
+		return new HorizontalLayout(card1, card2, card5, card7);
 	}
 	private Component getCards2() {
 		VerticalLayout card4 = createCard(4);
+		VerticalLayout card3 = createCard(3);
+		
 		VerticalLayout card6 = createCard(6);
 		card4.addClickListener(e -> {
            UI.getCurrent().navigate(VillageView.class);
         });
-		return new HorizontalLayout( card4, card6);
+		return new HorizontalLayout( card4,card3, card6);
 	}
 
 	private VerticalLayout createCard(int type) {
@@ -125,6 +128,12 @@ public class HomeView extends VerticalLayout {
 			long title6=dservice.getVillagesCount()-dservice.getVillageDetailsCount();
 			title = ""+title6;
 			description = "Village Details To Be Entered";
+			break;
+		case 7:
+			 icon = VaadinIcon.VAADIN_H.create();
+			long title7=dservice.getMonthData();
+			title = ""+title7;
+			description = "PBR Entered in the Current Month";
 			break;
 		default:
 			 icon = VaadinIcon.BARCODE.create();
