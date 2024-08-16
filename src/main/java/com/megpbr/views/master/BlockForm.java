@@ -4,7 +4,7 @@ import com.megpbr.data.entity.Block;
 import com.megpbr.data.entity.District;
 import com.megpbr.data.entity.State;
 import com.megpbr.data.service.Dbservice;
-import com.megpbr.utils.TextFieldUtil;
+import com.megpbr.utils.ValidationUtil;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -135,8 +135,8 @@ public class BlockForm extends Div {
 	
 
 	public Component createBasicForm() {
-		TextFieldUtil.applyValidation(blockName);
-		TextFieldUtil.applyValidation(blockCode);
+		ValidationUtil.applyValidation(blockName);
+		ValidationUtil.applyValidation(blockCode);
 		form.add(state, 2);
 		form.add(district, 2);
 		form.add(blockCode, 2);

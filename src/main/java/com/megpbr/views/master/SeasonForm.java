@@ -38,7 +38,7 @@ import com.megpbr.data.entity.Village;
 import com.megpbr.data.entity.pbr.Crops;
 import com.megpbr.data.service.CropService;
 import com.megpbr.data.service.Dbservice;
-import com.megpbr.utils.TextFieldUtil;
+import com.megpbr.utils.ValidationUtil;
 import com.megpbr.views.CropPlantsForm.DeleteEvent;
 import com.megpbr.views.CropPlantsForm.SaveEvent;
 import com.megpbr.views.dashboard.DashboardView;
@@ -182,7 +182,7 @@ public class SeasonForm extends Div {
 	
 
 	public Component createBasicForm() {
-		TextFieldUtil.applyValidation(fruitSeason);
+		ValidationUtil.applyValidation(fruitSeason);
 		form.add(fruitSeason, 2);
 		form.setResponsiveSteps(new ResponsiveStep("0", 2),
 				// Use two columns, if layout's width exceeds 500px

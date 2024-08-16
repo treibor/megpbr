@@ -37,7 +37,7 @@ import com.megpbr.data.entity.pbr.Scapes;
 import com.megpbr.data.service.CropService;
 import com.megpbr.data.service.Dbservice;
 import com.megpbr.data.service.ScapeService;
-import com.megpbr.utils.TextFieldUtil;
+import com.megpbr.utils.ValidationUtil;
 import com.megpbr.views.MarketsForm.SaveEvent;
 import com.megpbr.views.agrobiodiversity.ScapeView;
 import com.megpbr.views.dashboard.DashboardView;
@@ -97,7 +97,7 @@ public class ScapeForm extends Div {
 	public ComboBox<District> district = new ComboBox<>("");
 	public ComboBox<Block> block = new ComboBox<>("");
 	public ComboBox<Village> village = new ComboBox<>();
-	ComboBox<String> faunaPopulation = new ComboBox<>("General Fauna");
+	private ComboBox<String> faunaPopulation = new ComboBox<>("General Fauna");
 	ComboBox<String> floraOccupation = new ComboBox<>("General Flora");
 	ComboBox<String> typeAgriOccupation = new ComboBox<>("Sub Occupation");
 	ComboBox<String> landscape = new ComboBox<>("Depending Landscape");
@@ -229,41 +229,62 @@ public class ScapeForm extends Div {
 		}
 
 	}
+	
+
 	private void saveScapeAfterValidation(boolean master) {
-		try {
-			format = scape.getFormat();
-			binder.writeBean(scape);
-			scape.setMaster(master);
-			scape.setCrowdData(false);
-			Village vill=scape.getVillage();
-			if (getImageAsByteArray(buffer1) != null) {
-				scape.setPhoto1(getImageAsByteArray(buffer1));
+		
+		if (!ValidationUtil.applyValidation(associatedTk.getValue()) 
+				|| !ValidationUtil.applyValidation(fallow.getValue())
+				|| !ValidationUtil.applyValidation(faunaPopulation.getValue())
+				|| !ValidationUtil.applyValidation(forest.getValue())
+				|| !ValidationUtil.applyValidation(floraOccupation.getValue())
+				|| !ValidationUtil.applyValidation(generalResources.getValue())
+				|| !ValidationUtil.applyValidation(landscape.getValue()) 
+				|| !ValidationUtil.applyValidation(management.getValue())
+				|| !ValidationUtil.applyValidation(ownerHouse.getValue())
+				|| !ValidationUtil.applyValidation(socialCommunity.getValue())
+				|| !ValidationUtil.applyValidation(sublandscape.getValue())
+				|| !ValidationUtil.applyValidation(typeAgriOccupation.getValue())
+				|| !ValidationUtil.applyValidation(userGroups.getValue())
+				|| !ValidationUtil.applyValidation(wetLand.getValue())) {
+			Notification.show("Validation Error: Special Characters like *, ?, ^,%, $ ,#  are not allowed")
+					.addThemeVariants(NotificationVariant.LUMO_ERROR);
+		} else {
+			try {
+				format = scape.getFormat();
+				binder.writeBean(scape);
+				scape.setMaster(master);
+				scape.setCrowdData(false);
+				Village vill = scape.getVillage();
+				if (getImageAsByteArray(buffer1) != null) {
+					scape.setPhoto1(getImageAsByteArray(buffer1));
+				}
+				if (getImageAsByteArray(buffer2) != null) {
+					scape.setPhoto2(getImageAsByteArray(buffer2));
+				}
+				if (getImageAsByteArray(buffer3) != null) {
+					scape.setPhoto3(getImageAsByteArray(buffer3));
+				}
+
+				if (getImageAsByteArray(buffer4) != null) {
+					scape.setPhoto4(getImageAsByteArray(buffer4));
+				}
+				fireEvent(new SaveEvent(this, scape));
+				clearForm(format);
+				// Notification.show("Saved Successfully");
+				initMasterFields(format);
+				removeFields();
+				clearBuffer();
+				if (master == false) {
+					state.setValue(vill.getBlock().getDistrict().getState());
+					district.setValue(vill.getBlock().getDistrict());
+					block.setValue(vill.getBlock());
+					village.setValue(vill);
+				}
+			} catch (ValidationException e) {
+				// TODO Auto-generated catch block
+
 			}
-			if (getImageAsByteArray(buffer2) != null) {
-				scape.setPhoto2(getImageAsByteArray(buffer2));
-			}
-			if (getImageAsByteArray(buffer3) != null) {
-				scape.setPhoto3(getImageAsByteArray(buffer3));
-			}
-			
-			if (getImageAsByteArray(buffer4) != null) {
-				scape.setPhoto4(getImageAsByteArray(buffer4));
-			}
-			fireEvent(new SaveEvent(this, scape));
-			clearForm(format);
-			//Notification.show("Saved Successfully");
-			initMasterFields(format);
-			removeFields();
-			clearBuffer();
-			if (master == false) {
-				state.setValue(vill.getBlock().getDistrict().getState());
-				district.setValue(vill.getBlock().getDistrict());
-				block.setValue(vill.getBlock());
-				village.setValue(vill);
-			}
-		} catch (ValidationException e) {
-			// TODO Auto-generated catch block
-			
 		}
 	}
 	public void deleteScape(Scapes scape) {
@@ -395,15 +416,15 @@ public class ScapeForm extends Div {
 
 	public Component createBasicForm() {
 		localLanguages.setPlaceholder("Local Language");
-		TextFieldUtil.applyValidation(features);
-		TextFieldUtil.applyValidation(latitude);
-		TextFieldUtil.applyValidation(localLanguage);
-		TextFieldUtil.applyValidation(longitude);
-		TextFieldUtil.applyValidation(otherDetails);
-		TextFieldUtil.applyValidation(photo1Source);
-		TextFieldUtil.applyValidation(photo2Source);
-		TextFieldUtil.applyValidation(photo3Source);
-		TextFieldUtil.applyValidation(photo4Source);
+		ValidationUtil.applyValidation(features);
+		ValidationUtil.applyValidation(latitude);
+		ValidationUtil.applyValidation(localLanguage);
+		ValidationUtil.applyValidation(longitude);
+		ValidationUtil.applyValidation(otherDetails);
+		ValidationUtil.applyValidation(photo1Source);
+		ValidationUtil.applyValidation(photo2Source);
+		ValidationUtil.applyValidation(photo3Source);
+		ValidationUtil.applyValidation(photo4Source);
 		formbasic.add(faunaPopulation, 3);
 		formbasic.add(floraOccupation, 3);
 		formbasic.add(typeAgriOccupation, 3);
@@ -476,21 +497,105 @@ public class ScapeForm extends Div {
 					.collect(Collectors.joining(", "));
 			localLanguage.setValue(selectedLanguage);
 		});
+		faunaPopulation.setAllowCustomValue(true);
+		faunaPopulation.addCustomValueSetListener(e -> {
+			String customValue = e.getDetail();
+			faunaPopulation.setItems(customValue);
+			faunaPopulation.setValue(customValue);
+		});
+		floraOccupation.setAllowCustomValue(true);
+		floraOccupation.addCustomValueSetListener(e -> {
+			String customValuef = e.getDetail();
+			floraOccupation.setItems(customValuef);
+			floraOccupation.setValue(customValuef);
+		});
+		typeAgriOccupation.setAllowCustomValue(true);
+		typeAgriOccupation.addCustomValueSetListener(e -> {
+			String customtypeAgriOccupation = e.getDetail();
+			typeAgriOccupation.setItems(customtypeAgriOccupation);
+			typeAgriOccupation.setValue(customtypeAgriOccupation);
+		});
+		landscape.setAllowCustomValue(true);
+		landscape.addCustomValueSetListener(e -> {
+			String customlandscape = e.getDetail();
+			landscape.setItems(customlandscape);
+			landscape.setValue(customlandscape);
+		});
+		sublandscape.setAllowCustomValue(true);
+		sublandscape.addCustomValueSetListener(e -> {
+			String customsubLandscape = e.getDetail();
+			sublandscape.setItems(customsubLandscape);
+			sublandscape.setValue(customsubLandscape);
+		});
+		ownerHouse.setAllowCustomValue(true);
+		ownerHouse.addCustomValueSetListener(e -> {
+			String customownerHouse = e.getDetail();
+			ownerHouse.setItems(customownerHouse);
+			ownerHouse.setValue(customownerHouse);
+		});
 
-		addCustomValueSetListener(faunaPopulation);
-		addCustomValueSetListener(floraOccupation);
-		addCustomValueSetListener(typeAgriOccupation);
-		addCustomValueSetListener(landscape);
-		addCustomValueSetListener(sublandscape);
-		addCustomValueSetListener(ownerHouse);
-		addCustomValueSetListener(userGroups);
-		addCustomValueSetListener(management);
-		addCustomValueSetListener(socialCommunity);
-		addCustomValueSetListener(generalResources);
-		addCustomValueSetListener(associatedTk);
-		addCustomValueSetListener(fallow);
-		addCustomValueSetListener(wetLand);
-		addCustomValueSetListener(forest);
+		userGroups.setAllowCustomValue(true);
+		userGroups.addCustomValueSetListener(e -> {
+			String customuserGroups = e.getDetail();
+			userGroups.setItems(customuserGroups);
+			userGroups.setValue(customuserGroups);
+		});
+		management.setAllowCustomValue(true);
+		management.addCustomValueSetListener(e -> {
+			String custommanagement = e.getDetail();
+			management.setItems(custommanagement);
+			management.setValue(custommanagement);
+		});
+		socialCommunity.setAllowCustomValue(true);
+		socialCommunity.addCustomValueSetListener(e -> {
+			String customsocialCommunity = e.getDetail();
+			socialCommunity.setItems(customsocialCommunity);
+			socialCommunity.setValue(customsocialCommunity);
+		});
+		generalResources.setAllowCustomValue(true);
+		generalResources.addCustomValueSetListener(e -> {
+			String customgeneralResources = e.getDetail();
+			generalResources.setItems(customgeneralResources);
+			generalResources.setValue(customgeneralResources);
+		});
+		associatedTk.setAllowCustomValue(true);
+		associatedTk.addCustomValueSetListener(e -> {
+			String customassociatedTk = e.getDetail();
+			associatedTk.setItems(customassociatedTk);
+			associatedTk.setValue(customassociatedTk);
+		});
+		fallow.setAllowCustomValue(true);
+		fallow.addCustomValueSetListener(e -> {
+			String customfallow = e.getDetail();
+			fallow.setItems(customfallow);
+			fallow.setValue(customfallow);
+		});
+		wetLand.setAllowCustomValue(true);
+		wetLand.addCustomValueSetListener(e -> {
+			String customwetLand = e.getDetail();
+			wetLand.setItems(customwetLand);
+			wetLand.setValue(customwetLand);
+		});
+		forest.setAllowCustomValue(true);
+		forest.addCustomValueSetListener(e -> {
+			String customforest = e.getDetail();
+			forest.setItems(customforest);
+			forest.setValue(customforest);
+		});
+//		addCustomValueSetListener(faunaPopulation);
+//		addCustomValueSetListener(floraOccupation);
+//		addCustomValueSetListener(typeAgriOccupation);
+//		addCustomValueSetListener(landscape);
+//		addCustomValueSetListener(sublandscape);
+//		addCustomValueSetListener(ownerHouse);
+//		addCustomValueSetListener(userGroups);
+//		addCustomValueSetListener(management);
+//		addCustomValueSetListener(socialCommunity);
+//		addCustomValueSetListener(generalResources);
+//		addCustomValueSetListener(associatedTk);
+//		addCustomValueSetListener(fallow);
+//		addCustomValueSetListener(wetLand);
+//		addCustomValueSetListener(forest);
 		initMasterFields(format);
 		initFormatFields(format);
 	}

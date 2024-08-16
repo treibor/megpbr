@@ -27,7 +27,7 @@ import com.megpbr.data.entity.Village;
 import com.megpbr.data.entity.pbr.Crops;
 import com.megpbr.data.service.CropService;
 import com.megpbr.data.service.Dbservice;
-import com.megpbr.utils.TextFieldUtil;
+import com.megpbr.utils.ValidationUtil;
 import com.megpbr.views.agrobiodiversity.CropPlantsView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
@@ -222,41 +222,60 @@ public class CropPlantsForm extends Div {
 		}
 
 	}
+	
 	private void saveCropAfterValidation(boolean master) {
-		try {
-			format=crops.getFormat();
-			binder.writeBean(crops);
-			crops.setMaster(master);
-			crops.setCrowdData(false);
-			Village vill=crops.getVillage();
-			if (getImageAsByteArray(buffer1) != null) {
-				crops.setPhoto1(getImageAsByteArray(buffer1));
+		
+		if (!ValidationUtil.applyValidation(scientificName.getValue())
+				|| !ValidationUtil.applyValidation(type.getValue())
+				|| !ValidationUtil.applyValidation(associatedTk.getValue())
+				|| !ValidationUtil.applyValidation(habitat.getValue())
+				|| !ValidationUtil.applyValidation(knowledgeHolder.getValue())
+				|| !ValidationUtil.applyValidation(localName.getValue())
+				|| !ValidationUtil.applyValidation(otherDetails.getValue())
+				|| !ValidationUtil.applyValidation(management.getValue())
+				|| !ValidationUtil.applyValidation(partsUsed.getValue())
+				|| !ValidationUtil.applyValidation(specialFeatures.getValue())
+				|| !ValidationUtil.applyValidation(source.getValue())
+				|| !ValidationUtil.applyValidation(uses.getValue())
+				|| !ValidationUtil.applyValidation(variety.getValue())
+				|| !ValidationUtil.applyValidation(xfield1.getValue())
+				|| !ValidationUtil.applyValidation(xfield2.getValue())) {
+			Notification.show("Validation Error: Special Characters like *, ?, ^,%, $ ,#  are not allowed")
+					.addThemeVariants(NotificationVariant.LUMO_ERROR);
+		} else {
+			try {
+				format = crops.getFormat();
+				binder.writeBean(crops);
+				crops.setMaster(master);
+				crops.setCrowdData(false);
+				Village vill = crops.getVillage();
+				if (getImageAsByteArray(buffer1) != null) {
+					crops.setPhoto1(getImageAsByteArray(buffer1));
+				}
+				if (getImageAsByteArray(buffer2) != null) {
+					crops.setPhoto2(getImageAsByteArray(buffer2));
+				}
+				if (getImageAsByteArray(buffer3) != null) {
+					crops.setPhoto3(getImageAsByteArray(buffer3));
+				}
+
+				if (getImageAsByteArray(buffer4) != null) {
+					crops.setPhoto4(getImageAsByteArray(buffer4));
+				}
+				fireEvent(new SaveEvent(this, crops));
+				initMasterFields(format);
+				removeFields();
+				clearBuffer();
+				if (master == false) {
+					state.setValue(vill.getBlock().getDistrict().getState());
+					district.setValue(vill.getBlock().getDistrict());
+					block.setValue(vill.getBlock());
+					village.setValue(vill);
+				}
+			} catch (ValidationException e) {
+				// TODO Auto-generated catch block
+				Notification.show("Error. Please Check").addThemeVariants(NotificationVariant.LUMO_ERROR);
 			}
-			if (getImageAsByteArray(buffer2) != null) {
-				crops.setPhoto2(getImageAsByteArray(buffer2));
-			}
-			if (getImageAsByteArray(buffer3) != null) {
-				crops.setPhoto3(getImageAsByteArray(buffer3));
-			}
-			
-			if (getImageAsByteArray(buffer4) != null) {
-				crops.setPhoto4(getImageAsByteArray(buffer4));
-			}
-			fireEvent(new SaveEvent(this, crops));
-			//clearForm(format);
-			//Notification.show("Saved Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);;
-			initMasterFields(format);
-			removeFields();
-			clearBuffer();
-			if (master == false) {
-				state.setValue(vill.getBlock().getDistrict().getState());
-				district.setValue(vill.getBlock().getDistrict());
-				block.setValue(vill.getBlock());
-				village.setValue(vill);
-			}
-		} catch (ValidationException e) {
-			// TODO Auto-generated catch block
-			Notification.show("Error. Please Check").addThemeVariants(NotificationVariant.LUMO_ERROR);
 		}
 	}
 	public void deleteCrop(Crops crop) {
@@ -421,16 +440,17 @@ public class CropPlantsForm extends Div {
 		// formbasic.add(scientificCheck, 3);
 		localLanguages.setPlaceholder("Local Language");
 		fruitSeasons.setPlaceholder("Cropping Season");
-		TextFieldUtil.applyValidation(area);
-		TextFieldUtil.applyValidation(fruitSeason);
-		TextFieldUtil.applyValidation(latitude);
-		TextFieldUtil.applyValidation(localLanguage);
-		TextFieldUtil.applyValidation(longitude);
-		TextFieldUtil.applyValidation(photo1Source);
-		TextFieldUtil.applyValidation(photo2Source);
-		TextFieldUtil.applyValidation(photo3Source);
-		TextFieldUtil.applyValidation(photo4Source);
-		TextFieldUtil.applyValidation(remarks);
+		//ValidationUtil.applyValidation(loc);
+		ValidationUtil.applyValidation(area);
+		ValidationUtil.applyValidation(fruitSeason);
+		ValidationUtil.applyValidation(latitude);
+		ValidationUtil.applyValidation(localLanguage);
+		ValidationUtil.applyValidation(longitude);
+		ValidationUtil.applyValidation(photo1Source);
+		ValidationUtil.applyValidation(photo2Source);
+		ValidationUtil.applyValidation(photo3Source);
+		ValidationUtil.applyValidation(photo4Source);
+		ValidationUtil.applyValidation(remarks);
 		//ComboBoxValidator.applyValidation(scientificName, "[0-9A-Za-z@]+");
 		
 		formbasic.add(scientificName, 3);
@@ -551,41 +571,116 @@ public class CropPlantsForm extends Div {
 					.collect(Collectors.joining(", "));
 			localLanguage.setValue(selectedLanguage);
 		});
-		
-		addCustomValueSetListener(scientificName);
-		addCustomValueSetListener(type);
-		addCustomValueSetListener(habitat);
-		addCustomValueSetListener(localName);
-		addCustomValueSetListener(variety);
-		addCustomValueSetListener(source);
-		addCustomValueSetListener(associatedTk);
-		addCustomValueSetListener(knowledgeHolder);
-		addCustomValueSetListener(uses);
-		addCustomValueSetListener(partsUsed);
-		addCustomValueSetListener(management);
-		addCustomValueSetListener(xfield1);
-		addCustomValueSetListener(xfield2);
-		addCustomValueSetListener(otherDetails);
-		addCustomValueSetListener(specialFeatures);
+		scientificName.setAllowCustomValue(true);
+		scientificName.addCustomValueSetListener(e -> {
+			String customValue = e.getDetail();
+			scientificName.setItems(customValue);
+			scientificName.setValue(customValue);
+		});
+		//scientificName.addValueChangeListener(e->scientificName.setValue(scientificName.getValue()));
+		type.addCustomValueSetListener(e -> {
+			String customName = e.getDetail();
+			type.setItems(customName);
+			type.setValue(customName);
+		});
+		habitat.addCustomValueSetListener(e -> {
+			String customHabitat = e.getDetail();
+			habitat.setItems(customHabitat);
+			habitat.setValue(customHabitat);
+		});
+		localName.setAllowCustomValue(true);
+		localName.addCustomValueSetListener(e -> {
+			String customLocal = e.getDetail();
+			localName.setItems(customLocal);
+			localName.setValue(customLocal);
+		});
+		variety.setAllowCustomValue(true);
+		variety.addCustomValueSetListener(e -> {
+			String customVariety = e.getDetail();
+			variety.setItems(customVariety);
+			variety.setValue(customVariety);
+		});
+		source.setAllowCustomValue(true);
+		source.addCustomValueSetListener(e -> {
+			String customsource = e.getDetail();
+			source.setItems(customsource);
+			source.setValue(customsource);
+		});
+		associatedTk.setAllowCustomValue(true);
+		associatedTk.addCustomValueSetListener(e -> {
+			String customassociatedTk = e.getDetail();
+			associatedTk.setItems(customassociatedTk);
+			associatedTk.setValue(customassociatedTk);
+		});
+		knowledgeHolder.setAllowCustomValue(true);
+		knowledgeHolder.addCustomValueSetListener(e -> {
+			String customknowledgeHolder = e.getDetail();
+			knowledgeHolder.setItems(customknowledgeHolder);
+			knowledgeHolder.setValue(customknowledgeHolder);
+		});
+		uses.setAllowCustomValue(true);
+		uses.addCustomValueSetListener(e -> {
+			String customuses = e.getDetail();
+			uses.setItems(customuses);
+			uses.setValue(customuses);
+		});
+		partsUsed.setAllowCustomValue(true);
+		partsUsed.addCustomValueSetListener(e -> {
+			String custompartsUsed = e.getDetail();
+			partsUsed.setItems(custompartsUsed);
+			partsUsed.setValue(custompartsUsed);
+		});
+		management.setAllowCustomValue(true);
+		management.addCustomValueSetListener(e -> {
+			String custommanagement = e.getDetail();
+			management.setItems(custommanagement);
+			management.setValue(custommanagement);
+		});
+		xfield1.setAllowCustomValue(true);
+		xfield1.addCustomValueSetListener(e -> {
+			String customxfield1 = e.getDetail();
+			xfield1.setItems(customxfield1);
+			xfield1.setValue(customxfield1);
+		});
+		xfield2.setAllowCustomValue(true);
+		xfield2.addCustomValueSetListener(e -> {
+			String customxfield2 = e.getDetail();
+			xfield2.setItems(customxfield2);
+			xfield2.setValue(customxfield2);
+		});
+		otherDetails.setAllowCustomValue(true);
+		otherDetails.addCustomValueSetListener(e -> {
+			String customotherDetails = e.getDetail();
+			otherDetails.setItems(customotherDetails);
+			otherDetails.setValue(customotherDetails);
+		});
+		specialFeatures.setAllowCustomValue(true);
+		specialFeatures.addCustomValueSetListener(e -> {
+			String customspecialFeatures = e.getDetail();
+			specialFeatures.setItems(customspecialFeatures);
+			specialFeatures.setValue(customspecialFeatures);
+		});
+//		addCustomValueSetListener(scientificName);
+//		addCustomValueSetListener(type);
+//		addCustomValueSetListener(habitat);
+//		addCustomValueSetListener(localName);
+//		addCustomValueSetListener(variety);
+//		addCustomValueSetListener(source);
+//		addCustomValueSetListener(associatedTk);
+//		addCustomValueSetListener(knowledgeHolder);
+//		addCustomValueSetListener(uses);
+//		addCustomValueSetListener(partsUsed);
+//		addCustomValueSetListener(management);
+//		addCustomValueSetListener(xfield1);
+//		addCustomValueSetListener(xfield2);
+//		addCustomValueSetListener(otherDetails);
+//		addCustomValueSetListener(specialFeatures);
 
 		initMasterFields(format);
 		initFormatFields(format);
 	}
 
-	private void addCustomValueSetListener(ComboBox<String> comboBox) {
-		comboBox.setAllowCustomValue(true);
-		comboBox.addCustomValueSetListener(event -> {
-			String customValue = event.getDetail();
-			if (customValue != null && !customValue.matches("[0-9A-Za-z@./- ]+")) {
-				// Show an error notification or reset the value
-				Notification.show("Invalid input: Only letters, numbers, and '@', '.', '/', '-'  are allowed").addThemeVariants(NotificationVariant.LUMO_WARNING);
-				comboBox.clear();
-			} else {
-				comboBox.setItems(customValue);
-				comboBox.setValue(customValue);
-			}
-		});
-	}
+	
 	
 	private void showRemarks() {
 		if (approved.getValue() != null) {

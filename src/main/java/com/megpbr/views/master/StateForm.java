@@ -2,7 +2,7 @@ package com.megpbr.views.master;
 
 import com.megpbr.data.entity.State;
 import com.megpbr.data.service.Dbservice;
-import com.megpbr.utils.TextFieldUtil;
+import com.megpbr.utils.ValidationUtil;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -126,8 +126,8 @@ public class StateForm extends Div {
 	
 
 	public Component createBasicForm() {
-		TextFieldUtil.applyValidation(stateCode);
-		TextFieldUtil.applyValidation(stateName);
+		ValidationUtil.applyValidation(stateCode);
+		ValidationUtil.applyValidation(stateName);
 		form.add(stateCode, 2);
 		form.add(stateName, 2);
 		form.setResponsiveSteps(new ResponsiveStep("0", 2),

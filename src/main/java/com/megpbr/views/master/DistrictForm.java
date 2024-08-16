@@ -3,7 +3,7 @@ package com.megpbr.views.master;
 import com.megpbr.data.entity.District;
 import com.megpbr.data.entity.State;
 import com.megpbr.data.service.Dbservice;
-import com.megpbr.utils.TextFieldUtil;
+import com.megpbr.utils.ValidationUtil;
 import com.megpbr.data.entity.District;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
@@ -132,7 +132,7 @@ public class DistrictForm extends Div {
 	
 
 	public Component createBasicForm() {
-		TextFieldUtil.applyValidation(districtName);
+		ValidationUtil.applyValidation(districtName);
 		form.add(state, 2);
 		form.add(districtCode, 2);
 		form.add(districtName, 2);

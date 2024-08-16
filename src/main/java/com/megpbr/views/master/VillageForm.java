@@ -2,7 +2,7 @@ package com.megpbr.views.master;
 
 import com.megpbr.data.entity.Village;
 import com.megpbr.data.service.Dbservice;
-import com.megpbr.utils.TextFieldUtil;
+import com.megpbr.utils.ValidationUtil;
 import com.megpbr.data.entity.Block;
 import com.megpbr.data.entity.District;
 import com.megpbr.data.entity.State;
@@ -143,8 +143,8 @@ public class VillageForm extends Div {
 	
 
 	public Component createBasicForm() {
-		TextFieldUtil.applyValidation(villageCode);
-		TextFieldUtil.applyValidation(villageName);
+		ValidationUtil.applyValidation(villageCode);
+		ValidationUtil.applyValidation(villageName);
 		form.add(state, 2);
 		form.add(district, 2);
 		form.add(block, 2);

@@ -22,7 +22,7 @@ import com.megpbr.data.entity.Village;
 import com.megpbr.data.entity.pbr.Markets;
 import com.megpbr.data.service.Dbservice;
 import com.megpbr.data.service.MarketsService;
-import com.megpbr.utils.TextFieldUtil;
+import com.megpbr.utils.ValidationUtil;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -194,41 +194,58 @@ public class MarketsForm extends Div {
 		}
 
 	}
+	
 	private void saveMarketAfterValidation(boolean master) {
-		try {
-			format = market.getFormat();
-			binder.writeBean(market);
-			market.setMaster(master);
-			market.setCrowdData(false);
-			Village vill=market.getVillage();
-			if (getImageAsByteArray(buffer1) != null) {
-				market.setPhoto1(getImageAsByteArray(buffer1));
+		
+		if (!ValidationUtil.applyValidation(animalType.getValue())
+				|| !ValidationUtil.applyValidation(day.getValue())
+				|| !ValidationUtil.applyValidation(fishLocation.getValue())
+				|| !ValidationUtil.applyValidation(fishSource.getValue())
+				|| !ValidationUtil.applyValidation(fishType.getValue())
+				|| !ValidationUtil.applyValidation(frequency.getValue())
+				|| !ValidationUtil.applyValidation(month.getValue())
+				|| !ValidationUtil.applyValidation(name.getValue())
+				|| !ValidationUtil.applyValidation(placesFrom.getValue())
+				|| !ValidationUtil.applyValidation(placesTo.getValue())
+				|| !ValidationUtil.applyValidation(transactions.getValue())) {
+			Notification.show("Validation Error: Special Characters like *, ?, ^,%, $ ,#  are not allowed")
+					.addThemeVariants(NotificationVariant.LUMO_ERROR);
+		} else {
+			try {
+				format = market.getFormat();
+				binder.writeBean(market);
+				market.setMaster(master);
+				market.setCrowdData(false);
+				Village vill = market.getVillage();
+				if (getImageAsByteArray(buffer1) != null) {
+					market.setPhoto1(getImageAsByteArray(buffer1));
+				}
+				if (getImageAsByteArray(buffer2) != null) {
+					market.setPhoto2(getImageAsByteArray(buffer2));
+				}
+				if (getImageAsByteArray(buffer3) != null) {
+					market.setPhoto3(getImageAsByteArray(buffer3));
+				}
+
+				if (getImageAsByteArray(buffer4) != null) {
+					market.setPhoto4(getImageAsByteArray(buffer4));
+				}
+				fireEvent(new SaveEvent(this, market));
+				clearForm(format);
+				// Notification.show("Saved Successfully");
+				initMasterFields(format);
+				removeFields();
+				clearBuffer();
+				if (master == false) {
+					state.setValue(vill.getBlock().getDistrict().getState());
+					district.setValue(vill.getBlock().getDistrict());
+					block.setValue(vill.getBlock());
+					village.setValue(vill);
+				}
+			} catch (ValidationException e) {
+				// TODO Auto-generated catch block
+
 			}
-			if (getImageAsByteArray(buffer2) != null) {
-				market.setPhoto2(getImageAsByteArray(buffer2));
-			}
-			if (getImageAsByteArray(buffer3) != null) {
-				market.setPhoto3(getImageAsByteArray(buffer3));
-			}
-			
-			if (getImageAsByteArray(buffer4) != null) {
-				market.setPhoto4(getImageAsByteArray(buffer4));
-			}
-			fireEvent(new SaveEvent(this, market));
-			clearForm(format);
-			//Notification.show("Saved Successfully");
-			initMasterFields(format);
-			removeFields();
-			clearBuffer();
-			if (master == false) {
-				state.setValue(vill.getBlock().getDistrict().getState());
-				district.setValue(vill.getBlock().getDistrict());
-				block.setValue(vill.getBlock());
-				village.setValue(vill);
-			}
-		} catch (ValidationException e) {
-			// TODO Auto-generated catch block
-			
 		}
 	}
 	public void deleteScape(Markets market) {
@@ -353,12 +370,12 @@ public class MarketsForm extends Div {
 	}
 
 	public Component createBasicForm() {
-		TextFieldUtil.applyValidation(latitude);
-		TextFieldUtil.applyValidation(longitude);
-		TextFieldUtil.applyValidation(photo1Source);
-		TextFieldUtil.applyValidation(photo2Source);
-		TextFieldUtil.applyValidation(photo3Source);
-		TextFieldUtil.applyValidation(photo4Source);
+		ValidationUtil.applyValidation(latitude);
+		ValidationUtil.applyValidation(longitude);
+		ValidationUtil.applyValidation(photo1Source);
+		ValidationUtil.applyValidation(photo2Source);
+		ValidationUtil.applyValidation(photo3Source);
+		ValidationUtil.applyValidation(photo4Source);
 		
 		formbasic.add(name, 1);
 		formbasic.add(frequency, 1);
@@ -414,17 +431,84 @@ public class MarketsForm extends Div {
 		approved.setItems(dbservice.getMasterApproval());
 		approved.setItemLabelGenerator(approved->approved.getApproval());
 		approved.setValue(dbservice.getMasterApproval().get(1));
-		addCustomValueSetListener(name);
-		addCustomValueSetListener(frequency);
-		addCustomValueSetListener(month);
-		addCustomValueSetListener(day);
-		addCustomValueSetListener(animalType);
-		addCustomValueSetListener(transactions);
-		addCustomValueSetListener(placesFrom);
-		addCustomValueSetListener(placesTo);
-		addCustomValueSetListener(fishLocation);
-		addCustomValueSetListener(fishType);
-		addCustomValueSetListener(fishSource);
+		name.setAllowCustomValue(true);
+		name.addCustomValueSetListener(e -> {
+			String customValue = e.getDetail();
+			name.setItems(customValue);
+			name.setValue(customValue);
+		});
+		frequency.setAllowCustomValue(true);
+		frequency.addCustomValueSetListener(e -> {
+			String customValuef = e.getDetail();
+			frequency.setItems(customValuef);
+			frequency.setValue(customValuef);
+		});
+		month.setAllowCustomValue(true);
+		month.addCustomValueSetListener(e -> {
+			String custommonth = e.getDetail();
+			month.setItems(custommonth);
+			month.setValue(custommonth);
+		});
+		day.setAllowCustomValue(true);
+		day.addCustomValueSetListener(e -> {
+			String customday = e.getDetail();
+			day.setItems(customday);
+			day.setValue(customday);
+		});
+		animalType.setAllowCustomValue(true);
+		animalType.addCustomValueSetListener(e -> {
+			String customsubLandmarket = e.getDetail();
+			animalType.setItems(customsubLandmarket);
+			animalType.setValue(customsubLandmarket);
+		});
+		transactions.setAllowCustomValue(true);
+		transactions.addCustomValueSetListener(e -> {
+			String customtransactions = e.getDetail();
+			transactions.setItems(customtransactions);
+			transactions.setValue(customtransactions);
+		});
+
+		placesFrom.setAllowCustomValue(true);
+		placesFrom.addCustomValueSetListener(e -> {
+			String customplacesFrom = e.getDetail();
+			placesFrom.setItems(customplacesFrom);
+			placesFrom.setValue(customplacesFrom);
+		});
+		placesTo.setAllowCustomValue(true);
+		placesTo.addCustomValueSetListener(e -> {
+			String customplacesTo = e.getDetail();
+			placesTo.setItems(customplacesTo);
+			placesTo.setValue(customplacesTo);
+		});
+		fishLocation.setAllowCustomValue(true);
+		fishLocation.addCustomValueSetListener(e -> {
+			String customfishLocation = e.getDetail();
+			fishLocation.setItems(customfishLocation);
+			fishLocation.setValue(customfishLocation);
+		});
+		fishType.setAllowCustomValue(true);
+		fishType.addCustomValueSetListener(e -> {
+			String customfishType = e.getDetail();
+			fishType.setItems(customfishType);
+			fishType.setValue(customfishType);
+		});
+		fishSource.setAllowCustomValue(true);
+		fishSource.addCustomValueSetListener(e -> {
+			String customfishSource = e.getDetail();
+			fishSource.setItems(customfishSource);
+			fishSource.setValue(customfishSource);
+		});
+//		addCustomValueSetListener(name);
+//		addCustomValueSetListener(frequency);
+//		addCustomValueSetListener(month);
+//		addCustomValueSetListener(day);
+//		addCustomValueSetListener(animalType);
+//		addCustomValueSetListener(transactions);
+//		addCustomValueSetListener(placesFrom);
+//		addCustomValueSetListener(placesTo);
+//		addCustomValueSetListener(fishLocation);
+//		addCustomValueSetListener(fishType);
+//		addCustomValueSetListener(fishSource);
 		initMasterFields(format);
 		initFormatFields(format);
 	}
