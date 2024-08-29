@@ -542,6 +542,7 @@ public class MarketsFairView extends HorizontalLayout{
 			addMarkets(new Markets());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			//e.printStackTrace();
 			Notification.show("Error Encountered :"+e);		
 		}
 	}

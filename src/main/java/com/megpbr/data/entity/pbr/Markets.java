@@ -64,7 +64,7 @@ public class Markets {
 	private byte[] photo2;
 	@Length(max = 255, message="Character Limit Exceeded")
 	private String photo2Source;
-	@Length(max = 255, message="Character Limit Exceeded")
+	//@Length(max = 255, message="Character Limit Exceeded")
 	private byte[] photo3;
 	@Length(max = 255, message="Character Limit Exceeded")
 	private String photo3Source;

@@ -17,6 +17,10 @@ public class ValidationUtil {
     }
     public static boolean applyValidation(String string) {
     	//textArea.setAllowedCharPattern("[0-9A-Za-z.,()@/-'& ]");
+    	if (string == null) {
+            return true;
+        }
+
     	if (string.matches("[0-9A-Za-z.,()@/'&\\s-]*")){
     		return true;
     	}

@@ -189,8 +189,8 @@ public class MarketsForm extends Div {
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			
-			Notification.show("Error: " + e);
+			//e.printStackTrace();
+			Notification.show("Error: " + e).addThemeVariants(NotificationVariant.LUMO_ERROR);
 		}
 
 	}
@@ -243,7 +243,7 @@ public class MarketsForm extends Div {
 					village.setValue(vill);
 				}
 			} catch (ValidationException e) {
-				// TODO Auto-generated catch block
+				Notification.show("Error: " + e).addThemeVariants(NotificationVariant.LUMO_ERROR);
 
 			}
 		}
