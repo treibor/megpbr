@@ -1,6 +1,9 @@
 package com.megpbr.views;
 
+import java.time.LocalDate;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.transaction.TransactionSystemException;
 
 import com.megpbr.data.entity.Block;
 import com.megpbr.data.entity.District;
@@ -27,6 +30,7 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 
@@ -40,6 +44,7 @@ public class UserView {
     Button cancelPassButton=new Button("Close");
     TextField name=new TextField("Full Name");
     TextField userName=new TextField("User Name");
+    EmailField email=new EmailField("Email");
     PasswordField oldpassword=new PasswordField("Old Password");
     PasswordField password=new PasswordField("Password");
     PasswordField confirmPassword=new PasswordField("Confirm Password");
@@ -165,6 +170,8 @@ public class UserView {
 	}
 	public FormLayout getFields() {
 		var form=new FormLayout();
+		email.setRequired(true);
+		email.setErrorMessage("Invalid Email Entered");
 		userName.setAllowedCharPattern("[0-9A-Za-z@]");
 		form.add(userlevel, 2);
 		form.add(state, 1);
@@ -173,6 +180,7 @@ public class UserView {
 		form.add(village, 1);
 		form.add(name, 2);
 		form.add(userName, 2);
+		form.add(email, 2);
 		form.add(password, 2);
 		form.add(confirmPassword, 2);
 		form.setResponsiveSteps(new ResponsiveStep("0", 1),
@@ -301,13 +309,16 @@ public class UserView {
 						UserLogin newUser = new UserLogin();
 						newUser.setName(name.getValue());
 						newUser.setUserName(userName.getValue());
+						newUser.setEmail(email.getValue());
 						newUser.setLevel(userlevel.getValue());
 						newUser.setState(state.getValue());
 						newUser.setDistrict(district.getValue());
 						newUser.setBlock(block.getValue());
 						newUser.setVillage(village.getValue());
 						newUser.setEnabled(true);
+						newUser.setPwdChangedDate(LocalDate.now());
 						newUser.setHashedPassword(passwordEncoder.encode(password.getValue().trim()));
+						
 						userservice.update(newUser);
 						UserRole role = new UserRole();
 						if (userLevel.startsWith("STATE") && userLevel.endsWith("ADMIN")) {
@@ -337,9 +348,15 @@ public class UserView {
 						Notification.show("Failed To Create User, User Already Exists").addThemeVariants(NotificationVariant.LUMO_ERROR);
 						clearFields();
 					}
+				}catch (TransactionSystemException tse) {
+					// TODO Auto-generated catch block
+					//e.printStackTrace();
+					Notification.show("Invalid Email Address").addThemeVariants(NotificationVariant.LUMO_ERROR);
+					
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
-					Notification.show("Failed To Create User").addThemeVariants(NotificationVariant.LUMO_ERROR);
+					e.printStackTrace();
+					Notification.show("Failed To Create User"+e).addThemeVariants(NotificationVariant.LUMO_ERROR);
 					
 				}
 				

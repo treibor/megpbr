@@ -11,5 +11,6 @@ import com.megpbr.data.entity.UserLogin;
 public interface UserRepository extends JpaRepository<UserLogin, Long>{
 	UserLogin findByUserNameAndEnabled(String username, boolean enabled);
 	UserLogin findByUserName(String username);
+	UserLogin findByEmailAndEnabled(String email, boolean enabled);
 	List <UserLogin> findByUserNameNot(String username);
 }

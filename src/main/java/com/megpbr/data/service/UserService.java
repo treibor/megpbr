@@ -79,6 +79,9 @@ public class UserService {
     public Optional<UserLogin> get(long id) {
         return repository.findById(id);
     }
+    public UserLogin getUserByEmail(String email) {
+        return repository.findByEmailAndEnabled(email, true);
+    }
     public UserLogin getUserByName(String username) {
         return repository.findByUserName(username);
     }

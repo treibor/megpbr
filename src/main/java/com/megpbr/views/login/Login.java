@@ -17,6 +17,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.context.SecurityContextRepository;
 
 import com.megpbr.audit.Audit;
+import com.megpbr.data.entity.UserLogin;
+import com.megpbr.data.service.EmailSender;
+import com.megpbr.data.service.UserService;
 import com.megpbr.security.AuthenticatedUser;
 import com.megpbr.security.captcha.Captcha;
 import com.megpbr.security.captcha.CapthaImpl;
@@ -65,6 +68,8 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 	private AuthenticationManager authenticationManager;
 	@Autowired
 	SecurityContextRepository securityRepo;
+	@Autowired
+	UserService uservice;
 	private final AuthenticatedUser authenticatedUser;
 	HorizontalLayout captchacontainer = new HorizontalLayout();
 	Button refreshButton = new Button(new Icon(VaadinIcon.REFRESH));
@@ -72,7 +77,7 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 	Image image;
 	public TextField captchatext = new TextField();
 	TextField usernameField = new TextField("User Name");
-	
+	EmailField email=new EmailField();
 	PasswordField passwordField = new PasswordField("Password");
 	Button button = new Button("Login");
 	H2 title = new H2("Meghalaya Biodiversity Board");
@@ -139,7 +144,7 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 		button.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 		button.setAutofocus(true);
 		anchor.setText("Forgot Password?");
-		//anchor.getElement().addEventListener("click",e-> ForgotPassword());
+		anchor.getElement().addEventListener("click",e-> ForgotPassword());
 		usernameField.getElement().setAttribute("autocomplete", "off");
         passwordField.getElement().setAttribute("autocomplete", "off");
 
@@ -268,12 +273,12 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 		//H3 header=new H3("Meghalaya Biodiversity Board");
 		//H3 header2=new H3("People's Biodiversity Register (PBR): Version 2.0");
 		H5 body=new H5("Please Enter Your Email Id");
-		EmailField email=new EmailField();
+		
 		email.setPlaceholder("Email");
-		email.setMaxLength(20);
+		email.setMaxLength(40);
 		email.setMinLength(5);
 		Button submitbutton=new Button("Submit");
-		submitbutton.addClickListener(e-> Notification.show("To Be Implemented Using Email API. Public IP Required"));
+		submitbutton.addClickListener(e-> sendPasswordEmail());
 		headline.getStyle().set("margin", "var(--lumo-space-m) 0 0 0").set("font-size", "1.5em").set("font-weight",
 				"bold").set("text-decoration", "underline");
 		cancelButton.addClickListener(e -> aboutdialog.close());
@@ -285,6 +290,15 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 		dialogLayout1.getStyle().set("width", "300px").set("max-width", "100%");
 		aboutdialog.add(dialogLayout1);
 		aboutdialog.open();
+	}
+	private void sendPasswordEmail() {
+		UserLogin user=uservice.getUserByEmail(email.getValue());
+		if (user==null) {
+			Notification.show("Email Id Does Not Exist").addThemeVariants(NotificationVariant.LUMO_ERROR);
+		}else {
+			EmailSender.sendEmail(email.getValue(), "Subject", "Body");
+			//Notification.show("User Exists but To Be Implemented Using Email API. Public IP Required").addThemeVariants(NotificationVariant.LUMO_ERROR);
+		}
 	}
 	public void invalidatePreviousSessionsForUser(String username) {
 		// Get active session count for the user
