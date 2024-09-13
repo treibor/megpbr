@@ -116,6 +116,7 @@ public class UserView {
 	}
 	
 	private void saveNewPassword() {
+		String newpass=password.getValue();
 		String oldpass=oldpassword.getValue();
 		UserLogin user=userservice.getLoggedUser();
 		if(!passwordEncoder.matches(oldpass.trim(), user.getHashedPassword())) {
@@ -126,10 +127,29 @@ public class UserView {
 			Notification.show("Password is too weak. Please use a combination of Lower case, Upper case, Number and Special Charaters").addThemeVariants(NotificationVariant.LUMO_WARNING);
 		}else if(password.getValue().trim().length()<=8){
 			Notification.show("Password is too short").addThemeVariants(NotificationVariant.LUMO_WARNING);
+		}else if(passwordEncoder.matches(newpass.trim(), user.getHashedPassword())||passwordEncoder.matches(newpass.trim(), user.getOldPassword1())||passwordEncoder.matches(newpass.trim(), user.getOldPassword2())||passwordEncoder.matches(newpass.trim(), user.getOldPassword3())){
+			Notification.show("You Cannot Reuse Your Last 3 Previous Passwords").addThemeVariants(NotificationVariant.LUMO_WARNING);
 		}else {
+			String oldpass0=user.getHashedPassword();
+			String oldpass1=user.getOldPassword1();
+			String oldpass2=user.getOldPassword2();
+			//String oldpass3=user.getOldPassword3();
+			
+			user.setOldPassword3(oldpass2);
+			user.setOldPassword2(oldpass1);
+			user.setOldPassword1(oldpass0);
 			user.setHashedPassword(passwordEncoder.encode(password.getValue()));
-			userservice.update(user);
+			if(user.getEmail()==null||user.getEmail().equals(null)||user.getEmail().equals("")) {
+				user.setEmail("NoEmail@abc.com");
+			}
+			try {
+				userservice.update(user);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+			}
 			//Notification.show("Password Changed Successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+			//System.out.println("B");
 			showConfirmationDialog();
 			
 		}

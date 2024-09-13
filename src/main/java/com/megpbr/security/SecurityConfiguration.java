@@ -119,44 +119,84 @@ public class SecurityConfiguration extends VaadinWebSecurity {
 
 	
 
+//	@Override
+//	protected void configure(HttpSecurity http) throws Exception {
+//		http
+//				
+//				// .addFilterBefore(securecookie, ChannelProcessingFilter.class)
+//				.addFilterBefore(disableOptionsMethodFilter(), ChannelProcessingFilter.class)
+//				.addFilterBefore(rateLimitingFilter, ChannelProcessingFilter.class)
+//				.headers(headers -> headers
+//						//.addHeaderWriter(new StaticHeadersWriter("Strict-Transport-Security", "max-age=31536000"))
+//						.addHeaderWriter(new StaticHeadersWriter("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload"))
+//						.xssProtection(
+//								xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
+//						.addHeaderWriter(new StaticHeadersWriter("X-Content-Type-Options", "nosniff"))
+//						.addHeaderWriter(new StaticHeadersWriter("X-Frame-Options", "DENY"))
+//						.addHeaderWriter(new StaticHeadersWriter("X-XSS-Protection", "1; mode=block"))
+//						.addHeaderWriter(new StaticHeadersWriter("Content-Security-Policy",
+//								"default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; object-src 'none';"))
+////						.addHeaderWriter(new StaticHeadersWriter("Content-Security-Policy",
+////			                    "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none';"))
+//						.addHeaderWriter(new StaticHeadersWriter("Permissions-Policy", "geolocation=(self), microphone=()"))
+//						.addHeaderWriter(new StaticHeadersWriter("Set-Cookie", "SameSite=Strict; HttpOnly; Secure;"))
+//						.addHeaderWriter(new StaticHeadersWriter("Expect-CT", "max-age=86400, enforce"))
+//						.addHeaderWriter(new StaticHeadersWriter("Cache-Control",
+//								"no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0"))
+//						.addHeaderWriter(new StaticHeadersWriter("Pragma", "no-cache"))
+//						.referrerPolicy(referrer -> referrer.policy(ReferrerPolicy.SAME_ORIGIN)))
+//				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+//						
+//						.invalidSessionUrl("/")
+//						.sessionConcurrency(concurrency -> concurrency.maximumSessions(1).expiredUrl("/")
+//								.maxSessionsPreventsLogin(true) // Prevent new logins if the max sessions are reached
+//								.sessionRegistry(sessionRegistry())))
+//				.securityContext(context -> context.securityContextRepository(securityContextRepository())
+//
+//				);
+//		http.authorizeHttpRequests(
+//				authorize -> authorize.requestMatchers(new AntPathRequestMatcher("/images/*.png")).permitAll());
+//		super.configure(http);
+//		setLoginView(http, Login.class);
+//	}
+	@Autowired
+	AjaxRateLimitingFilter alf;
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http
-				
-				// .addFilterBefore(securecookie, ChannelProcessingFilter.class)
-				.addFilterBefore(disableOptionsMethodFilter(), ChannelProcessingFilter.class)
-				.addFilterBefore(rateLimitingFilter, ChannelProcessingFilter.class)
-				.headers(headers -> headers
-						//.addHeaderWriter(new StaticHeadersWriter("Strict-Transport-Security", "max-age=31536000"))
-						.addHeaderWriter(new StaticHeadersWriter("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload"))
-						.xssProtection(
-								xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
-						.addHeaderWriter(new StaticHeadersWriter("X-Content-Type-Options", "nosniff"))
-						.addHeaderWriter(new StaticHeadersWriter("X-Frame-Options", "DENY"))
-						.addHeaderWriter(new StaticHeadersWriter("X-XSS-Protection", "1; mode=block"))
-						.addHeaderWriter(new StaticHeadersWriter("Content-Security-Policy",
-								"default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; object-src 'none';"))
-//						.addHeaderWriter(new StaticHeadersWriter("Content-Security-Policy",
-//			                    "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none';"))
-						.addHeaderWriter(new StaticHeadersWriter("Permissions-Policy", "geolocation=(self), microphone=()"))
-						.addHeaderWriter(new StaticHeadersWriter("Set-Cookie", "SameSite=Strict; HttpOnly; Secure;"))
-						.addHeaderWriter(new StaticHeadersWriter("Expect-CT", "max-age=86400, enforce"))
-						.addHeaderWriter(new StaticHeadersWriter("Cache-Control",
-								"no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0"))
-						.addHeaderWriter(new StaticHeadersWriter("Pragma", "no-cache"))
-						.referrerPolicy(referrer -> referrer.policy(ReferrerPolicy.SAME_ORIGIN)))
-				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-						.invalidSessionUrl("/")
-						.sessionConcurrency(concurrency -> concurrency.maximumSessions(1).expiredUrl("/")
-								.maxSessionsPreventsLogin(true) // Prevent new logins if the max sessions are reached
-								.sessionRegistry(sessionRegistry())))
-				.securityContext(context -> context.securityContextRepository(securityContextRepository())
+	    http
+	        .addFilterBefore(disableOptionsMethodFilter(), ChannelProcessingFilter.class)
+	        //.addFilterBefore(rateLimitingFilter, ChannelProcessingFilter.class)
+	        .addFilterBefore(alf, ChannelProcessingFilter.class)
+	        .headers(headers -> headers
+	            .addHeaderWriter(new StaticHeadersWriter("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload"))
+	            .xssProtection(xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
+	            .addHeaderWriter(new StaticHeadersWriter("X-Content-Type-Options", "nosniff"))
+	            .addHeaderWriter(new StaticHeadersWriter("X-Frame-Options", "DENY"))
+	            .addHeaderWriter(new StaticHeadersWriter("X-XSS-Protection", "1; mode=block"))
+	            .addHeaderWriter(new StaticHeadersWriter("Content-Security-Policy",
+	              "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; object-src 'none';"))
+	            .addHeaderWriter(new StaticHeadersWriter("Permissions-Policy", "geolocation=(self), microphone=()"))
+	            .addHeaderWriter(new StaticHeadersWriter("Expect-CT", "max-age=86400, enforce"))
+	            .addHeaderWriter(new StaticHeadersWriter("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0"))
+	            .addHeaderWriter(new StaticHeadersWriter("Pragma", "no-cache"))
+	            .referrerPolicy(referrer -> referrer.policy(ReferrerPolicy.SAME_ORIGIN))
+	        )
+	        .sessionManagement(session -> session
+	            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+	            .invalidSessionUrl("/")
+	            .sessionConcurrency(concurrency -> concurrency
+	                .maximumSessions(1)
+	                .expiredUrl("/")
+	                .maxSessionsPreventsLogin(true)
+	                .sessionRegistry(sessionRegistry()))
+	             // Enforces SameSite=Strict on JSESSIONID
+	        )
+	        .securityContext(context -> context.securityContextRepository(securityContextRepository()));
 
-				);
-		http.authorizeHttpRequests(
-				authorize -> authorize.requestMatchers(new AntPathRequestMatcher("/images/*.png")).permitAll());
-		super.configure(http);
-		setLoginView(http, Login.class);
+	    http.authorizeHttpRequests(authorize -> authorize
+	        .requestMatchers(new AntPathRequestMatcher("/images/*.png")).permitAll());
+
+	    super.configure(http);
+	    setLoginView(http, Login.class);
 	}
-
 }

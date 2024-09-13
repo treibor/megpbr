@@ -1,13 +1,22 @@
 package com.megpbr.security.captcha;
-import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.server.StreamResource;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.GradientPaint;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
-import javax.xml.transform.stream.StreamSource;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.util.Random;
+
+import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.server.StreamResource;
 public class CapthaImpl implements Captcha {
     private static final int COUNT_NUM = 6;
     private static final int WIDTH_IMG = 200;
@@ -18,11 +27,33 @@ public class CapthaImpl implements Captcha {
 
     private void getRandomString() {
         char[] chars = charsInImg.toCharArray();
-        StringBuilder tmpStr = new StringBuilder();
-        for (int i = 0; i < COUNT_NUM; i++) {
-            tmpStr.append(chars[random.nextInt(chars.length - 1)]);
+        StringBuilder tmpStr = new StringBuilder(COUNT_NUM);
+
+        // Ensure at least one character from each category
+        String numbers = "1234567890";
+        String letters = "QWERTYUIOPASDFGHJKLZXCVBNM";
+
+        // Add at least one number and one letter
+        tmpStr.append(numbers.charAt(random.nextInt(numbers.length())));
+        tmpStr.append(letters.charAt(random.nextInt(letters.length())));
+
+        // Fill the rest of the string with random characters from the full set
+        for (int i = 2; i < COUNT_NUM; i++) {
+            tmpStr.append(chars[random.nextInt(chars.length)]);
         }
-        genStr = tmpStr.toString();
+
+        // Shuffle the result to ensure randomness
+        List<Character> charsList = new ArrayList<>();
+        for (char c : tmpStr.toString().toCharArray()) {
+            charsList.add(c);
+        }
+        Collections.shuffle(charsList);
+        StringBuilder shuffledStr = new StringBuilder();
+        for (char c : charsList) {
+            shuffledStr.append(c);
+        }
+        
+        genStr = shuffledStr.toString();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.megpbr.views.login;
 
+import java.net.http.HttpResponse;
 import java.util.Base64;
 import java.util.List;
 import java.util.Random;
@@ -21,6 +22,7 @@ import com.megpbr.data.entity.UserLogin;
 import com.megpbr.data.service.EmailSender;
 import com.megpbr.data.service.UserService;
 import com.megpbr.security.AuthenticatedUser;
+import com.megpbr.security.RateLimitingService;
 import com.megpbr.security.captcha.Captcha;
 import com.megpbr.security.captcha.CapthaImpl;
 import com.megpbr.views.dashboard.HomeView;
@@ -56,10 +58,13 @@ import com.vaadin.flow.server.VaadinServletResponse;
 import com.vaadin.flow.server.WrappedSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
+import io.github.bucket4j.Bucket;
+
 @Route("login")
 @AnonymousAllowed
 public class Login extends VerticalLayout implements BeforeEnterObserver {
-
+	@Autowired
+	private RateLimitingService rateLimitingService;
 	@Autowired
 	Audit audit;
 	@Autowired
@@ -200,37 +205,49 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 
 
 	private void doLogin(String encryptedUsername, String encryptedPassword) {
-		// Handle the authentication using Spring Security
-		if (captcha.checkUserAnswer(captchatext.getValue())) {
-			String username = decryptUsername(encryptedUsername, dynamicKey);
-			String password = decryptPassword(encryptedPassword, dynamicKey);
+	    String username = decryptUsername(encryptedUsername, dynamicKey);
+	    String ipAddress = VaadinService.getCurrentRequest().getRemoteAddr(); // Get the IP address of the request
 
-			try {
-				invalidatePreviousSessionsForUser(username);
-				UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
-				Authentication authentication = this.authenticationManager.authenticate(token);
-				SecurityContextHolder.getContext().setAuthentication(authentication);
-				SecurityContext context = this.securityContextHolderStrategy.createEmptyContext();
-				context.setAuthentication(authentication);
-				this.securityContextHolderStrategy.setContext(context);
-				securityRepo.saveContext(context, VaadinServletRequest.getCurrent(),
-						VaadinServletResponse.getCurrent());
-				// registerSession(ServletContext, (UserDetails) authentication.getPrincipal());
-				registerSession(VaadinService.getCurrentRequest().getWrappedSession(),
-						(UserDetails) authentication.getPrincipal());
-				audit.saveLoginAudit("Login Successfully", username);
-				UI.getCurrent().navigate(HomeView.class);
-			} catch (Exception e) {
-				// Handle login failure
-				audit.saveLoginAudit("Login Failure", username);
-				Notification.show("Login failed: " + e.getMessage()).addThemeVariants(NotificationVariant.LUMO_ERROR);
-				clearFields();
-			}
-		} else {
-			Notification.show("Invalid captcha").addThemeVariants(NotificationVariant.LUMO_ERROR);
-			clearFields();
-			// audit.saveLoginAudit("Login Failure- Captcha", username);
-		}
+	    // Resolve the rate limit buckets for IP address and username
+	    Bucket ipBucket = rateLimitingService.getBucketForIpAddress(ipAddress);
+	    Bucket usernameBucket = rateLimitingService.getBucketForUsername(username);
+
+	    // Check if the user is allowed to make the login attempt based on IP address and username
+	    boolean allowedByIp = ipBucket.tryConsume(1);
+	    boolean allowedByUsername = usernameBucket.tryConsume(1);
+
+	    if (allowedByIp && allowedByUsername) {
+	        if (captcha.checkUserAnswer(captchatext.getValue())) {
+	            String password = decryptPassword(encryptedPassword, dynamicKey);
+
+	            try {
+	                invalidatePreviousSessionsForUser(username);
+	                UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
+	                Authentication authentication = this.authenticationManager.authenticate(token);
+	                SecurityContextHolder.getContext().setAuthentication(authentication);
+	                SecurityContext context = this.securityContextHolderStrategy.createEmptyContext();
+	                context.setAuthentication(authentication);
+	                this.securityContextHolderStrategy.setContext(context);
+	                securityRepo.saveContext(context, VaadinServletRequest.getCurrent(), VaadinServletResponse.getCurrent());
+	                registerSession(VaadinService.getCurrentRequest().getWrappedSession(), (UserDetails) authentication.getPrincipal());
+	                audit.saveLoginAudit("Login Successfully", username);
+	                UI.getCurrent().navigate(HomeView.class);
+	            } catch (Exception e) {
+	                audit.saveLoginAudit("Login Failure", username);
+	                Notification.show("Login failed: " + e.getMessage()).addThemeVariants(NotificationVariant.LUMO_ERROR);
+	                clearFields();
+	            }
+	        } else {
+	            Notification.show("Invalid captcha").addThemeVariants(NotificationVariant.LUMO_ERROR);
+	            clearFields();
+	        }
+	    } else {
+	        // Rate limit exceeded
+	    	//HttpResponse.setStatus(429);
+	        Notification.show("Too many login attempts. Please try again later.").addThemeVariants(NotificationVariant.LUMO_ERROR);
+	        audit.saveLoginAudit("Login Failure - Rate Limiting", username);
+	        clearFields();
+	    }
 	}
 	private String encryptClientSide(String value, String key) {
         // Implement client-side encryption logic here

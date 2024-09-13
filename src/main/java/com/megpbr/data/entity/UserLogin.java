@@ -34,13 +34,17 @@ public class UserLogin {
 	private String name;
 	@Length(min = 1, max = 255, message = "Character Limit Exceeded")
 	@Column(unique = true)
-	@NotEmpty
+	//@NotEmpty
 	@Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$", message = "Invalid email address")
-	@Length(min = 1, max = 30, message = "Character Limit Exceeded")
+	@Length(min = 0, max = 30, message = "Character Limit Exceeded")
 	private String email;
 	private boolean enabled;
 	// @JsonIgnore
 	private String hashedPassword;
+	private String oldPassword1;
+	private String oldPassword2;
+	private String oldPassword3;
+	
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
 	private List<UserRole> Roles;
 	@Column(length = 1000000)
@@ -173,6 +177,29 @@ public class UserLogin {
 
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+	}
+	public String getOldPassword1() {
+		return oldPassword1;
+	}
+
+	public void setOldPassword1(String oldPassword1) {
+		this.oldPassword1 = oldPassword1;
+	}
+
+	public String getOldPassword2() {
+		return oldPassword2;
+	}
+
+	public void setOldPassword2(String oldPassword2) {
+		this.oldPassword2 = oldPassword2;
+	}
+
+	public String getOldPassword3() {
+		return oldPassword3;
+	}
+
+	public void setOldPassword3(String oldPassword3) {
+		this.oldPassword3 = oldPassword3;
 	}
 
 }
