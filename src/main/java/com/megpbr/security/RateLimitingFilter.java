@@ -1,110 +1,76 @@
 package com.megpbr.security;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.Duration;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Component;
-
-import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.notification.Notification;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Bucket4j;
 import io.github.bucket4j.Refill;
-import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class RateLimitingFilter implements Filter {
+public class RateLimitingFilter extends OncePerRequestFilter {
 
-    private final Map<String, Bucket> ipBuckets = new ConcurrentHashMap<>();
-    private static final int MAIN_REQUEST_THRESHOLD = 200; // Adjust as needed
-    private static final int OTHER_REQUEST_THRESHOLD = 200; // Adjust as needed
-
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-    }
+    // Map to store buckets for each IP address
+    private final ConcurrentHashMap<String, Bucket> ipBuckets = new ConcurrentHashMap<>();
+    
+    // Configuration: max 10 AJAX requests per minute
+    private static final int REQUEST_THRESHOLD = 10;
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+    	
+        // Check if the request method is POST and contains 'v-r=uidl' in the query string
+        if ("POST".equalsIgnoreCase(request.getMethod()) &&
+            request.getQueryString() != null &&
+            request.getQueryString().contains("v-r=uidl")) {
+        	System.out.println(isLoginAttempt(request));
+            String clientIP = request.getRemoteAddr();
+            Bucket bucket = ipBuckets.computeIfAbsent(clientIP, this::createBucket);
 
-        String clientIP = getClientIP(httpRequest);
-        String requestURI = httpRequest.getRequestURI();
-        String normalizedURI = normalizeURI(requestURI);
-
-        // Determine if the request is a resource request
-        boolean isResourceRequest = isResourceRequest(normalizedURI);
-
-        // Determine bucket based on request type
-        Bucket bucket;
-        if (isResourceRequest) {
-            // Skip rate limiting for resource requests
-           // System.out.println("Resource request: " + requestURI + " - not rate-limited.");
-            chain.doFilter(request, response);
-            return;
-        } else if ("/login".equals(normalizedURI)) {
-            bucket = ipBuckets.computeIfAbsent(clientIP, this::createMainRequestBucket);
-            //System.out.println("Rate limiting applied to /login for IP " + clientIP);
+            if (bucket.tryConsume(1)) {
+                // Allow the request if tokens are available
+                filterChain.doFilter(request, response);
+            } else {
+                // Rate limit exceeded, respond with HTTP 429 (Too Many Requests)
+                response.setStatus(429);
+                response.getWriter().write("Too many requests. Please try again later.");
+                System.out.println("Rate limit exceeded for IP: " + clientIP);
+                return;
+            }
         } else {
-            bucket = ipBuckets.computeIfAbsent(clientIP, this::createOtherRequestBucket);
-            //System.out.println("Rate limiting applied to other paths for IP " + clientIP);
-        }
-
-        long availableTokens = bucket.getAvailableTokens();
-        //System.out.println("Available tokens for " + clientIP + ": " + availableTokens);
-
-        if (bucket.tryConsume(1)) {
-            chain.doFilter(request, response);
-        } else {
-        	httpResponse.setStatus(429); // 429 Too Many Requests
-            httpResponse.getWriter().write("Too many requests");
-            //System.out.println("Rate limit exceeded for IP " + clientIP);
+            // Proceed with the request if it's not an AJAX request or not a POST request with 'v-r=uidl'
+            filterChain.doFilter(request, response);
         }
     }
 
-    private boolean isResourceRequest(String uri) {
-        return uri.startsWith("/VAADIN/") || uri.startsWith("/resources/") ||
-               uri.endsWith("/error") || uri.endsWith(".css") || uri.endsWith(".js") ||
-               uri.endsWith(".png") || uri.endsWith(".jpg") || uri.endsWith(".svg");
-    }
-
-    private String getClientIP(HttpServletRequest request) {
-        String ipAddress = request.getHeader("X-Forwarded-For");
-        if (ipAddress == null || ipAddress.isEmpty()) {
-            ipAddress = request.getRemoteAddr();
-        }
-        return ipAddress;
-    }
-
-    private String normalizeURI(String uri) {
-        return uri.startsWith("/") ? uri : "/" + uri;
-    }
-
-    private Bucket createMainRequestBucket(String key) {
-        Refill refill = Refill.greedy(MAIN_REQUEST_THRESHOLD, Duration.ofMinutes(1));
-        Bandwidth limit = Bandwidth.classic(MAIN_REQUEST_THRESHOLD, refill);
+    // Method to create a new bucket with the rate limit configuration
+    private Bucket createBucket(String key) {
+        Refill refill = Refill.intervally(REQUEST_THRESHOLD, Duration.ofMinutes(1));
+        Bandwidth limit = Bandwidth.classic(REQUEST_THRESHOLD, refill);
         return Bucket4j.builder().addLimit(limit).build();
     }
+    private boolean isLoginAttempt(HttpServletRequest request) throws IOException {
+        // Read and parse the request body
+        StringBuilder requestBody = new StringBuilder();
+        BufferedReader reader = request.getReader();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            requestBody.append(line);
+        }
 
-    private Bucket createOtherRequestBucket(String key) {
-        Refill refill = Refill.greedy(OTHER_REQUEST_THRESHOLD, Duration.ofMinutes(1));
-        Bandwidth limit = Bandwidth.classic(OTHER_REQUEST_THRESHOLD, refill);
-        return Bucket4j.builder().addLimit(limit).build();
-    }
-
-    @Override
-    public void destroy() {
+        // Check if login data is present in the request body
+        String body = requestBody.toString();
+        return body.contains("username") && body.contains("password");
     }
 }

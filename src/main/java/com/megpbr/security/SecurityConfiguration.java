@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -159,14 +160,14 @@ public class SecurityConfiguration extends VaadinWebSecurity {
 //		super.configure(http);
 //		setLoginView(http, Login.class);
 //	}
-	@Autowired
-	AjaxRateLimitingFilter alf;
+	
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 	    http
 	        .addFilterBefore(disableOptionsMethodFilter(), ChannelProcessingFilter.class)
-	        //.addFilterBefore(rateLimitingFilter, ChannelProcessingFilter.class)
-	        .addFilterBefore(alf, ChannelProcessingFilter.class)
+	        .addFilterBefore(rateLimitingFilter, ChannelProcessingFilter.class)
+	        //.addFilterBefore(loginRateLimitingFilter, ChannelProcessingFilter.class)
 	        .headers(headers -> headers
 	            .addHeaderWriter(new StaticHeadersWriter("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload"))
 	            .xssProtection(xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))

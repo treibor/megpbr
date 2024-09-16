@@ -1,6 +1,6 @@
 package com.megpbr.views.login;
 
-import java.net.http.HttpResponse;
+
 import java.util.Base64;
 import java.util.List;
 import java.util.Random;
@@ -38,6 +38,7 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.Input;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -57,8 +58,6 @@ import com.vaadin.flow.server.VaadinServletRequest;
 import com.vaadin.flow.server.VaadinServletResponse;
 import com.vaadin.flow.server.WrappedSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
-
-import io.github.bucket4j.Bucket;
 
 @Route("login")
 @AnonymousAllowed
@@ -104,13 +103,15 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 		TextField usernameField = new TextField("Username");
         PasswordField passwordField = new PasswordField("Password");
         Button loginButton = new Button("Login");
-
+        TextField hiddenField = new TextField("login", "true");
+        hiddenField.setVisible(false);
         usernameField.getElement().setAttribute("autocomplete", "off");
         passwordField.getElement().setAttribute("autocomplete", "off");
 
         loginButton.addClickListener(e -> {
             String encryptedUsername = encryptClientSide(usernameField.getValue(), dynamicKey);
             String encryptedPassword = encryptClientSide(passwordField.getValue(), dynamicKey);
+            String parameter=hiddenField.getValue().trim();
             doLogin(encryptedUsername, encryptedPassword);
         });
 
@@ -133,7 +134,11 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 	    return key.toString();
 	}
 	private Component createPasswordForm() {
-
+		 Input hiddenField = new Input();
+		    hiddenField.setValue("login");
+		    //hiddenField.setAttribute("type", "hidden");
+		//TextField hiddenField = new TextField("login", "true");
+        hiddenField.setVisible(false);
 		// captchacontainer.add(getCaptcha(), refreshButton);
 		usernameField.setRequired(true);
 		usernameField.setAllowedCharPattern("[0-9A-Za-z@]");
@@ -154,8 +159,10 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
         passwordField.getElement().setAttribute("autocomplete", "off");
 
         button.addClickListener(e -> {
+        	// VaadinService.getCurrentRequest().getWrappedRequest().setAttribute("Login-URL", "/custom-login");
             String encryptedUsername = encryptClientSide(usernameField.getValue(), dynamicKey);
             String encryptedPassword = encryptClientSide(passwordField.getValue(), dynamicKey);
+            String parameter=hiddenField.getValue().trim();
             doLogin(encryptedUsername, encryptedPassword);
         });
 
@@ -168,6 +175,7 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 
 		form.add(getCaptcha(), 1);
 		form.add(new Span(), 1);
+		form.add(hiddenField, 1);
 		form.add(captchatext, 1);
 		// form.add(, 1);
 		form.add(button, 1);
@@ -205,50 +213,40 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 
 
 	private void doLogin(String encryptedUsername, String encryptedPassword) {
-	    String username = decryptUsername(encryptedUsername, dynamicKey);
-	    String ipAddress = VaadinService.getCurrentRequest().getRemoteAddr(); // Get the IP address of the request
+		
+			String username = decryptUsername(encryptedUsername, dynamicKey);
+			if (captcha.checkUserAnswer(captchatext.getValue())) {
+				String password = decryptPassword(encryptedPassword, dynamicKey);
 
-	    // Resolve the rate limit buckets for IP address and username
-	    Bucket ipBucket = rateLimitingService.getBucketForIpAddress(ipAddress);
-	    Bucket usernameBucket = rateLimitingService.getBucketForUsername(username);
+				try {
+					invalidatePreviousSessionsForUser(username);
+					UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username,
+							password);
+					Authentication authentication = this.authenticationManager.authenticate(token);
+					SecurityContextHolder.getContext().setAuthentication(authentication);
+					SecurityContext context = this.securityContextHolderStrategy.createEmptyContext();
+					context.setAuthentication(authentication);
+					this.securityContextHolderStrategy.setContext(context);
+					securityRepo.saveContext(context, VaadinServletRequest.getCurrent(),
+							VaadinServletResponse.getCurrent());
+					registerSession(VaadinService.getCurrentRequest().getWrappedSession(),
+							(UserDetails) authentication.getPrincipal());
+					audit.saveLoginAudit("Login Successfully", username);
+					UI.getCurrent().navigate(HomeView.class);
+				} catch (Exception e) {
+					audit.saveLoginAudit("Login Failure", username);
 
-	    // Check if the user is allowed to make the login attempt based on IP address and username
-	    boolean allowedByIp = ipBucket.tryConsume(1);
-	    boolean allowedByUsername = usernameBucket.tryConsume(1);
-
-	    if (allowedByIp && allowedByUsername) {
-	        if (captcha.checkUserAnswer(captchatext.getValue())) {
-	            String password = decryptPassword(encryptedPassword, dynamicKey);
-
-	            try {
-	                invalidatePreviousSessionsForUser(username);
-	                UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
-	                Authentication authentication = this.authenticationManager.authenticate(token);
-	                SecurityContextHolder.getContext().setAuthentication(authentication);
-	                SecurityContext context = this.securityContextHolderStrategy.createEmptyContext();
-	                context.setAuthentication(authentication);
-	                this.securityContextHolderStrategy.setContext(context);
-	                securityRepo.saveContext(context, VaadinServletRequest.getCurrent(), VaadinServletResponse.getCurrent());
-	                registerSession(VaadinService.getCurrentRequest().getWrappedSession(), (UserDetails) authentication.getPrincipal());
-	                audit.saveLoginAudit("Login Successfully", username);
-	                UI.getCurrent().navigate(HomeView.class);
-	            } catch (Exception e) {
-	                audit.saveLoginAudit("Login Failure", username);
-	                Notification.show("Login failed: " + e.getMessage()).addThemeVariants(NotificationVariant.LUMO_ERROR);
-	                clearFields();
-	            }
-	        } else {
-	            Notification.show("Invalid captcha").addThemeVariants(NotificationVariant.LUMO_ERROR);
-	            clearFields();
-	        }
-	    } else {
-	        // Rate limit exceeded
-	    	//HttpResponse.setStatus(429);
-	        Notification.show("Too many login attempts. Please try again later.").addThemeVariants(NotificationVariant.LUMO_ERROR);
-	        audit.saveLoginAudit("Login Failure - Rate Limiting", username);
-	        clearFields();
-	    }
+					Notification.show("Login failed: " + e.getMessage())
+							.addThemeVariants(NotificationVariant.LUMO_ERROR);
+					clearFields();
+				}
+			} else {
+				Notification.show("Invalid captcha").addThemeVariants(NotificationVariant.LUMO_ERROR);
+				clearFields();
+			}
+		
 	}
+	
 	private String encryptClientSide(String value, String key) {
         // Implement client-side encryption logic here
         return Base64.getEncoder().encodeToString(value.getBytes());
@@ -342,6 +340,7 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 	}
 
 	private void clearFields() {
+		
 		regenerateCaptcha();
 		button.setEnabled(true);
 		passwordField.setValue("");
