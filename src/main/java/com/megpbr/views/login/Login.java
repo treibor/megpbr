@@ -22,7 +22,6 @@ import com.megpbr.data.entity.UserLogin;
 import com.megpbr.data.service.EmailSender;
 import com.megpbr.data.service.UserService;
 import com.megpbr.security.AuthenticatedUser;
-import com.megpbr.security.RateLimitingService;
 import com.megpbr.security.captcha.Captcha;
 import com.megpbr.security.captcha.CapthaImpl;
 import com.megpbr.views.dashboard.HomeView;
@@ -62,8 +61,7 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 @Route("login")
 @AnonymousAllowed
 public class Login extends VerticalLayout implements BeforeEnterObserver {
-	@Autowired
-	private RateLimitingService rateLimitingService;
+	
 	@Autowired
 	Audit audit;
 	@Autowired
@@ -372,7 +370,7 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 		if (authenticatedUser.get().isPresent()) {
 			// Already logged in
 			// loginOverlay.setOpened(false);
-			event.forwardTo("");
+			event.forwardTo("/home");
 		}
 
 		// loginOverlay.setError(event.getLocation().getQueryParameters().getParameters().containsKey("error"));

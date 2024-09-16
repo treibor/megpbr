@@ -28,7 +28,7 @@ import jakarta.annotation.security.PermitAll;
 
 @PermitAll
 @PageTitle("Home")
-@Route(value = "", layout = MainLayout.class)
+@Route(value = "home", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
 public class HomeView extends VerticalLayout {
 	private static final long serialVersionUID = 1L;
