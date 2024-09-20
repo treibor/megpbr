@@ -158,6 +158,7 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 
         button.addClickListener(e -> {
         	// VaadinService.getCurrentRequest().getWrappedRequest().setAttribute("Login-URL", "/custom-login");
+        	
             String encryptedUsername = encryptClientSide(usernameField.getValue(), dynamicKey);
             String encryptedPassword = encryptClientSide(passwordField.getValue(), dynamicKey);
             String parameter=hiddenField.getValue().trim();
@@ -211,7 +212,7 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 
 
 	private void doLogin(String encryptedUsername, String encryptedPassword) {
-		
+		//System.out.println("LIAHHHHHHHHHH");
 			String username = decryptUsername(encryptedUsername, dynamicKey);
 			if (captcha.checkUserAnswer(captchatext.getValue())) {
 				String password = decryptPassword(encryptedPassword, dynamicKey);

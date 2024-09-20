@@ -19,7 +19,7 @@ public class CustomErrorHandler implements ErrorHandler, Serializable {
 
 	@Override
     public void error(ErrorEvent event) {
-        // Check if the error is caused by an invalid JSON response
+		  UI.getCurrent().getPage().setLocation("/login");
         if (event.getThrowable().getCause() instanceof IllegalStateException &&
             event.getThrowable().getCause().getMessage().contains("Invalid JSON")) {
             // Suppress the error and redirect to login page

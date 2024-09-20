@@ -17,6 +17,8 @@ public class MyServiceInitListener implements VaadinServiceInitListener, Seriali
 
 	@Override
     public void serviceInit(ServiceInitEvent event) {
+		//System.out.println("Testing");
+		
         event.getSource().addSessionInitListener(sessionInitEvent -> {
             VaadinSession session = sessionInitEvent.getSession();
             session.setErrorHandler(new CustomErrorHandler());

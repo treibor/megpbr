@@ -36,6 +36,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		UserLogin user = userRepository.findByUserNameAndEnabled(username, true);
 		if (user == null) {
 			//audit.saveAudit("Login Failure", username);
+			//System.out.println("Login Fail");
 			throw new UsernameNotFoundException("No user present with username: " + username);
 		} else {
 			//audit.saveAudit("Login Success", username);
