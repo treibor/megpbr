@@ -97,7 +97,7 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
         add(createPasswordForm());
 		getStyle().set("background-color", "hsla(0, 0%, 95%, 0.69)");
 	}
-	public void createLoginForm() {
+	public void createLoginFormxx() {
 		TextField usernameField = new TextField("Username");
         PasswordField passwordField = new PasswordField("Password");
         Button loginButton = new Button("Login");
@@ -163,6 +163,7 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
             String encryptedPassword = encryptClientSide(passwordField.getValue(), dynamicKey);
             String parameter=hiddenField.getValue().trim();
             doLogin(encryptedUsername, encryptedPassword);
+            
         });
 
 		anchor.getStyle().set("color", "hsla(119, 93%, 29%, 0.90)").set("padding-bottom", "20px");
@@ -218,7 +219,7 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 				String password = decryptPassword(encryptedPassword, dynamicKey);
 
 				try {
-					invalidatePreviousSessionsForUser(username);
+					
 					UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username,
 							password);
 					Authentication authentication = this.authenticationManager.authenticate(token);
@@ -230,7 +231,9 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 							VaadinServletResponse.getCurrent());
 					registerSession(VaadinService.getCurrentRequest().getWrappedSession(),
 							(UserDetails) authentication.getPrincipal());
+					invalidatePreviousSessionsForUser(username);
 					audit.saveLoginAudit("Login Successfully", username);
+					
 					UI.getCurrent().navigate(HomeView.class);
 				} catch (Exception e) {
 					audit.saveLoginAudit("Login Failure", username);
@@ -238,10 +241,12 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 					Notification.show("Login failed: " + e.getMessage())
 							.addThemeVariants(NotificationVariant.LUMO_ERROR);
 					clearFields();
+					UI.getCurrent().getPage().reload();
 				}
 			} else {
 				Notification.show("Invalid captcha").addThemeVariants(NotificationVariant.LUMO_ERROR);
 				clearFields();
+				UI.getCurrent().getPage().reload();
 			}
 		
 	}

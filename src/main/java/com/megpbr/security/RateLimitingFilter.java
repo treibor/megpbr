@@ -21,12 +21,12 @@ import jakarta.servlet.http.HttpServletResponse;
 public class RateLimitingFilter extends OncePerRequestFilter {
 
 	private final ConcurrentHashMap<String, Bucket> ipBuckets = new ConcurrentHashMap<>();
-	private static final int REQUEST_THRESHOLD = 20;
+	private static final int REQUEST_THRESHOLD = 30;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		String requestURI = request.getRequestURI();
+		
 		if ("POST".equalsIgnoreCase(request.getMethod()) && request.getQueryString() != null
 				&& request.getQueryString().contains("v-r=uidl")) {
 
@@ -51,6 +51,11 @@ public class RateLimitingFilter extends OncePerRequestFilter {
 		Refill refill = Refill.intervally(REQUEST_THRESHOLD, Duration.ofMinutes(2));
 		Bandwidth limit = Bandwidth.classic(REQUEST_THRESHOLD, refill);
 		return Bucket4j.builder().addLimit(limit).build();
+	}
+	private boolean isValidUserAgent(String userAgent) {
+	    // Check for common browser user agents (Chrome, Firefox, Safari, etc.)
+	    // Customize this list based on your needs
+	    return userAgent.contains("Chrome") || userAgent.contains("Firefox") || userAgent.contains("Safari");
 	}
     
 }

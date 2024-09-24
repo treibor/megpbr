@@ -160,14 +160,14 @@ public class SecurityConfiguration extends VaadinWebSecurity {
 //		super.configure(http);
 //		setLoginView(http, Login.class);
 //	}
-	
-
+	@Autowired
+	private RateLimitingFilter2 rl2;
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 	    http
 	        .addFilterBefore(disableOptionsMethodFilter(), ChannelProcessingFilter.class)
 	        .addFilterBefore(rateLimitingFilter, ChannelProcessingFilter.class)
-	        //.addFilterBefore(loginRateLimitingFilter, ChannelProcessingFilter.class)
+	        //.addFilterBefore(rl2, ChannelProcessingFilter.class)
 	        .headers(headers -> headers
 	            .addHeaderWriter(new StaticHeadersWriter("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload"))
 	            .xssProtection(xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
