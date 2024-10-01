@@ -219,7 +219,7 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 				String password = decryptPassword(encryptedPassword, dynamicKey);
 
 				try {
-					
+					invalidatePreviousSessionsForUser(username);
 					UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username,
 							password);
 					Authentication authentication = this.authenticationManager.authenticate(token);
@@ -231,7 +231,7 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 							VaadinServletResponse.getCurrent());
 					registerSession(VaadinService.getCurrentRequest().getWrappedSession(),
 							(UserDetails) authentication.getPrincipal());
-					invalidatePreviousSessionsForUser(username);
+					
 					audit.saveLoginAudit("Login Successfully", username);
 					
 					UI.getCurrent().navigate(HomeView.class);

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +15,7 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.session.ConcurrentSessionControlAuthenticationStrategy;
 import org.springframework.security.web.context.DelegatingSecurityContextRepository;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
@@ -160,13 +160,13 @@ public class SecurityConfiguration extends VaadinWebSecurity {
 //		super.configure(http);
 //		setLoginView(http, Login.class);
 //	}
-	@Autowired
-	private RateLimitingFilter2 rl2;
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 	    http
+	    //.addFilterBefore(rateLimitingFilter, ChannelProcessingFilter.class)
 	        .addFilterBefore(disableOptionsMethodFilter(), ChannelProcessingFilter.class)
-	        .addFilterBefore(rateLimitingFilter, ChannelProcessingFilter.class)
+	        .addFilterAfter(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
 	        //.addFilterBefore(rl2, ChannelProcessingFilter.class)
 	        .headers(headers -> headers
 	            .addHeaderWriter(new StaticHeadersWriter("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload"))

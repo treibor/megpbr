@@ -1,10 +1,11 @@
 package com.megpbr.security;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -26,23 +27,30 @@ public class RateLimitingFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null && authentication.isAuthenticated()) {
+			// System.out.println("User is logged in: " + authentication.getName());
+			filterChain.doFilter(request, response); // Proceed without rate limiting
+			return;
+		}
+
 		if ("POST".equalsIgnoreCase(request.getMethod()) && request.getQueryString() != null
 				&& request.getQueryString().contains("v-r=uidl")) {
-
+			//System.out.println("Rate limit Filter Applied "  );
 			String clientIP = request.getRemoteAddr();
 			Bucket bucket = ipBuckets.computeIfAbsent(clientIP, this::createBucket);
-
+			System.out.println("Rate limit for IP: " + clientIP);
 			if (bucket.tryConsume(1)) {
 				filterChain.doFilter(request, response);
 			} else {
 				response.setStatus(429);
 				response.getWriter().write("Too many requests. Please try again later.");
-				// System.out.println("Rate limit exceeded for IP: " + clientIP);
+				System.out.println("Rate limit exceeded for IP: " + clientIP);
 				response.getWriter().flush();
 				return;
 			}
 		} else {
+			//System.out.println("Free"  );
 			filterChain.doFilter(request, response);
 		}
 	}
@@ -52,10 +60,5 @@ public class RateLimitingFilter extends OncePerRequestFilter {
 		Bandwidth limit = Bandwidth.classic(REQUEST_THRESHOLD, refill);
 		return Bucket4j.builder().addLimit(limit).build();
 	}
-	private boolean isValidUserAgent(String userAgent) {
-	    // Check for common browser user agents (Chrome, Firefox, Safari, etc.)
-	    // Customize this list based on your needs
-	    return userAgent.contains("Chrome") || userAgent.contains("Firefox") || userAgent.contains("Safari");
-	}
-    
+
 }
