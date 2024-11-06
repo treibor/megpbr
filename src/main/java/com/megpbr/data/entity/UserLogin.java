@@ -38,7 +38,7 @@ public class UserLogin {
 	@Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$", message = "Invalid email address")
 	@Length(min = 0, max = 30, message = "Character Limit Exceeded")
 	private String email;
-	private boolean enabled;
+	private boolean enabled=true;
 	// @JsonIgnore
 	private String hashedPassword;
 	private String oldPassword1;

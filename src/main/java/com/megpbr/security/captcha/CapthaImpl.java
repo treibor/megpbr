@@ -22,37 +22,39 @@ public class CapthaImpl implements Captcha {
     private static final int WIDTH_IMG = 200;
     private static final int HEIGHT_IMG = 40;
     private String genStr;
-    private String charsInImg = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890";
+    private String charsInImg = "QWERTYUIOPASDFGHJKLZXCVBNMabcdefghijklmnopqrstuvwxyz1234567890";
     private Random random = new Random(System.nanoTime());
 
     private void getRandomString() {
-        char[] chars = charsInImg.toCharArray();
         StringBuilder tmpStr = new StringBuilder(COUNT_NUM);
 
         // Ensure at least one character from each category
         String numbers = "1234567890";
-        String letters = "QWERTYUIOPASDFGHJKLZXCVBNM";
+        String upperCaseLetters = "QWERTYUIOPASDFGHJKLZXCVBNM";
+        String lowerCaseLetters = "abcdefghijklmnopqrstuvwxyz";
 
-        // Add at least one number and one letter
+        // Add at least one number, one uppercase letter, and one lowercase letter
         tmpStr.append(numbers.charAt(random.nextInt(numbers.length())));
-        tmpStr.append(letters.charAt(random.nextInt(letters.length())));
+        tmpStr.append(upperCaseLetters.charAt(random.nextInt(upperCaseLetters.length())));
+        tmpStr.append(lowerCaseLetters.charAt(random.nextInt(lowerCaseLetters.length())));
 
-        // Fill the rest of the string with random characters from the full set
-        for (int i = 2; i < COUNT_NUM; i++) {
-            tmpStr.append(chars[random.nextInt(chars.length)]);
+        // Fill the rest with random characters from the full set
+        for (int i = 3; i < COUNT_NUM; i++) {
+            tmpStr.append(charsInImg.charAt(random.nextInt(charsInImg.length())));
         }
 
-        // Shuffle the result to ensure randomness
+        // Shuffle characters for randomness
         List<Character> charsList = new ArrayList<>();
         for (char c : tmpStr.toString().toCharArray()) {
             charsList.add(c);
         }
         Collections.shuffle(charsList);
+
         StringBuilder shuffledStr = new StringBuilder();
         for (char c : charsList) {
             shuffledStr.append(c);
         }
-        
+
         genStr = shuffledStr.toString();
     }
 
@@ -63,18 +65,23 @@ public class CapthaImpl implements Captcha {
         Graphics2D graphics = bufferedImage.createGraphics();
         Font font = new Font("Charlemagne Std", Font.BOLD, 25);
         graphics.setFont(font);
+        
+        // Rendering hints for quality
         RenderingHints hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         hints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         graphics.addRenderingHints(hints);
-        GradientPaint blackToGray = new GradientPaint(50, 50, Color.BLACK,300, 100, Color.LIGHT_GRAY);
+
+        // Background gradient
+        GradientPaint blackToGray = new GradientPaint(50, 50, Color.BLACK, 300, 100, Color.LIGHT_GRAY);
         graphics.setPaint(blackToGray);
-        graphics.fillRect(0,0, WIDTH_IMG, HEIGHT_IMG);
+        graphics.fillRect(0, 0, WIDTH_IMG, HEIGHT_IMG);
+        
+        // Draw CAPTCHA characters
         graphics.setColor(new Color(25, 159, 110));
         int x = 0;
-        int y;
         for (int i = 0; i < genStr.length(); i++) {
-            x += 10 + (Math.abs(random.nextInt()) % 15);
-            y = 20 + Math.abs(random.nextInt()) % 20;
+            x += 10 + random.nextInt(15);
+            int y = 20 + random.nextInt(20);
             graphics.drawChars(genStr.toCharArray(), i, 1, x, y);
         }
         graphics.dispose();
@@ -87,13 +94,13 @@ public class CapthaImpl implements Captcha {
     }
 
     @Override
-    public Image getCaptchaImg(){
-        try {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    public Image getCaptchaImg() {
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
             ImageIO.write(getCaptchaBufferedImage(), "png", bos);
             StreamResource streamResource = new StreamResource("img.png", () -> new ByteArrayInputStream(bos.toByteArray()));
             return new Image(streamResource, "img.png");
-        }catch (IOException e){
+        } catch (IOException e) {
+            e.printStackTrace();
             return null;
         }
     }

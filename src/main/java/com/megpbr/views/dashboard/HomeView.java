@@ -131,7 +131,7 @@ public class HomeView extends VerticalLayout {
 			break;
 		case 7:
 			 icon = VaadinIcon.VAADIN_H.create();
-			long title7=dservice.getMonthData();
+			long title7=dservice.getCurrentMonthData();
 			title = ""+title7;
 			description = "PBR Entered in the Current Month";
 			break;
