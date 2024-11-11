@@ -4,14 +4,15 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
+import com.megpbr.security.CustomErrorHandler;
 import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.server.AppShellSettings;
 import com.vaadin.flow.server.PWA;
-import com.vaadin.flow.server.VaadinRequest;
-import com.vaadin.flow.server.VaadinResponse;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.Theme;
+
+import jakarta.annotation.PostConstruct;
 
 /**
  * The entry point of the Spring Boot application.
@@ -39,5 +40,6 @@ public class Application extends SpringBootServletInitializer implements AppShel
 		settings.setPageTitle("MegPbr");
 	}
 
+	
 	
 }

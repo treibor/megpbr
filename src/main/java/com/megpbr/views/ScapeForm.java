@@ -808,13 +808,13 @@ public class ScapeForm extends Div {
 		var imageform = new FormLayout();
 		
 		imageLayout1.add(createUpload(upload1));
-		upload1.addFinishedListener(e->showPicture(imageLayout1,imageContainer1, buffer1, photo1Source));
+		upload1.addFinishedListener(e -> showPicture(imageLayout1, imageContainer1, buffer1, photo1Source, upload1));
 		imageLayout2.add(createUpload(upload2), imageContainer2);
-		upload2.addFinishedListener(e->showPicture(imageLayout2,imageContainer2, buffer2, photo2Source));
+		upload2.addFinishedListener(e->showPicture(imageLayout2,imageContainer2, buffer2, photo2Source, upload2));
 		imageLayout3.add(createUpload(upload3), imageContainer3);
-		upload3.addFinishedListener(e->showPicture(imageLayout3,imageContainer3, buffer3, photo3Source));
+		upload3.addFinishedListener(e->showPicture(imageLayout3,imageContainer3, buffer3, photo3Source,  upload3));
 		imageLayout4.add(createUpload(upload4), imageContainer4);
-		upload4.addFinishedListener(e->showPicture(imageLayout4,imageContainer4, buffer4, photo4Source));
+		upload4.addFinishedListener(e->showPicture(imageLayout4,imageContainer4, buffer4, photo4Source, upload4));
 		imageform.add(imageLayout1,3);
 		imageform.add(photo1Source, 3);
 		imageform.add(imageLayout2,3);
@@ -845,26 +845,57 @@ public class ScapeForm extends Div {
 		
 		return upload;
 	}
-	public void showPicture(HorizontalLayout imageLayout, Div imageContainer, MemoryBuffer buffer, TextField textfield) {
-		try {
-			//textfield.setVisible(true);
-			//textfield.setPlaceholder("Source of The Above Photo");
-			imageLayout.remove(imageContainer);
-			imageContainer.removeAll();
-			StreamResource resource = new StreamResource("inputimage",
-					() -> new ByteArrayInputStream(getImageAsByteArray(buffer)));
-			Image image = new Image(resource, "No Photo to display");
-			imageContainer.setWidth("100px");
-			imageContainer.setHeight("100px");
-			image.setSizeFull();
-			imageContainer.add(image);
-			//System.out.println("Hello");
-			imageLayout.add(imageContainer);
-			//imageContainer.get
-		} catch (Exception e) {
-			
-			Notification.show("Error" + e);
-		}
+	public void showPicture(HorizontalLayout imageLayout, Div imageContainer, MemoryBuffer buffer, TextField textfield, Upload upload) {
+	    try {
+	        // Check MIME type
+	        String mimeType = buffer.getFileData().getMimeType();
+	        if (mimeType == null || !mimeType.startsWith("image/")) {
+	            Notification.show("The file is not a valid image file.").addThemeVariants(NotificationVariant.LUMO_ERROR);
+	            return; // Exit if not a valid image
+	        }
+
+	        // Convert buffer content to byte array
+	        byte[] imageData = getImageAsByteArray(buffer, upload);
+	        if (imageData == null) {
+	            // Exit if the image data is null (already notified in getImageAsByteArray)
+	            return;
+	        }
+
+	        // Proceed to display the image
+	        imageLayout.remove(imageContainer);
+	        imageContainer.removeAll();
+	        StreamResource resource = new StreamResource("inputimage", () -> new ByteArrayInputStream(imageData));
+	        Image image = new Image(resource, "No Photo to display");
+	        imageContainer.setWidth("100px");
+	        imageContainer.setHeight("100px");
+	        image.setSizeFull();
+	        imageContainer.add(image);
+	        imageLayout.add(imageContainer);
+
+	    } catch (Exception e) {
+	        Notification.show("Error: " + e.getMessage(), 3000, Notification.Position.TOP_END);
+	    }
+	}
+
+	private byte[] getImageAsByteArray(MemoryBuffer buffer, Upload upload) {
+	    try {
+	        BufferedImage inputImageOriginal = ImageIO.read(buffer.getInputStream());
+	        if (inputImageOriginal == null) {
+	        	 Notification.show("Invlid Image File Detected. Please Select Image Files only").addThemeVariants(NotificationVariant.LUMO_ERROR);
+	        	 //clearBuffer();
+	        	 upload.clearFileList();
+	            return null; // Return null if not a valid image
+	        }
+
+	        BufferedImage inputImage = resizeImage(inputImageOriginal);
+	        ByteArrayOutputStream pngContent = new ByteArrayOutputStream();
+	        ImageIO.write(inputImage, "jpg", pngContent);
+	        return pngContent.toByteArray();
+
+	    } catch (Exception e) {
+	        Notification.show("Error processing the image: " + e.getMessage(), 3000, Notification.Position.TOP_END);
+	        return null;
+	    }
 	}
 	private byte[] getImageAsByteArray(MemoryBuffer buffer) {
 		try {

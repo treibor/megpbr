@@ -322,6 +322,8 @@ public class UserView {
 				Notification.show("Password is too weak. Please use a combination of Lower case, Upper case, Number and Special Charaters").addThemeVariants(NotificationVariant.LUMO_WARNING);
 			}else if(!password.getValue().trim().equals(confirmPassword.getValue().trim())){
 				Notification.show("Passwords Do Not Match").addThemeVariants(NotificationVariant.LUMO_WARNING);
+			}else if(userservice.getUserByEmail(email.getValue())!=null){
+				Notification.show("Email Already Exist").addThemeVariants(NotificationVariant.LUMO_WARNING);
 			}else {
 				try {
 					UserLogin testuser=userservice.getUserByName(userName.getValue());

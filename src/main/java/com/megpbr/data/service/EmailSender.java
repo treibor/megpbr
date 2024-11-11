@@ -6,16 +6,17 @@ import java.util.Properties;
 public class EmailSender {
 
     public static void sendEmail(String to, String subject, String body) {
-        final String from = "your-email@gmail.com";
-        final String password = "your-app-password"; // Use an App Password if using 2FA
-
+        final String from = "marwein@gmail.com";
+        final String password = "pewcybuszxtudsku "; // Use an App Password if using 2FA
         // Gmail SMTP server configuration
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "587");
+        //props.put("mail.smtp.host", "smtp.mail.yahoo.com");
+        
+        props.put("mail.smtp.port", "465");
         props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true"); // TLS
-
+        //props.put("mail.smtp.starttls.enable", "true"); // TLS
+        props.put("mail.smtp.ssl.enable", "true");
         // Get the Session object
         Session session = Session.getInstance(props, new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
@@ -42,7 +43,7 @@ public class EmailSender {
             // Send message
             Transport.send(message);
 
-            System.out.println("Email sent successfully!");
+            //System.out.println("Email sent successfully!");
 
         } catch (MessagingException e) {
             e.printStackTrace();

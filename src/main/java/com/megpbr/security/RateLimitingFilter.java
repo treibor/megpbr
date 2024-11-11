@@ -39,13 +39,13 @@ public class RateLimitingFilter extends OncePerRequestFilter {
 			//System.out.println("Rate limit Filter Applied "  );
 			String clientIP = request.getRemoteAddr();
 			Bucket bucket = ipBuckets.computeIfAbsent(clientIP, this::createBucket);
-			System.out.println("Rate limit for IP: " + clientIP);
+			//System.out.println("Rate limit for IP: " + clientIP);
 			if (bucket.tryConsume(1)) {
 				filterChain.doFilter(request, response);
 			} else {
 				response.setStatus(429);
 				response.getWriter().write("Too many requests. Please try again later.");
-				System.out.println("Rate limit exceeded for IP: " + clientIP);
+				//System.out.println("Rate limit exceeded for IP: " + clientIP);
 				response.getWriter().flush();
 				return;
 			}

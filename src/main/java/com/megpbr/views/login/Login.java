@@ -1,6 +1,7 @@
 package com.megpbr.views.login;
 
 
+import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.List;
 import java.util.Random;
@@ -15,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.context.SecurityContextRepository;
 
 import com.megpbr.audit.Audit;
@@ -74,10 +76,15 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 	UserService uservice;
 	private final AuthenticatedUser authenticatedUser;
 	HorizontalLayout captchacontainer = new HorizontalLayout();
+	HorizontalLayout captchacontainer2 = new HorizontalLayout();
 	Button refreshButton = new Button(new Icon(VaadinIcon.REFRESH));
+	Button refreshButton2 = new Button(new Icon(VaadinIcon.REFRESH));
 	Captcha captcha = new CapthaImpl();
+	Captcha captcha2 = new CapthaImpl();
 	Image image;
+	Image image2;
 	public TextField captchatext = new TextField();
+	public TextField captchatext2 = new TextField();
 	TextField usernameField = new TextField("User Name");
 	EmailField email=new EmailField();
 	PasswordField passwordField = new PasswordField("Password");
@@ -85,9 +92,11 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 	H2 title = new H2("Meghalaya Biodiversity Board");
 	H3 description = new H3("People's Biodiversity Register");
 	Anchor anchor = new Anchor();
+	final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 	private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder
 			.getContextHolderStrategy();
 	String dynamicKey="";
+	Dialog aboutdialog=new Dialog();
 	public Login(AuthenticatedUser authenticatedUser) {
 		this.authenticatedUser = authenticatedUser;
         this.dynamicKey = generateDynamicKey();
@@ -286,7 +295,7 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 		return count;
 	}
 	public void ForgotPassword() {
-		Dialog aboutdialog=new Dialog();
+		
 		Button cancelButton=new Button("Cancel");
 		H2 headline = new H2("Forgot Password?");
 		//H3 header=new H3("Meghalaya Biodiversity Board");
@@ -303,22 +312,76 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 		cancelButton.addClickListener(e -> aboutdialog.close());
 		HorizontalLayout buttonLayout1 = new HorizontalLayout(submitbutton,cancelButton);
 		buttonLayout1.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-		VerticalLayout dialogLayout1 = new VerticalLayout(headline, body, email,   buttonLayout1);
+		var form = new FormLayout();
+		form.add(email, 1);
+		form.add(getCaptcha2(), 1);
+		form.add(new Span(), 1);
+		//form.add(hiddenField, 1);
+		form.add(captchatext2, 1);
+		// form.add(, 1);
+		form.add(buttonLayout1, 1);
+		//VerticalLayout dialogLayout1 = new VerticalLayout(headline, body, email, getCaptcha(),  buttonLayout1);
+		VerticalLayout dialogLayout1 = new VerticalLayout(headline, body, form);
 		dialogLayout1.setPadding(false);
 		dialogLayout1.setAlignItems(FlexComponent.Alignment.STRETCH);
 		dialogLayout1.getStyle().set("width", "300px").set("max-width", "100%");
 		aboutdialog.add(dialogLayout1);
 		aboutdialog.open();
+		//aboutdialog.set
+	}
+	public Component getCaptcha2() {
+		image2 = captcha.getCaptchaImg();
+		captchacontainer2.removeAll();
+		captchacontainer2.add(image2, refreshButton2);
+		refreshButton2.addClickListener(e -> regenerateCaptcha2());
+		refreshButton2.setTooltipText("Generate Another Captcha");
+		captchacontainer2.setWidthFull();
+		captchacontainer2.setJustifyContentMode(JustifyContentMode.CENTER);
+		captchacontainer2.getStyle().set("padding", "20px");
+		return captchacontainer2;
+	}
+	private void regenerateCaptcha2() {
+		//captchacontainer2.remove(image);
+		//captchacontainer2.remove(refreshButton);
+		captchacontainer2.removeAll();
+		image2 = captcha2.getCaptchaImg();
+		captchacontainer2.add(image2, refreshButton2);
 	}
 	private void sendPasswordEmail() {
-		UserLogin user=uservice.getUserByEmail(email.getValue());
-		if (user==null) {
-			Notification.show("Email Id Does Not Exist").addThemeVariants(NotificationVariant.LUMO_ERROR);
-		}else {
-			EmailSender.sendEmail(email.getValue(), "Subject", "Body");
-			//Notification.show("User Exists but To Be Implemented Using Email API. Public IP Required").addThemeVariants(NotificationVariant.LUMO_ERROR);
+		if (captcha2.checkUserAnswer(captchatext2.getValue())) {
+			
+			UserLogin user=uservice.getUserByEmail(email.getValue());
+			if (user==null) {
+				Notification.show("Email Id Does Not Exist").addThemeVariants(NotificationVariant.LUMO_ERROR);
+			}else {
+				String passwordreset=generateRandomString(8);
+				EmailSender.sendEmail(email.getValue(), "MEGPBR", passwordreset );
+				user.setHashedPassword(passwordEncoder.encode(passwordreset));
+				uservice.update(user);
+				aboutdialog.close();
+				Notification.show("Your New Password is Generated and Sent to Your Email").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+			}
+
+		} else {
+			Notification.show("Invalid captcha").addThemeVariants(NotificationVariant.LUMO_ERROR);
+			email.setValue("");
+			captchatext2.setValue("");
+			//clearFields();
+			//UI.getCurrent().getPage().reload();
 		}
-	}
+			}
+	public static String generateRandomString(int length) {
+		final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+[{]}|;:'\",<.>/?";
+        SecureRandom random = new SecureRandom();
+        StringBuilder result = new StringBuilder(length);
+
+        for (int i = 0; i < length; i++) {
+            int randomIndex = random.nextInt(CHARACTERS.length());
+            result.append(CHARACTERS.charAt(randomIndex));
+        }
+
+        return result.toString();
+    }
 	public void invalidatePreviousSessionsForUser(String username) {
 		// Get active session count for the user
 		int activeSessionCount = getActiveSessionCountForUser(username);
@@ -351,9 +414,10 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 		usernameField.setValue("");
 		captchatext.setValue("");
 	}
-
+	
 	public Component getCaptcha() {
 		image = captcha.getCaptchaImg();
+		//captchacontainer.removeAll();
 		captchacontainer.add(image, refreshButton);
 		refreshButton.addClickListener(e -> regenerateCaptcha());
 		refreshButton.setTooltipText("Generate Another Captcha");
