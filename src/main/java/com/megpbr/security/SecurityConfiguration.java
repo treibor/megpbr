@@ -134,8 +134,8 @@ public class SecurityConfiguration extends VaadinWebSecurity {
 	            .addHeaderWriter(new StaticHeadersWriter("X-Frame-Options", "DENY"))
 	            .addHeaderWriter(new StaticHeadersWriter("X-XSS-Protection", "1; mode=block"))
 	            //uncomment  the following for security audit
-	            //.addHeaderWriter(new StaticHeadersWriter("Content-Security-Policy",
-	              //"default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; object-src 'none';"))
+	            .addHeaderWriter(new StaticHeadersWriter("Content-Security-Policy",
+	              "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; object-src 'none';"))
 	            .addHeaderWriter(new StaticHeadersWriter("Permissions-Policy", "geolocation=(self), microphone=()"))
 	            .addHeaderWriter(new StaticHeadersWriter("Expect-CT", "max-age=86400, enforce"))
 	            .addHeaderWriter(new StaticHeadersWriter("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0"))
