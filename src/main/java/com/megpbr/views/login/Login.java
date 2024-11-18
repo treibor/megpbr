@@ -51,6 +51,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
@@ -64,6 +65,10 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 @AnonymousAllowed
 public class Login extends VerticalLayout implements BeforeEnterObserver {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	@Autowired
 	Audit audit;
 	@Autowired
@@ -141,6 +146,8 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 	    return key.toString();
 	}
 	private Component createPasswordForm() {
+		var container = new VerticalLayout();
+		container.removeAll();
 		 Input hiddenField = new Input();
 		    hiddenField.setValue("login");
 		    //hiddenField.setAttribute("type", "hidden");
@@ -154,6 +161,8 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 		passwordField.setRequired(true);
 		passwordField.setMinLength(5);
 		passwordField.setMaxLength(40);
+		captchatext.getElement().setAttribute("autocomplete", "off");
+		captchatext.addThemeVariants(TextFieldVariant.LUMO_ALIGN_CENTER);
 		captchatext.setPlaceholder("ENTER CAPTCHA");
 		captchatext.setMaxLength(6);
 		captchatext.setMinLength(6);
@@ -202,7 +211,7 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 		header.setJustifyContentMode(JustifyContentMode.END);
 		header.setHeight("150px");
 		header.getStyle().set("border-radius", "10px 10px 0 0");
-		var container = new VerticalLayout();
+		
 		container.setSizeUndefined();
 		container.getStyle().set("background-color", "white");
 		// container.getStyle().set("border", "2px solid black");
@@ -295,13 +304,17 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 		return count;
 	}
 	public void ForgotPassword() {
-		
+		aboutdialog.removeAll();
 		Button cancelButton=new Button("Cancel");
 		H2 headline = new H2("Forgot Password?");
 		//H3 header=new H3("Meghalaya Biodiversity Board");
 		//H3 header2=new H3("People's Biodiversity Register (PBR): Version 2.0");
 		H5 body=new H5("Please Enter Your Email Id");
-		
+		captchatext2.getElement().setAttribute("autocomplete", "off");
+		captchatext2.setMaxLength(6);
+		captchatext2.setPlaceholder("Enter Captcha");
+		captchatext2.addThemeVariants(TextFieldVariant.LUMO_ALIGN_CENTER);
+		email.getElement().setAttribute("autocomplete", "off");
 		email.setPlaceholder("Email");
 		email.setMaxLength(40);
 		email.setMinLength(5);
@@ -347,29 +360,44 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 		image2 = captcha2.getCaptchaImg();
 		captchacontainer2.add(image2, refreshButton2);
 	}
-	private void sendPasswordEmail() {
-		if (captcha2.checkUserAnswer(captchatext2.getValue())) {
-			
-			UserLogin user=uservice.getUserByEmail(email.getValue());
-			if (user==null) {
-				Notification.show("Email Id Does Not Exist").addThemeVariants(NotificationVariant.LUMO_ERROR);
-			}else {
-				String passwordreset=generateRandomString(8);
-				EmailSender.sendEmail(email.getValue(), "MEGPBR", passwordreset );
-				user.setHashedPassword(passwordEncoder.encode(passwordreset));
-				uservice.update(user);
-				aboutdialog.close();
-				Notification.show("Your New Password is Generated and Sent to Your Email").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-			}
 
-		} else {
+	private void sendPasswordEmail() {
+		try {
+
+			if (email.getValue().trim().equals("") || captchatext2.getValue().trim().equals("")) {
+				Notification.show("Email Id and Captcha is Mandatory").addThemeVariants(NotificationVariant.LUMO_ERROR);
+			} else if (captcha2.checkUserAnswer(captchatext2.getValue())) {
+				System.out.println("ABCs");
+				UserLogin user = uservice.getUserByEmail(email.getValue());
+				if (user == null) {
+					Notification.show("Email Id Does Not Exist").addThemeVariants(NotificationVariant.LUMO_ERROR);
+				} else {
+					System.out.println("ABC");
+					String passwordreset = generateRandomString(8);
+					EmailSender.sendEmail(email.getValue(), "MEGPBR", passwordreset);
+					user.setHashedPassword(passwordEncoder.encode(passwordreset));
+					uservice.update(user);
+					aboutdialog.close();
+					Notification.show("Your New Password is Generated and Sent to Your Email")
+							.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+				}
+
+			} else {
+				//System.out.println("Wrong cap");
+				Notification.show("Invalid captcha").addThemeVariants(NotificationVariant.LUMO_ERROR);
+				email.setValue("");
+				captchatext2.setValue("");
+				regenerateCaptcha2();
+				// clearFields();
+				// UI.getCurrent().getPage().reload();
+			}
+		} catch (Exception e) {
 			Notification.show("Invalid captcha").addThemeVariants(NotificationVariant.LUMO_ERROR);
 			email.setValue("");
 			captchatext2.setValue("");
-			//clearFields();
-			//UI.getCurrent().getPage().reload();
+			regenerateCaptcha2();
 		}
-			}
+	}
 	public static String generateRandomString(int length) {
 		final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+[{]}|;:'\",<.>/?";
         SecureRandom random = new SecureRandom();
@@ -433,6 +461,7 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 		image = captcha.getCaptchaImg();
 		captchacontainer.add(image, refreshButton);
 	}
+	
 
 	@Override
 	public void beforeEnter(BeforeEnterEvent event) {

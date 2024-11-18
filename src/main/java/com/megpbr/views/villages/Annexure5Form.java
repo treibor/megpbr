@@ -106,13 +106,17 @@ public class Annexure5Form extends Div {
 	FormLayout formbasic = new FormLayout();
 	MemoryBuffer buffer1 = new MemoryBuffer();
 	MemoryBuffer buffer2 = new MemoryBuffer();
-	Upload feeCollectionPhoto=new Upload(buffer1);
-	Upload resolutionPhoto=new Upload(buffer2);
+	Upload feeCollectionPhoto=new Upload(buffer2);
+	Upload resolutionPhoto=new Upload(buffer1);
 	public Button save = new Button("Add");
 	Button delete = new Button("Delete");
 	boolean isSuperAdmin;
-	
-	
+	public HorizontalLayout imageLayout1=new HorizontalLayout();
+	public Div imageContainer1=new Div();
+	TextField photo1Source = new TextField();
+	public HorizontalLayout imageLayout2=new HorizontalLayout();
+	public Div imageContainer2=new Div();
+	TextField photo2Source = new TextField();
 	public Annexure5Form(Dbservice dbservice) {
 		super();
 		this.setHeightFull();
@@ -155,11 +159,11 @@ public class Annexure5Form extends Div {
 		try {
 			binder.writeBean(annexure5);
 			annexure5.setVillage(village);
-			if (getImageAsByteArray(buffer1) != null) {
-				annexure5.setResolutionPhoto(getImageAsByteArray(buffer1));
+			if (getImageAsByteArray(buffer1, resolutionPhoto) != null) {
+				annexure5.setResolutionPhoto(getImageAsByteArray(buffer1, resolutionPhoto));
 			}
-			if (getImageAsByteArray(buffer2) != null) {
-				annexure5.setFeeCollectionPhoto(getImageAsByteArray(buffer2));
+			if (getImageAsByteArray(buffer2, feeCollectionPhoto) != null) {
+				annexure5.setFeeCollectionPhoto(getImageAsByteArray(buffer2, feeCollectionPhoto));
 			}
 			fireEvent(new SaveEvent(this, annexure5));
 			this.setVillageAnnexure5(new VillageAnnexure5());
@@ -244,7 +248,7 @@ public class Annexure5Form extends Div {
 		formbasic.add(feeCollection, 2);
 		formbasic.add(new Div(), 2);
 		formbasic.add(createUpload(resolutionPhoto), 2);
-		formbasic.add(createUpload(feeCollectionPhoto), 2);
+		formbasic.add(createUpload2(feeCollectionPhoto), 2);
 		
 		//formbasic.add(otherDetails, 3);
 		//formbasic.add(associatedTdk, 3);
@@ -309,16 +313,68 @@ public class Annexure5Form extends Div {
 		//upload.setDropLabel(new Label("Drop Photo"));
 		upload.setAcceptedFileTypes("image/tiff", "image/jpeg", "image/jpg");
 		upload.addFileRejectedListener(e -> Notification.show("Invalid File: Please select only image files less than 1Mb",3000, Position.TOP_END));
-		//upload.addSucceededListener(event -> showPicture());
+		upload.addFinishedListener(e -> showPicture(imageLayout1, imageContainer1, buffer1,  upload));
 		
 		return upload;
 	}
-	private byte[] getImageAsByteArray(MemoryBuffer buffer) {
+	
+	private Component createUpload2(Upload upload) {
+		upload.setHeight("20%");
+		upload.getStyle().set("font-size", "12px");
+		upload.setMaxFiles(1);
+		
+		upload.setMaxFileSize(1000000);
+		Button uploadButton=new Button("Upload Photo");
+		//upload.setDropLabel(uploadButton);
+		uploadButton.getStyle().set("font-size", "12px");
+		upload.setUploadButton(uploadButton);
+		//upload.setDropLabel(new Label("Drop Photo"));
+		upload.setAcceptedFileTypes("image/tiff", "image/jpeg", "image/jpg");
+		upload.addFileRejectedListener(e -> Notification.show("Invalid File: Please select only image files less than 1Mb",3000, Position.TOP_END));
+		upload.addFinishedListener(e -> showPicture(imageLayout2, imageContainer2, buffer2, upload));
+		
+		return upload;
+	}
+	public void showPicture(HorizontalLayout imageLayout, Div imageContainer, MemoryBuffer buffer,  Upload upload) {
+	    try {
+	        // Check MIME type
+	        String mimeType = buffer.getFileData().getMimeType();
+	        if (mimeType == null || !mimeType.startsWith("image/")) {
+	            Notification.show("The file is not a valid image file.").addThemeVariants(NotificationVariant.LUMO_ERROR);
+	            return; // Exit if not a valid image
+	        }
+
+	        // Convert buffer content to byte array
+	        byte[] imageData = getImageAsByteArray(buffer, upload);
+	        if (imageData == null) {
+	            // Exit if the image data is null (already notified in getImageAsByteArray)
+	            return;
+	        }
+
+	        // Proceed to display the image
+	        imageLayout.remove(imageContainer);
+	        imageContainer.removeAll();
+	        StreamResource resource = new StreamResource("inputimage", () -> new ByteArrayInputStream(imageData));
+	        Image image = new Image(resource, "No Photo to display");
+	        imageContainer.setWidth("100px");
+	        imageContainer.setHeight("100px");
+	        image.setSizeFull();
+	        imageContainer.add(image);
+	        imageLayout.add(imageContainer);
+
+	    } catch (Exception e) {
+	        Notification.show("Error: " + e.getMessage(), 3000, Notification.Position.TOP_END);
+	    }
+	}
+	private byte[] getImageAsByteArray(MemoryBuffer buffer, Upload upload) {
 		try {
 			BufferedImage inputImageoriginal=null;
 			inputImageoriginal= ImageIO.read(buffer.getInputStream());
 			if (inputImageoriginal == null) {
-				return null;
+				Notification.show("Invalid Image File Detected. Please Select Image Files only").addThemeVariants(NotificationVariant.LUMO_ERROR);
+	        	 //clearBuffer();
+	        	 upload.clearFileList();
+	        	 return null;
 			} else {
 				BufferedImage inputImage = resizeImage(inputImageoriginal);
 				ByteArrayOutputStream pngContent = new ByteArrayOutputStream();

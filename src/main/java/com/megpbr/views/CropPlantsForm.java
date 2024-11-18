@@ -1099,7 +1099,7 @@ public class CropPlantsForm extends Div {
 	    try {
 	        BufferedImage inputImageOriginal = ImageIO.read(buffer.getInputStream());
 	        if (inputImageOriginal == null) {
-	        	 Notification.show("Invlid Image File Detected. Please Select Image Files only").addThemeVariants(NotificationVariant.LUMO_ERROR);
+	        	 Notification.show("Invalid Image File Detected. Please Select Image Files only").addThemeVariants(NotificationVariant.LUMO_ERROR);
 	        	 //clearBuffer();
 	        	 upload.clearFileList();
 	            return null; // Return null if not a valid image
