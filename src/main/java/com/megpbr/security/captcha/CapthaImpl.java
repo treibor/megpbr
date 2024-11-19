@@ -19,7 +19,7 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.server.StreamResource;
 public class CapthaImpl implements Captcha {
     private static final int COUNT_NUM = 6;
-    private static final int WIDTH_IMG = 200;
+    private static final int WIDTH_IMG = 150;
     private static final int HEIGHT_IMG = 40;
     private String genStr;
     private String charsInImg = "QWERTYUIOPASDFGHJKLZXCVBNMabcdefghijklmnopqrstuvwxyz1234567890";
