@@ -22,10 +22,12 @@ public class CapthaImpl implements Captcha {
     private static final int WIDTH_IMG = 150;
     private static final int HEIGHT_IMG = 40;
     private String genStr;
+    
     private String charsInImg = "QWERTYUIOPASDFGHJKLZXCVBNMabcdefghijklmnopqrstuvwxyz1234567890";
     private Random random = new Random(System.nanoTime());
 
-    private void getRandomString() {
+    //generate captcha with uppercase, lowercase and numbers
+    private void getRandomStringSA() {
         StringBuilder tmpStr = new StringBuilder(COUNT_NUM);
 
         // Ensure at least one character from each category
@@ -57,7 +59,32 @@ public class CapthaImpl implements Captcha {
 
         genStr = shuffledStr.toString();
     }
+    
+    //generate captcha with uppercase only
+    private void getRandomString() {
+        String upperCaseLetters = "QWERTYUIOPASDFGHJKLZXCVBNM"; // Only uppercase letters
+        StringBuilder tmpStr = new StringBuilder(COUNT_NUM);
+        Random random = new Random();
 
+        // Fill with random uppercase letters
+        for (int i = 0; i < COUNT_NUM; i++) {
+            tmpStr.append(upperCaseLetters.charAt(random.nextInt(upperCaseLetters.length())));
+        }
+
+        // Shuffle characters for additional randomness
+        List<Character> charsList = new ArrayList<>();
+        for (char c : tmpStr.toString().toCharArray()) {
+            charsList.add(c);
+        }
+        Collections.shuffle(charsList);
+
+        StringBuilder shuffledStr = new StringBuilder();
+        for (char c : charsList) {
+            shuffledStr.append(c);
+        }
+
+        genStr = shuffledStr.toString(); // Assign the generated string to genStr
+    }
     @Override
     public BufferedImage getCaptchaBufferedImage() {
         getRandomString();

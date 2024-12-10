@@ -14,6 +14,14 @@ import jakarta.annotation.security.RolesAllowed;
 @PageTitle("Audit Trail")
 @Route(value = "audittrail", layout = MainLayout.class)
 public class AuditView extends HorizontalLayout {
+	/**
+	 * 
+	 */
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	Grid<AuditTrail> auditgrid=new Grid<>(AuditTrail.class);
 	MasterService service;
 	public AuditView(MasterService service) {
