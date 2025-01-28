@@ -1,7 +1,10 @@
 package com.megpbr.security;
 
 import java.io.IOException;
+import java.security.SecureRandom;
+import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.Base64;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
@@ -145,6 +148,7 @@ public class SecurityConfiguration extends VaadinWebSecurity {
 	            	    "frame-ancestors 'self'; " + // Prevents embedding in external sites
 	            	    "base-uri 'self';" // Restricts the base tag to the same origin
 	            	))
+	           
 	            .addHeaderWriter(new StaticHeadersWriter("Permissions-Policy", "geolocation=(self), microphone=()"))
 	            .addHeaderWriter(new StaticHeadersWriter("Expect-CT", "max-age=86400, enforce"))
 	            .addHeaderWriter(new StaticHeadersWriter("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0"))
@@ -169,4 +173,5 @@ public class SecurityConfiguration extends VaadinWebSecurity {
 	    super.configure(http);
 	    setLoginView(http, Login.class);
 	}
+	
 }

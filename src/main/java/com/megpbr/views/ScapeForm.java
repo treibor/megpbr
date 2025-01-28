@@ -416,7 +416,7 @@ public class ScapeForm extends Div {
 
 	public Component createBasicForm() {
 		localLanguages.setPlaceholder("Local Language");
-		ValidationUtil.applyValidation(features);
+		ValidationUtil.applyValidation(features, 254);
 		ValidationUtil.applyValidation(latitude);
 		ValidationUtil.applyValidation(localLanguage);
 		ValidationUtil.applyValidation(longitude);
