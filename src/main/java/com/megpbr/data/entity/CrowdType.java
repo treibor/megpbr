@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.hibernate.validator.constraints.Length;
 
-import com.megpbr.data.entity.pbr.Crops;
 import com.megpbr.data.entity.pbr.Crowd;
 
 import jakarta.persistence.CascadeType;

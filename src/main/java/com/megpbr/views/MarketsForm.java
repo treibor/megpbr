@@ -208,8 +208,8 @@ public class MarketsForm extends Div {
 				|| !ValidationUtil.applyValidation(placesFrom.getValue())
 				|| !ValidationUtil.applyValidation(placesTo.getValue())
 				|| !ValidationUtil.applyValidation(transactions.getValue())) {
-			Notification.show("Validation Error: Special Characters like *, ?, ^,%, $ ,#  are not allowed")
-					.addThemeVariants(NotificationVariant.LUMO_ERROR);
+			Notification.show("Validation Error: Special Characters like *, !, ^,=, _ ,~  are not allowed")
+			.addThemeVariants(NotificationVariant.LUMO_ERROR);
 		} else {
 			try {
 				format = market.getFormat();

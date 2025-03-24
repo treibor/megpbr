@@ -240,7 +240,7 @@ public class CropPlantsForm extends Div {
 				|| !ValidationUtil.applyValidation(variety.getValue())
 				|| !ValidationUtil.applyValidation(xfield1.getValue())
 				|| !ValidationUtil.applyValidation(xfield2.getValue())) {
-			Notification.show("Validation Error: Special Characters like *, ?, ^,%, $ ,#  are not allowed")
+			Notification.show("Validation Error: Special Characters like  !, ^,=, _ ,~ are not allowed")
 					.addThemeVariants(NotificationVariant.LUMO_ERROR);
 		} else {
 			try {

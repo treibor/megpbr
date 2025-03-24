@@ -43,6 +43,7 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -253,14 +254,14 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 			} catch (Exception e) {
 				audit.saveLoginAudit("Login Failure", username);
 
-				Notification.show("Login failed: " + e.getMessage()).addThemeVariants(NotificationVariant.LUMO_ERROR);
+				Notification.show("Login failed: " + e.getMessage(),5000, Position.TOP_CENTER).addThemeVariants(NotificationVariant.LUMO_ERROR);
 				clearFields();
-				UI.getCurrent().getPage().reload();
+				//UI.getCurrent().getPage().reload();
 			}
 		} else {
-			Notification.show("Invalid captcha").addThemeVariants(NotificationVariant.LUMO_ERROR);
+			Notification.show("Invalid captcha",5000, Position.TOP_CENTER).addThemeVariants(NotificationVariant.LUMO_ERROR);
 			clearFields();
-			UI.getCurrent().getPage().reload();
+			//UI.getCurrent().getPage().reload();
 		}
 
 	}
@@ -383,7 +384,7 @@ public class Login extends VerticalLayout implements BeforeEnterObserver {
 
 			} else {
 				// System.out.println("Wrong cap");
-				Notification.show("Invalid captcha").addThemeVariants(NotificationVariant.LUMO_ERROR);
+				Notification.show("Invalid captcha",5000, Position.TOP_CENTER).addThemeVariants(NotificationVariant.LUMO_ERROR);
 				email.setValue("");
 				captchatext2.setValue("");
 				regenerateCaptcha2();

@@ -247,8 +247,8 @@ public class ScapeForm extends Div {
 				|| !ValidationUtil.applyValidation(typeAgriOccupation.getValue())
 				|| !ValidationUtil.applyValidation(userGroups.getValue())
 				|| !ValidationUtil.applyValidation(wetLand.getValue())) {
-			Notification.show("Validation Error: Special Characters like *, ?, ^,%, $ ,#  are not allowed")
-					.addThemeVariants(NotificationVariant.LUMO_ERROR);
+			Notification.show("Validation Error: Special Characters like *, !, ^,=, _ ,~  are not allowed")
+			.addThemeVariants(NotificationVariant.LUMO_ERROR);
 		} else {
 			try {
 				format = scape.getFormat();
