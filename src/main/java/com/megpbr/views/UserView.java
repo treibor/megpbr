@@ -59,6 +59,7 @@ public class UserView {
 		this.dbservice = dbservice;
 		this.userservice = userservice;
 		this.securityService = securityService;
+		
 	}
 	public void createAbout() {
 		Dialog aboutdialog=new Dialog();

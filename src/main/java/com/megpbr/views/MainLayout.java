@@ -68,13 +68,12 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.menubar.MenuBarVariant;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.notification.Notification.Position;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.component.textfield.PasswordField;
@@ -452,6 +451,7 @@ public class MainLayout extends AppLayout {
         nav.addItem(lgd);
         SideNavItem audit=new SideNavItem("Audit Trail", AuditView.class, LineAwesomeIcon.DOCKER.create());
         nav.addItem(audit);
+        
         crowd.setVisible(isVerifiers());
         master.setVisible(isStateAdmin());
         preverify.setVisible(isStateUser());

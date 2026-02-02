@@ -19,10 +19,7 @@ import com.storedobject.chart.Toolbox;
 import com.storedobject.chart.XAxis;
 import com.storedobject.chart.YAxis;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.treegrid.TreeGrid;
@@ -35,7 +32,7 @@ import jakarta.annotation.security.PermitAll;
 @PermitAll
 @PageTitle("Dashboard")
 @Route(value = "dashboard", layout = MainLayout.class)
-@RouteAlias(value = "dashboard", layout = MainLayout.class)
+//@RouteAlias(value = "dashboard", layout = MainLayout.class)
 public class DashboardView extends VerticalLayout {
 	DashboardService dservice;
 	Dbservice dbservice;

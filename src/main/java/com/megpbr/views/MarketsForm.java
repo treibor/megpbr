@@ -512,20 +512,7 @@ public class MarketsForm extends Div {
 		initMasterFields(format);
 		initFormatFields(format);
 	}
-	private void addCustomValueSetListener(ComboBox<String> comboBox) {
-		comboBox.setAllowCustomValue(true);
-		comboBox.addCustomValueSetListener(event -> {
-			String customValue = event.getDetail();
-			if (customValue != null && !customValue.matches("[0-9A-Za-z@./- ]+")) {
-				// Show an error notification or reset the value
-				Notification.show("Invalid input: Only letters, numbers, and '@', '.', '/', '-'  are allowed").addThemeVariants(NotificationVariant.LUMO_WARNING);
-				comboBox.clear();
-			} else {
-				comboBox.setItems(customValue);
-				comboBox.setValue(customValue);
-			}
-		});
-	}
+
 	private void showRemarks() {
 		if (approved.getValue() != null) {
 			if (approved.getValue().getId() == 2) {

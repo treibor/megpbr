@@ -34,8 +34,10 @@ import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 import com.megpbr.views.login.Login;
+import com.vaadin.flow.server.VaadinRequest;
 import com.vaadin.flow.spring.security.VaadinWebSecurity;
 
+//import com.vaadin.flow.server.VaadinRequest;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -50,7 +52,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class SecurityConfiguration extends VaadinWebSecurity {
 	@Autowired
 	private RateLimitingFilter rateLimitingFilter;
-
+	
 	@Bean
 	CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
@@ -122,13 +124,16 @@ public class SecurityConfiguration extends VaadinWebSecurity {
 	}
 
 	
-
+	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+		
 	    http
 	    //.addFilterBefore(rateLimitingFilter, ChannelProcessingFilter.class)
+	    	
 	        .addFilterBefore(disableOptionsMethodFilter(), ChannelProcessingFilter.class)
 	        .addFilterAfter(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
+	        
 	        //.addFilterBefore(rl2, ChannelProcessingFilter.class)
 	        .headers(headers -> headers
 	            .addHeaderWriter(new StaticHeadersWriter("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload"))
@@ -148,8 +153,8 @@ public class SecurityConfiguration extends VaadinWebSecurity {
 	            	    "frame-ancestors 'self'; " + // Prevents embedding in external sites
 	            	    "base-uri 'self';" // Restricts the base tag to the same origin
 	            	))
-	           
-	            .addHeaderWriter(new StaticHeadersWriter("Permissions-Policy", "geolocation=(self), microphone=()"))
+						 
+	           	.addHeaderWriter(new StaticHeadersWriter("Permissions-Policy", "geolocation=(self), microphone=()"))
 	            .addHeaderWriter(new StaticHeadersWriter("Expect-CT", "max-age=86400, enforce"))
 	            .addHeaderWriter(new StaticHeadersWriter("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0"))
 	            .addHeaderWriter(new StaticHeadersWriter("Pragma", "no-cache"))
